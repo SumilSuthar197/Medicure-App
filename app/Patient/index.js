@@ -1,10 +1,33 @@
 import { View, Text, TextInput, StyleSheet, Alert } from "react-native";
-import React from "react";
+import React, { useContext, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { StatusBar } from "expo-status-bar";
 import PrimaryButton from "../../components/PrimaryButton";
+import { router } from "expo-router";
+import { AuthContext } from "../../context/AuthContext";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const index = () => {
+  const [email, setEmail] = useState(null);
+  const [password, setPassword] = useState(null);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    let { data } = await axios.post(
+      "https://medicure-avi420-69.koyeb.app/login",
+      {
+        user: "PATIENT",
+        email: email,
+        password: password,
+      }
+    );
+    // console.log(data);
+    if (data.output === true) {
+      AsyncStorage.setItem("userInfo", JSON.stringify(data.token));
+      router.push("/Patient/menu");
+    } else alert(data.output);
+  };
   const ResetPasswordAlert = () => {
     Alert.alert(
       "Reset Password",
@@ -29,7 +52,12 @@ const index = () => {
       <View style={styles.form}>
         <View>
           <Text style={styles.textTitle}>Email</Text>
-          <TextInput placeholder="Your Email" style={styles.textContainer} />
+          <TextInput
+            keyboardType="email-address"
+            placeholder="Your Email"
+            style={styles.textContainer}
+            onChangeText={(text) => setEmail(text)}
+          />
         </View>
         <View>
           <Text style={styles.textTitle}>Password</Text>
@@ -37,6 +65,7 @@ const index = () => {
             placeholder="Your Password"
             secureTextEntry={true}
             style={styles.textContainer}
+            onChangeText={(text) => setPassword(text)}
           />
           <Text
             style={{
@@ -60,7 +89,7 @@ const index = () => {
             backgroundColor="#000"
             color="#FFF"
             label="Sign In"
-            onPress={() => router.push("./Patient")}
+            onPress={handleSubmit}
           />
           <Text style={{ textAlign: "center", paddingVertical: 15 }}>
             Don't have an account?{" "}
@@ -70,6 +99,7 @@ const index = () => {
                 color: "blue",
                 fontWeight: "bold",
               }}
+              onPress={() => router.push("/Patient/Signup")}
             >
               Sign Up
             </Text>
@@ -100,7 +130,6 @@ const styles = StyleSheet.create({
   textContainer: {
     fontSize: 14,
     fontWeight: "500",
-    // color: "#000",
     paddingLeft: 12,
     paddingRight: 12,
     height: 48,
@@ -124,13 +153,6 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     fontSize: 14,
     paddingHorizontal: 15,
-  },
-  bottomContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginHorizontal: 20,
-    paddingVertical: 20,
   },
 });
 

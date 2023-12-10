@@ -1,52 +1,33 @@
-// import { StyleSheet, Text, View } from "react-native";
-
-// export default function Page() {
-//   return (
-//     <View style={styles.container}>
-//       <View style={styles.main}>
-//         <Text style={styles.title}>Hello World</Text>
-//         <Text style={styles.subtitle}>This is the first page of your app.</Text>
-//       </View>
-//     </View>
-//   );
-// }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     alignItems: "center",
-//     padding: 24,
-//   },
-//   main: {
-//     flex: 1,
-//     justifyContent: "center",
-//     maxWidth: 960,
-//     marginHorizontal: "auto",
-//   },
-//   title: {
-//     fontSize: 64,
-//     fontWeight: "bold",
-//   },
-//   subtitle: {
-//     fontSize: 36,
-//     color: "#38434D",
-//   },
-// });
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { router } from "expo-router";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFonts } from "expo-font";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const HomePage = () => {
+  // const { userInfo, isLoading, logout } = useContext(AuthContext);
   useEffect(() => {
-    const timer = setTimeout(() => {
-      // Navigate to the next page after 2 seconds
-      // router.push("/onboarding");
-      router.push("/Patient");
-    }, 2000);
+    const checkUserInfo = async () => {
+      try {
+        const userInfoString = await AsyncStorage.getItem("userInfo");
 
-    return () => clearTimeout(timer); // Clear the timer on component unmount
+        if (userInfoString) {
+          const userInfo = JSON.parse(userInfoString);
+          console.log(userInfo);
+          router.push("/Patient/menu");
+        } else {
+          router.push("/onboarding");
+        }
+      } catch (error) {
+        console.error("Error retrieving userInfo:", error);
+        // Handle error as needed
+      }
+    };
+
+    const timer = setTimeout(checkUserInfo, 2000);
+    // Cleanup function
+    return () => clearTimeout(timer);
   }, []);
   const [fontsLoaded] = useFonts({
     "Poppins-Regular": require("../assets/fonts/Poppins-Bold.ttf"),

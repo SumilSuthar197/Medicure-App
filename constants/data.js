@@ -1,3 +1,5 @@
+import { FontAwesome } from "@expo/vector-icons";
+
 const data = [
   {
     id: 1,
@@ -20,3 +22,22 @@ const data = [
 ];
 
 export default data;
+export const iconItem = [
+  {
+    icon: <FontAwesome name="heartbeat" size={24} color="#246BFD" />,
+    name: "Cardiologist",
+  },
+  {
+    icon: <FontAwesome name="heartbeat" size={24} color="#246BFD" />,
+    name: "Cardiologist",
+  },
+  {
+    icon: <FontAwesome name="heartbeat" size={24} color="#246BFD" />,
+    name: "Cardiologist",
+  },
+  {
+    icon: <FontAwesome name="heartbeat" size={24} color="#246BFD" />,
+    name: "Cardiologist",
+  },
+ 
+];
