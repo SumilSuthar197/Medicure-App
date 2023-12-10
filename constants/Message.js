@@ -54,6 +54,31 @@ const messageData = [
     message: "cya!",
     from: "them",
   },
+  {
+    id: "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
+    message: "Hey, how about trying that new sushi place downtown?",
+    from: "me",
+  },
+  {
+    id: "7d8e9f0a-1b2c-3d4e-5f6a-7b8c9d0e1f2",
+    message: "Sushi sounds good! What time are you thinking?",
+    from: "them",
+  },
+  {
+    id: "3c4d5e6f-7a8b-9c0d-1e2f3a4b5c6d",
+    message: "How about 6:30 pm?",
+    from: "me",
+  },
+  {
+    id: "9f0a1b2c-3d4e-5f6a-7b8c9d0e1f2",
+    message: "Perfect! Let's meet there.",
+    from: "them",
+  },
+  {
+    id: "5e6f7a8b-9c0d-1e2f3a4b5c6d",
+    message: "I'll reserve a table for two. See you then!",
+    from: "me",
+  },
 ];
 
 export default messageData;

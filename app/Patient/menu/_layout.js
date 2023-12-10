@@ -36,11 +36,11 @@ const ChildLayout = () => {
         }}
       />
       <Tabs.Screen
-        name="chat"
+        name="chats"
         options={{
           headerTitle: "MediCure ChatBot",
           title: "Chat",
-          name: "chat",
+          name: "chats",
           tabBarIcon: ({ color }) => {
             return (
               <Ionicons
