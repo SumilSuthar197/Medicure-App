@@ -143,13 +143,13 @@ function Onboarding1() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFF",
+    backgroundColor: "#FFFBEB",
   },
   itemContainer: {
     flex: 1,
     justifyContent: "space-around",
     alignItems: "center",
-    backgroundColor: "#FFF",
+    // backgroundColor: "#FFF",
     // #246BFD
   },
   itemTitle: {

@@ -9,6 +9,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import * as Location from "expo-location";
 import { router } from "expo-router";
+import { borderColor, textBlack } from "../../constants/color";
 
 const Header = () => {
   const [location, setLocation] = useState(null);
@@ -26,8 +27,6 @@ const Header = () => {
       try {
         let location = await Location.getCurrentPositionAsync({});
         setLocation(location);
-        // console.log(location);
-        // Reverse geocoding to get the address from coordinates
         let addressResult = await Location.reverseGeocodeAsync({
           latitude: location.coords.latitude,
           longitude: location.coords.longitude,
@@ -54,19 +53,13 @@ const Header = () => {
 
   return (
     <View>
-      <View
-        style={{
-          flexDirection: "row",
-          position: "relative",
-          marginBottom: 10,
-        }}
-      >
-        <View style={{ width: "70%" }}>
+      <View style={styles.container}>
+        <View style={styles.subContainer}>
           <Text numberOfLines={1} ellipsizeMode="tail" style={styles.textTitle}>
             Location
           </Text>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Ionicons name="location" size={24} color="black" />
+          <View style={styles.textTitleContainer}>
+            <Ionicons name="location" size={24} color={textBlack} />
             <Text
               style={styles.textTitle2}
               numberOfLines={1}
@@ -77,34 +70,17 @@ const Header = () => {
           </View>
         </View>
         <View style={styles.notification}>
-          <Ionicons name="notifications" size={24} color="black" />
+          <Ionicons name="notifications" size={24} color={textBlack} />
         </View>
       </View>
       <TouchableOpacity onPress={() => router.push("/Patient/DoctorSearch")}>
-        <View
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            gap: 5,
-            alignItems: "center",
-            borderWidth: 0.7,
-            borderColor: "#777777",
-            padding: 5,
-            borderRadius: 8,
-          }}
-        >
-          <Ionicons name="search-outline" size={24} color="black" />
+        <View style={styles.iconContainer}>
+          <Ionicons name="search-outline" size={24} color={borderColor} />
           <TextInput
             editable={false}
-            placeholder="search"
-            //   onChangeText={(value) => {
-            //     setSearchValue(Value);
-            //   }}
-            //   onSubmitEditing={(value) => {
-            //     setSearchValue(Value);
-            //   }}
-
-            style={{ width: "100%" }}
+            placeholder="Search a Doctor"
+            placeholderTextColor="#cccdce"
+            style={styles.inputText}
           />
         </View>
       </TouchableOpacity>
@@ -114,46 +90,36 @@ const Header = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "#FFF",
-    fontFamily: "Poppins-Regular",
+    flexDirection: "row",
+    position: "relative",
+    marginBottom: 10,
   },
-  form: {
-    flex: 2,
-    paddingHorizontal: 15,
-    rowGap: 20,
-  },
+  subContainer: { width: "70%" },
   textTitle: {
     fontSize: 15,
     fontWeight: "600",
     marginBottom: 3,
     marginLeft: 3,
+    color: textBlack,
   },
-  textContainer: {
-    fontSize: 14,
-    fontWeight: "500",
-    // color: "#000",
-    paddingLeft: 12,
-    paddingRight: 12,
-    height: 48,
-    borderRadius: 12,
-    backgroundColor: "#F5F7F8",
-    width: "100%",
-    marginHorizontal: "auto",
-  },
+  textTitleContainer: { flexDirection: "row", alignItems: "center" },
   textTitle2: {
     width: "100%",
     fontSize: 14,
-    color: "black",
+    color: textBlack,
   },
-  itemText: {
-    textAlign: "center",
-    marginHorizontal: 35,
-    color: "black",
-    lineHeight: 22,
-    fontSize: 18,
-    paddingHorizontal: 15,
+  iconContainer: {
+    display: "flex",
+    flexDirection: "row",
+    gap: 5,
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: borderColor,
+    backgroundColor: "#FFF",
+    padding: 5,
+    borderRadius: 15,
   },
+  inputText: { width: "100%", color: borderColor },
   notification: {
     backgroundColor: "#E5E5E5",
     borderRadius: 75,

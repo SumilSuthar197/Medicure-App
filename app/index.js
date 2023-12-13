@@ -47,7 +47,7 @@ const HomePage = () => {
     return null;
   }
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.logo}>
         <Image
           style={styles.logoimage}
@@ -56,14 +56,14 @@ const HomePage = () => {
         <Text style={styles.logotext}>MediCure</Text>
       </View>
       <Text style={{}}>Logo Screen</Text>
-    </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#246BFD",
+    backgroundColor: "#4942E4",
     alignItems: "center",
     justifyContent: "space-evenly",
     fontSize: "20px",

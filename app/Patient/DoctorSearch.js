@@ -11,6 +11,14 @@ import React, { useEffect, useState } from "react";
 import { Ionicons, FontAwesome5, Zocial, AntDesign } from "@expo/vector-icons";
 import axios from "axios";
 import { ActivityIndicator } from "react-native";
+import {
+  backgroundColor,
+  borderColor,
+  lightBlueColor,
+  lightTextColor,
+  textBlack,
+  whiteText,
+} from "../../constants/color";
 
 const DoctorCard = ({
   DoctorName,
@@ -20,62 +28,174 @@ const DoctorCard = ({
   Location,
 }) => {
   return (
-    <View style={styles.mainContainer}>
-      <View style={{ flexDirection: "row", gap: 20 }}>
-        <View style={{ borderRadius: 15 }}>
-          <Image
-            style={styles.img}
-            source={require("../../assets/images/Image.png")}
-          />
-        </View>
-        <View style={{ flexDirection: "column", gap: 2 }}>
-          <Text style={{ fontSize: 17, fontWeight: "600" }}>{DoctorName}</Text>
-          <View style={{ flexDirection: "row" }}>
-            <Zocial name="persona" size={14} color="#777777" />
+    <TouchableOpacity
+      onPress={() => {
+        router.push("/Patient/doctorDetails");
+      }}
+    >
+      <View
+        style={{
+          marginVertical: 10,
+          padding: 12,
+          borderRadius: 15,
+          backgroundColor: whiteText,
+          borderWidth: 1,
+          borderColor: borderColor,
+        }}
+      >
+        <View style={{ flexDirection: "row", gap: 20 }}>
+          <View>
+            <Image
+              style={{
+                width: 50,
+                height: 50,
+                objectFit: "fill",
+                borderRadius: 99,
+              }}
+              source={require("../../assets/images/Image.png")}
+            />
+          </View>
+          <View style={{ gap: 3, justifyContent: "center" }}>
+            <Text style={{ fontSize: 16, fontWeight: "600", color: textBlack }}>
+              {DoctorName}
+            </Text>
             <Text
               style={{
                 fontSize: 14,
-                fontWeight: "400",
-                color: "#777777",
-                paddingLeft: 5,
+                fontWeight: "500",
+                color: lightTextColor,
               }}
             >
               {Speciality}
             </Text>
           </View>
-          <Text style={{ fontSize: 14, fontWeight: "400", color: "#777777" }}>
-            <AntDesign name="clockcircleo" size={14} color="#777777" />
-            {Experience}+ years experience
+        </View>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            paddingTop: 10,
+            paddingHorizontal: 5,
+          }}
+        >
+          <View style={{ flexDirection: "row" }}>
+            {/* <AntDesign name="star" size={12} color="yellow" /> */}
+            <Text
+              style={{
+                color: lightTextColor,
+                fontSize: 12,
+                fontWeight: "500",
+                textAlign: "center",
+              }}
+            >
+              4.7 (573 review)
+            </Text>
+          </View>
+          <Text style={{ color: lightBlueColor }}>|</Text>
+          <Text
+            style={{
+              color: lightTextColor,
+              fontSize: 12,
+              fontWeight: "500",
+              textAlign: "center",
+            }}
+          >
+            {Experience} years experience
           </Text>
-          <Text style={{ fontSize: 14, fontWeight: "400", color: "#777777" }}>
-            <FontAwesome5 name="building" size={14} color="#777777" />{" "}
-            {Hospital}
-          </Text>
-          <Text style={{ fontSize: 14, fontWeight: "400", color: "#777777" }}>
-            <Ionicons name="ios-location-outline" size={14} color="#777777" />
+          <Text style={{ color: lightBlueColor }}>|</Text>
+          <Text
+            style={{
+              color: lightTextColor,
+              fontSize: 12,
+              fontWeight: "500",
+              textAlign: "center",
+            }}
+          >
             {Location}
           </Text>
         </View>
-        {/* <View>
-          <Text style={{ fontSize: 16, fontWeight: "600" }}>
-            {DoctorName}
-          </Text>
-          <Text style={{ fontSize: 14, fontWeight: "500" }}>{Speciality}</Text>
-        </View> */}
+        {/* <TouchableOpacity
+            style={{
+              backgroundColor: "#dbeafe",
+              paddingHorizontal: 32,
+              height: 45,
+              borderRadius: 15,
+              marginTop: 12,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            onPress={() => {
+              router.push("/Patient/doctorDetails");
+            }}
+          >
+            <Text style={{ fontSize: 18, fontWeight: "500", color: "#246BFD" }}>
+              Make Appointment
+            </Text>
+          </TouchableOpacity> */}
       </View>
-      <TouchableOpacity
-        style={styles.btn}
-        //   onPress={() => {
-        //     router.push("/Patient/doctorDetails");
-        //   }}
-      >
-        <Text style={{ fontSize: 18, fontWeight: "500", color: "#246BFD" }}>
-          Make Appointment
-        </Text>
-      </TouchableOpacity>
-    </View>
+    </TouchableOpacity>
   );
 };
+
+// const DoctorCard = ({
+//   DoctorName,
+//   Speciality,
+//   Experience,
+//   Hospital,
+//   Location,
+// }) => {
+//   return (
+//     <View style={styles.mainContainer}>
+//       <View style={{ flexDirection: "row", gap: 20 }}>
+//         <View style={{ borderRadius: 15 }}>
+//           <Image
+//             style={styles.img}
+//             source={require("../../assets/images/Image.png")}
+//           />
+//         </View>
+//         <View style={{ flexDirection: "column", gap: 2 }}>
+//           <Text style={{ fontSize: 17, fontWeight: "600" }}>{DoctorName}</Text>
+//           <View style={{ flexDirection: "row" }}>
+//             <Zocial name="persona" size={14} color="#777777" />
+//             <Text
+//               style={{
+//                 fontSize: 14,
+//                 fontWeight: "400",
+//                 color: "#777777",
+//                 paddingLeft: 5,
+//               }}
+//             >
+//               {Speciality}
+//             </Text>
+//           </View>
+//           <Text style={{ fontSize: 14, fontWeight: "400", color: "#777777" }}>
+//             <AntDesign name="clockcircleo" size={14} color="#777777" />
+//             {Experience}+ years experience
+//           </Text>
+//           <Text style={{ fontSize: 14, fontWeight: "400", color: "#777777" }}>
+//             <FontAwesome5 name="building" size={14} color="#777777" />{" "}
+//             {Hospital}
+//           </Text>
+//           <Text style={{ fontSize: 14, fontWeight: "400", color: "#777777" }}>
+//             <Ionicons name="ios-location-outline" size={14} color="#777777" />
+//             {Location}
+//           </Text>
+//         </View>
+//       </View>
+//       <TouchableOpacity
+//         style={styles.btn}
+//         //   onPress={() => {
+//         //     router.push("/Patient/doctorDetails");
+//         //   }}
+//       >
+//         <Text style={{ fontSize: 18, fontWeight: "500", color: "#246BFD" }}>
+//           Make Appointment
+//         </Text>
+//       </TouchableOpacity>
+//     </View>
+//   );
+// };
 const DoctorSearch = () => {
   const [doctorCardData, setDoctorCardData] = useState([]);
   useEffect(() => {
@@ -96,9 +216,8 @@ const DoctorSearch = () => {
   const [isLoading, setIsLoading] = useState(true);
   //   const [locationTerm, setLocationTerm] = useState("");
   return (
-    <View style={{ flex: 1, backgroundColor: "#FFF" }}>
-      <ScrollView>
-        <View style={{ padding: 20, flex: 1, flexDirection: "row", gap: 5 }}>
+    <View style={styles.main}>
+      {/* <View style={{ padding: 20, flex: 1, flexDirection: "row", gap: 5 }}>
           <View
             style={{
               width: "100%",
@@ -140,9 +259,24 @@ const DoctorSearch = () => {
                 Search
               </Text>
             </TouchableOpacity>
-          </View> */}
-        </View>
-        <View style={{ paddingHorizontal: 20 }}>
+          </View> 
+        </View> */}
+      <View style={styles.iconContainer}>
+        <Ionicons name="search-outline" size={24} color={borderColor} />
+        <TextInput
+          placeholder="Search a Doctor"
+          placeholderTextColor="#cccdce"
+          style={styles.inputText}
+          onChangeText={(value) => {
+            setSearchTerm(value);
+          }}
+          onSubmitEditing={(value) => {
+            setSearchTerm(value);
+          }}
+        />
+      </View>
+      <ScrollView>
+        <View style={{ paddingHorizontal: 18 }}>
           {isLoading === false ? (
             doctorCardData
               .filter((doctor) =>
@@ -174,6 +308,7 @@ const DoctorSearch = () => {
 };
 
 const styles = StyleSheet.create({
+  main: { flex: 1, backgroundColor: backgroundColor },
   mainContainer: {
     padding: 10,
     borderRadius: 15,
@@ -196,5 +331,20 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  iconContainer: {
+    display: "flex",
+    flexDirection: "row",
+    gap: 5,
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: borderColor,
+    backgroundColor: "#FFF",
+    padding: 5,
+    marginHorizontal: 15,
+    marginBottom: 8,
+    marginTop: 5,
+    borderRadius: 15,
+  },
+  inputText: { width: "100%", color: lightTextColor },
 });
 export default DoctorSearch;

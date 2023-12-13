@@ -1,12 +1,13 @@
 import { View, Text, Image } from "react-native";
 import React from "react";
 import { AntDesign } from "@expo/vector-icons";
+import { blueColor, whiteText } from "../../constants/color";
 
 const BlueCard = ({ name, type, imagePath, Date, Time }) => {
   return (
     <View
       style={{
-        backgroundColor: "#0165fc",
+        backgroundColor: blueColor,
         borderRadius: 15,
         paddingHorizontal: 15,
         paddingVertical: 15,
@@ -23,10 +24,10 @@ const BlueCard = ({ name, type, imagePath, Date, Time }) => {
           }}
         ></Image>
         <View>
-          <Text style={{ color: "#FFF", fontSize: 18, fontWeight: "500" }}>
+          <Text style={{ color: whiteText, fontSize: 18, fontWeight: "500" }}>
             {name}
           </Text>
-          <Text style={{ color: "#FFF", fontSize: 14, fontWeight: "400" }}>
+          <Text style={{ color: whiteText, fontSize: 14, fontWeight: "400" }}>
             {type}
           </Text>
         </View>

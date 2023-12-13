@@ -2,9 +2,21 @@ import { View, Text } from "react-native";
 import React from "react";
 import { Tabs } from "expo-router";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
-import { backgroundColor, textBlack } from "../../../constants/color";
+import { useFonts } from "expo-font";
+import {
+  backgroundColor,
+  textBlack,
+  whiteText,
+} from "../../../constants/color";
 
 const ChildLayout = () => {
+  const [loaded] = useFonts({
+    PoppinsRegular: require("../../../assets/fonts/Poppins-Regular.ttf"),
+  });
+
+  if (!loaded) {
+    return null; // Font is still loading
+  }
   return (
     <Tabs>
       <Tabs.Screen
@@ -19,7 +31,7 @@ const ChildLayout = () => {
           },
         }}
       />
-      <Tabs.Screen
+      {/* <Tabs.Screen
         name="explore"
         options={{
           headerTitle: "Explore",
@@ -35,8 +47,8 @@ const ChildLayout = () => {
             );
           },
         }}
-      />
-      <Tabs.Screen
+      /> */}
+      {/* <Tabs.Screen
         name="chats"
         options={{
           headerTitle: "MediCure ChatBot",
@@ -52,11 +64,14 @@ const ChildLayout = () => {
             );
           },
         }}
-      />
+      /> */}
       <Tabs.Screen
-        name="booking"
+        name="Appointments"
         options={{
           headerTitle: "Schedule",
+          title: "Appointment",
+          name: "Appointments",
+          //headerTitleAlign:"center",
           headerStyle: {
             backgroundColor: backgroundColor,
           },
@@ -64,10 +79,10 @@ const ChildLayout = () => {
             color: textBlack,
             fontWeight: "600",
             fontSize: 22,
-            paddingLeft:10
+            paddingLeft: 10,
           },
-          title: "Appointment",
-          name: "booking",
+          headerShadowVisible: false,
+          headerTintColor: whiteText,
           tabBarIcon: ({ color }) => {
             return (
               <Ionicons
@@ -80,7 +95,7 @@ const ChildLayout = () => {
         }}
       />
       <Tabs.Screen
-        name="userProfile"
+        name="DoctorProfile"
         options={{
           title: "Profile",
           name: "profile",

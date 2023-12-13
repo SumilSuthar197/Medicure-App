@@ -1,17 +1,21 @@
 import { Stack } from "expo-router";
-import { backgroundColor, blueColor, whiteText } from "../../constants/color";
+import { blueColor, whiteText } from "../../constants/color";
 
 const PatientLayout = () => {
   return (
     <Stack>
       <Stack.Screen name="index" options={{ headerShown: false }} />
-      <Stack.Screen name="Signup" options={{ headerShown: false }} />
-      <Stack.Screen name="menu" options={{ headerShown: false }} />
-      <Stack.Screen name="Profile" />
+      {/* <Stack.Screen name="D" options={{ headerShown: false }} /> */}
+      <Stack.Screen name="Doctormenu" options={{ headerShown: false }} />
+      {/* <Stack.Screen name="Profile" /> */}
       <Stack.Screen
-        name="doctorDetails"
+        name="DoctorLeave"
+        options={{ headerTitle: "Apply for Leave" }}
+      />
+      <Stack.Screen
+        name="patientProfile"
         options={{
-          headerTitle: "Doctor's Profile",
+          headerTitle: "Patient's Profile",
           headerStyle: {
             backgroundColor: blueColor,
           },
@@ -26,20 +30,14 @@ const PatientLayout = () => {
           // statusBarStyle: "light-content",
         }}
       />
-      <Stack.Screen
+      {/*<Stack.Screen
         name="DoctorSearch"
-        options={{
-          headerStyle: {
-            backgroundColor: backgroundColor,
-          },
-          headerShadowVisible: false,
-          headerTitle: "Search a Doctor",
-        }}
+        options={{ headerTitle: "Search a Doctor" }}
       />
       <Stack.Screen
         name="bookAppointment"
         options={{ headerTitle: "Book Appointment" }}
-      />
+      /> */}
     </Stack>
   );
 };

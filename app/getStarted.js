@@ -63,7 +63,7 @@ const getStarted = () => {
         <View>
           <PrimaryButton
             label="Log In As Doctor"
-            onPress={() => router.push("/Home")}
+            onPress={() => router.push("./Doctor")}
             color="#FFF"
             backgroundColor="#000"
           />

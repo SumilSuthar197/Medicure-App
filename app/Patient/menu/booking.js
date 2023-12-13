@@ -8,9 +8,24 @@ import {
   Image,
   ScrollView,
 } from "react-native";
-import { AntDesign, Zocial, Feather } from "@expo/vector-icons";
+import { AntDesign, Zocial, Feather, FontAwesome } from "@expo/vector-icons";
+import {
+  backgroundColor,
+  blueColor,
+  borderColor,
+  lightTextColor,
+  textBlack,
+  whiteText,
+} from "../../../constants/color";
+import Animated, {
+  useSharedValue,
+  withTiming,
+  runOnJS,
+  useAnimatedStyle,
+} from "react-native-reanimated";
 
 const Booking = () => {
+  const translateX = useSharedValue(0);
   const [activeIndex, setActiveIndex] = useState(0);
 
   const tabs = [
@@ -34,8 +49,8 @@ const Booking = () => {
     switch (activeIndex) {
       case 0:
         return upcomingData.map((item, index) => (
-          // <Text key={index}>{item}</Text>
           <View
+            key={index}
             style={{
               padding: 12,
               borderRadius: 15,
@@ -57,18 +72,18 @@ const Booking = () => {
                   source={require("../../../assets/images/Image.png")}
                 />
               </View>
-              <View style={{flexDirection:"column",gap:2}}>
+              <View style={{ flexDirection: "column", gap: 2 }}>
                 <Text style={{ fontSize: 17, fontWeight: "600" }}>
                   Dr Sarthak Tanpure
                 </Text>
-                <View style={{flexDirection:"row"}}>
+                <View style={{ flexDirection: "row" }}>
                   <Zocial name="persona" size={14} color="#777777" />
                   <Text
                     style={{
                       fontSize: 14,
                       fontWeight: "400",
                       color: "#777777",
-                      paddingLeft:5
+                      paddingLeft: 5,
                     }}
                   >
                     Dentist Consultation
@@ -152,13 +167,22 @@ const Booking = () => {
         return null;
     }
   };
+  // const handleTabPress = (index) => {
+  //   translateX.value = withTiming(index * 100);
+  //   runOnJS(setActiveIndex)(index);
+  // };
+
+  // const tabContainerStyle = useAnimatedStyle(() => ({
+  //   transform: [{ translateX: translateX.value }],
+  // }));
 
   return (
-    <View style={{ paddingTop: 5, backgroundColor: "#FFF" }}>
+    <View style={{ paddingTop: 5, backgroundColor: backgroundColor }}>
       <View style={styles.tabContainer}>
         {tabs.map((tab) => (
           <TouchableOpacity
             key={tab.index}
+            // onPress={() => handleTabPress(tab.index)}
             onPress={() => setActiveIndex(tab.index)}
             style={[
               activeIndex === tab.index ? styles.activeTab : styles.inActiveTab,
@@ -177,13 +201,140 @@ const Booking = () => {
         ))}
       </View>
 
+      <View
+        style={{
+          marginHorizontal: 20,
+          backgroundColor: whiteText,
+          padding: 15,
+          borderRadius: 10,
+          borderWidth: 1,
+          borderColor: borderColor,
+          marginVertical:10
+        }}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            borderBottomColor: backgroundColor,
+            paddingBottom: 15,
+            borderBottomWidth: 1,
+          }}
+        >
+          <View style={{ justifyContent: "center" }}>
+            <Text
+              style={{
+                color: textBlack,
+                fontSize: 16,
+                paddingBottom: 3,
+                fontWeight: "600",
+              }}
+            >
+              Dr. Sumil Suthar
+            </Text>
+            <Text style={{ color: "grey", fontSize: 14, fontWeight: "500" }}>
+              Cardiologist
+            </Text>
+          </View>
+          <Image
+            style={{
+              width: 50,
+              height: 50,
+              objectFit: "fill",
+              borderRadius: 99,
+            }}
+            source={require("../../../assets/images/Image.png")}
+          />
+        </View>
+        <View>
+          <View
+            style={{
+              flexDirection: "row",
+              paddingVertical: 15,
+              justifyContent: "space-between",
+            }}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <AntDesign name="calendar" size={14} color="#777777" />
+              <Text style={{ color: lightTextColor }}> 12/03/2023</Text>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <AntDesign name="clockcircleo" size={14} color="#777777" />
+              <Text style={{ color: lightTextColor }}> 10:30 AM</Text>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <FontAwesome name="circle" size={10} color="green" />
+              <Text style={{ color: lightTextColor }}> Confirmed</Text>
+            </View>
+          </View>
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
+            <TouchableOpacity
+              style={{
+                backgroundColor: backgroundColor,
+                height: 40,
+                width: "45%",
+                borderRadius: 15,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+              // onPress={() => {
+              //   router.push("/Patient/doctorDetails");
+              // }}
+            >
+              <Text
+                style={{ fontSize: 16, fontWeight: "500", color: textBlack }}
+              >
+                Cancel
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                backgroundColor: blueColor,
+                height: 40,
+                width: "50%",
+                borderRadius: 15,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+              // onPress={() => {
+              //   router.push("/Patient/doctorDetails");
+              // }}
+            >
+              <Text
+                style={{ fontSize: 16, fontWeight: "500", color: whiteText }}
+              >
+                Reschedule
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+
       <ScrollView style={{ paddingTop: 20 }}>
         <View style={{ paddingHorizontal: 20, marginBottom: 60 }}>
           {renderContent()}
         </View>
       </ScrollView>
-
-      {/* <View>{renderContent()}</View> */}
     </View>
   );
 };
@@ -194,20 +345,32 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-around",
+    backgroundColor: whiteText,
+    marginHorizontal: 22,
+    borderRadius: 5,
+    paddingVertical: 5,
   },
-  activeText: { textAlign: "center", fontSize: 16, color: "#246BFD" },
-  inActiveText: { textAlign: "center", fontSize: 16, color: "#777777" },
+  activeText: {
+    textAlign: "center",
+    fontSize: 16,
+    color: whiteText,
+    backgroundColor: blueColor,
+  },
+  inActiveText: {
+    textAlign: "center",
+    fontSize: 16,
+    color: "#777777",
+    width: "100%",
+  },
   activeTab: {
-    borderBottomWidth: 2,
-    borderBottomColor: "#246BFD",
-    padding: 3,
-    // width: "30%",
+    paddingVertical: 5,
+    backgroundColor: blueColor,
+    width: "30%",
+    borderRadius: 5,
   },
   inActiveTab: {
-    borderBottomWidth: 2,
-    borderBottomColor: "#777777",
-    padding: 3,
-    // width: "40%",
+    paddingVertical: 5,
+    width: "30%",
   },
 });
 
