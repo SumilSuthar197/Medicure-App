@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   Image,
   ScrollView,
+  Dimensions,
 } from "react-native";
 import { AntDesign, Zocial, Feather, FontAwesome } from "@expo/vector-icons";
 import {
@@ -35,12 +36,12 @@ const Booking = () => {
   ];
 
   const upcomingData = [
-    "Upcoming Item 1",
-    "Upcoming Item 2",
-    "Upcoming Item 1",
-    "Upcoming Item 2",
-    "Upcoming Item 1",
-    "Upcoming Item 2",
+    // "Upcoming Item 1",
+    // "Upcoming Item 2",
+    // "Upcoming Item 1",
+    // "Upcoming Item 2",
+    // "Upcoming Item 1",
+    // "Upcoming Item 2",
   ];
   const cancelData = ["Cancelled Item 1", "Cancelled Item 2"];
   const completedData = ["Completed Item 1", "Completed Item 2"];
@@ -48,6 +49,28 @@ const Booking = () => {
   const renderContent = () => {
     switch (activeIndex) {
       case 0:
+        if (upcomingData.length === 0)
+          return (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+                marginTop: Dimensions.get("window").height * 0.1,
+              }}
+            >
+              <Image
+                source={require("../../../assets/images/Appointment.png")}
+                style={{
+                  width: Dimensions.get("window").width * 0.8,
+                  height: Dimensions.get("window").height * 0.3,
+                }}
+              />
+              <Text style={{ fontSize: 18, fontWeight: "600", marginTop: 20 }}>
+                You don't have an appointment yet
+              </Text>
+            </View>
+          );
         return upcomingData.map((item, index) => (
           <View
             key={index}
@@ -158,8 +181,52 @@ const Booking = () => {
           </View>
         ));
       case 1:
+        if (cancelData.length === 0)
+          return (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+                marginTop: Dimensions.get("window").height * 0.1,
+              }}
+            >
+              <Image
+                source={require("../../../assets/images/Appointment.png")}
+                style={{
+                  width: Dimensions.get("window").width * 0.8,
+                  height: Dimensions.get("window").height * 0.3,
+                }}
+              />
+              <Text style={{ fontSize: 18, fontWeight: "600", marginTop: 20 }}>
+                You don't have an appointment yet
+              </Text>
+            </View>
+          );
         return cancelData.map((item, index) => <Text key={index}>{item}</Text>);
       case 2:
+        if (completedData.length === 0)
+          return (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+                marginTop: Dimensions.get("window").height * 0.1,
+              }}
+            >
+              <Image
+                source={require("../../../assets/images/Appointment.png")}
+                style={{
+                  width: Dimensions.get("window").width * 0.8,
+                  height: Dimensions.get("window").height * 0.3,
+                }}
+              />
+              <Text style={{ fontSize: 18, fontWeight: "600", marginTop: 20 }}>
+                You don't have an appointment yet
+              </Text>
+            </View>
+          );
         return completedData.map((item, index) => (
           <Text key={index}>{item}</Text>
         ));
@@ -177,7 +244,7 @@ const Booking = () => {
   // }));
 
   return (
-    <View style={{ paddingTop: 5, backgroundColor: backgroundColor }}>
+    <View style={{ flex: 1, paddingTop: 5, backgroundColor: backgroundColor }}>
       <View style={styles.tabContainer}>
         {tabs.map((tab) => (
           <TouchableOpacity
@@ -201,7 +268,7 @@ const Booking = () => {
         ))}
       </View>
 
-      <View
+      {/* <View
         style={{
           marginHorizontal: 20,
           backgroundColor: whiteText,
@@ -209,7 +276,7 @@ const Booking = () => {
           borderRadius: 10,
           borderWidth: 1,
           borderColor: borderColor,
-          marginVertical:10
+          marginVertical: 10,
         }}
       >
         <View
@@ -328,9 +395,9 @@ const Booking = () => {
             </TouchableOpacity>
           </View>
         </View>
-      </View>
+      </View> */}
 
-      <ScrollView style={{ paddingTop: 20 }}>
+      <ScrollView style={{ flex: 1, paddingTop: 20 }}>
         <View style={{ paddingHorizontal: 20, marginBottom: 60 }}>
           {renderContent()}
         </View>

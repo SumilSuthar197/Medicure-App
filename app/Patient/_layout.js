@@ -27,6 +27,24 @@ const PatientLayout = () => {
         }}
       />
       <Stack.Screen
+        name="patientPublicProfile"
+        options={{
+          headerTitle: "Patient's Profile",
+          headerStyle: {
+            backgroundColor: blueColor,
+          },
+          headerShadowVisible: false,
+          headerTitleStyle: {
+            color: whiteText,
+            fontWeight: "600",
+            fontSize: 18,
+          },
+          headerTintColor: whiteText,
+          headerTitleAlign: "center",
+          // statusBarStyle: "light-content",
+        }}
+      />
+      <Stack.Screen
         name="DoctorSearch"
         options={{
           headerStyle: {

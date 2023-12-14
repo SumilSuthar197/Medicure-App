@@ -73,7 +73,14 @@ const Header = () => {
           <Ionicons name="notifications" size={24} color={textBlack} />
         </View>
       </View>
-      <TouchableOpacity onPress={() => router.push("/Patient/DoctorSearch")}>
+      <TouchableOpacity
+        onPress={() =>
+          router.push({
+            pathname: "/Patient/DoctorSearch",
+            params: { containCategory: "" },
+          })
+        }
+      >
         <View style={styles.iconContainer}>
           <Ionicons name="search-outline" size={24} color={borderColor} />
           <TextInput

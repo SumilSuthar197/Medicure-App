@@ -4,6 +4,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import PrimaryButton from "../../components/PrimaryButton";
 import { router } from "expo-router";
 import axios from "axios";
+import {
+  backgroundColor,
+  borderColor,
+  lightTextColor,
+  textBlack,
+  whiteText,
+} from "../../constants/color";
+import { backendUrl } from "../../constants/URL";
 
 const Signup = () => {
   const [user, setUser] = useState({
@@ -15,25 +23,37 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // let { data } = axios.post("http://localhost:5000/register", {
-    //   user: "PATIENT",
-    //   ...user,
-    // });
-    let { data } = await axios.post(
-      "https://medicure-avi420-69.koyeb.app/register",
-      { user: "PATIENT", ...user }
-    );
+    if (
+      user.name === "" ||
+      user.email === "" ||
+      user.mobile === "" ||
+      user.password === ""
+    ) {
+      Alert.alert("Missing Information", "Please fill all the fields");
+      return;
+    }
+    let { data } = await axios.post(`${backendUrl}/register`, {
+      user: "PATIENT",
+      ...user,
+    });
 
     if (data.output === true) {
-      router.push("/index");
+      router.push({
+        pathname: "/Patient/Profile",
+        params: { email: user.email, name: user.name, mobile: user.mobile },
+      });
     } else alert(data.output);
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <View
-        style={{ flex: 0.7, justifyContent: "center", alignItems: "center" }}
+        style={{
+          flex: 0.7,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: backgroundColor,
+        }}
       >
         <Text style={styles.itemTitle}>Create Account</Text>
         <Text style={styles.itemText}>Hi! Fill your information below</Text>
@@ -116,6 +136,7 @@ const styles = StyleSheet.create({
   form: {
     flex: 2,
     paddingHorizontal: 15,
+    backgroundColor: backgroundColor,
     rowGap: 20,
   },
   textTitle: {
@@ -123,16 +144,20 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     marginBottom: 3,
     marginLeft: 3,
+    color: textBlack,
   },
   textContainer: {
     fontSize: 14,
     fontWeight: "500",
-    // color: "#000",
     paddingLeft: 12,
     paddingRight: 12,
     height: 48,
     borderRadius: 12,
-    backgroundColor: "#F5F7F8",
+    backgroundColor: whiteText,
+    borderColor: borderColor,
+    borderWidth: 1,
+    color: lightTextColor,
+    textDecorationLine: "none",
     width: "100%",
     marginHorizontal: "auto",
   },

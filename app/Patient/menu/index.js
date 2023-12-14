@@ -51,6 +51,7 @@ const index = () => {
         </TouchableOpacity>
       </View>
       <BlueCard
+        containAppointment={true}
         name="Dr Shashank Gupta"
         imagePath="../../assets/images/user1.png"
         type="Dentist Consultation"

@@ -6,6 +6,7 @@ import { router } from "expo-router";
 import { AuthContext } from "../../context/AuthContext";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { backendUrl } from "../../constants/URL";
 
 const index = () => {
   const [email, setEmail] = useState(null);
@@ -14,14 +15,11 @@ const index = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    let { data } = await axios.post(
-      "https://medicure-avi420-69.koyeb.app/login",
-      {
-        user: "PATIENT",
-        email: email,
-        password: password,
-      }
-    );
+    let { data } = await axios.post(`${backendUrl}/login`, {
+      user: "PATIENT",
+      email: email,
+      password: password,
+    });
     // console.log(data);
     if (data.output === true) {
       AsyncStorage.setItem("userInfo", JSON.stringify(data.token));

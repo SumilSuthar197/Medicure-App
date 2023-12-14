@@ -6,12 +6,21 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
-import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { MaterialIcons, Ionicons, FontAwesome } from "@expo/vector-icons";
 import BottomSheet, { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 import PrimaryButton from "../../../components/PrimaryButton";
 import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { backgroundColor, textBlack } from "../../../constants/color";
+import axios from "axios";
+import { backendUrl } from "../../../constants/URL";
 const profile = () => {
   const snapPoint = useMemo(() => ["25%"], []);
   const bottomSheetRef = useRef(null);
@@ -28,10 +37,31 @@ const profile = () => {
     ),
     []
   );
+  const [user, setUser] = useState({});
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const storedItem = await AsyncStorage.getItem("userInfo");
+        const jwtToken = JSON.parse(storedItem);
+        // console.log(`Bearer ${jwtToken}`);
+        const response = await axios.get(`${backendUrl}/patientprofile`, {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        });
+        setUser({ ...response.data });
+        // console.log(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <View style={{ flex: 1 }}>
-      <ScrollView style={{ backgroundColor: "#FFF" }}>
+      <ScrollView style={{ backgroundColor: backgroundColor }}>
         <View
           style={{
             justifyContent: "center",
@@ -41,7 +71,11 @@ const profile = () => {
         >
           <View style={{ position: "relative", width: 120 }}>
             <Image
-              source={require("../../../assets/images/user1.png")}
+              source={
+                user.imageUrl
+                  ? { uri: user.imageUrl }
+                  : require("../../../assets/images/user1.png")
+              }
               style={{
                 borderRadius: 75,
                 width: 120,
@@ -49,29 +83,6 @@ const profile = () => {
                 objectFit: "fill",
               }}
             />
-            {/* <TouchableOpacity
-            onPress={pickImage}
-            style={{
-              backgroundColor: "#246BFD",
-              aspectRatio: 1,
-              height: 30,
-              borderRadius: 75,
-              justifyContent: "center",
-              alignItems: "center",
-              position: "absolute",
-              bottom: 8,
-              right: 0,
-            }}
-          >
-            <AntDesign
-              name="edit"
-              size={18}
-              color="black"
-              style={{ color: "#FFF" }}
-            />
-          </TouchableOpacity> */}
-            {/* <Button title="Pick Image" onPress={pickImage} /> */}
-            {/* <Button title="Upload Image" onPress={uploadImage} /> */}
           </View>
           <View>
             <Text
@@ -81,10 +92,10 @@ const profile = () => {
                 fontWeight: "700",
                 marginBottom: 4,
                 marginTop: 10,
-                color: "black",
+                color: textBlack,
               }}
             >
-              Sumil Suthar
+              {user.name}
             </Text>
             <Text
               style={{
@@ -94,16 +105,43 @@ const profile = () => {
                 color: "#777777",
               }}
             >
-              {"sumil.suthar@gmail.com"}
+              {user.email}
             </Text>
           </View>
         </View>
         <View style={{ marginTop: 20 }}>
-          <TouchableOpacity onPress={() => router.push("/Patient/Profile")}>
+          <TouchableOpacity
+            onPress={() =>
+              router.push({
+                pathname: "/Patient/patientPublicProfile",
+                params: {
+                  ...user,
+                },
+              })
+            }
+          >
             <View style={styles.navContainer}>
               <View style={styles.nav1}>
                 <FontAwesome name="user-o" size={22} color="#777777" />
                 <Text style={styles.navText}>Your Profile</Text>
+              </View>
+              <FontAwesome name="angle-right" size={24} color="#777777" />
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() =>
+              router.push({
+                pathname: "/Patient/Profile",
+                params: {
+                  ...user,
+                },
+              })
+            }
+          >
+            <View style={styles.navContainer}>
+              <View style={styles.nav1}>
+                <FontAwesome name="user-o" size={22} color="#777777" />
+                <Text style={styles.navText}>Edit Profile</Text>
               </View>
               <FontAwesome name="angle-right" size={24} color="#777777" />
             </View>

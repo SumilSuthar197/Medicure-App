@@ -22,7 +22,7 @@ const ChildLayout = () => {
       <Tabs.Screen
         name="explore"
         options={{
-          headerTitle: "Explore",
+          headerShown: false,
           title: "Explore",
           name: "Explore",
           tabBarIcon: ({ color }) => {

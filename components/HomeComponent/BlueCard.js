@@ -3,7 +3,14 @@ import React from "react";
 import { AntDesign } from "@expo/vector-icons";
 import { blueColor, whiteText } from "../../constants/color";
 
-const BlueCard = ({ name, type, imagePath, Date, Time }) => {
+const BlueCard = ({
+  containAppointment,
+  name,
+  type,
+  imagePath,
+  Date,
+  Time,
+}) => {
   return (
     <View
       style={{
@@ -13,25 +20,27 @@ const BlueCard = ({ name, type, imagePath, Date, Time }) => {
         paddingVertical: 15,
       }}
     >
-      <View style={{ flexDirection: "row" }}>
-        <Image
-          source={require("../../assets/images/user1.png")}
-          style={{
-            width: 45,
-            height: 45,
-            borderRadius: 75,
-            marginRight: 10,
-          }}
-        ></Image>
-        <View>
-          <Text style={{ color: whiteText, fontSize: 18, fontWeight: "500" }}>
-            {name}
-          </Text>
-          <Text style={{ color: whiteText, fontSize: 14, fontWeight: "400" }}>
-            {type}
-          </Text>
+      {containAppointment && (
+        <View style={{ flexDirection: "row", marginBottom: 15 }}>
+          <Image
+            source={require("../../assets/images/user1.png")}
+            style={{
+              width: 45,
+              height: 45,
+              borderRadius: 75,
+              marginRight: 10,
+            }}
+          ></Image>
+          <View>
+            <Text style={{ color: whiteText, fontSize: 18, fontWeight: "500" }}>
+              {name}
+            </Text>
+            <Text style={{ color: whiteText, fontSize: 14, fontWeight: "400" }}>
+              {type}
+            </Text>
+          </View>
         </View>
-      </View>
+      )}
       <View
         style={{
           borderRadius: 15,
@@ -39,31 +48,53 @@ const BlueCard = ({ name, type, imagePath, Date, Time }) => {
           flexDirection: "row",
           paddingHorizontal: 15,
           paddingVertical: 10,
-          marginTop: 15,
           justifyContent: "space-around",
         }}
       >
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <AntDesign name="calendar" size={16} color="white" />
-          <Text style={{ color: "#FFF", marginLeft: 5 }}>{Date}</Text>
-        </View>
-        <Text style={{ color: "white" }}>|</Text>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <AntDesign name="clockcircleo" size={14} color="white" />
-          <Text style={{ color: "#FFF", marginLeft: 5 }}>{Time}</Text>
-        </View>
+        {!containAppointment && (
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Text style={{ color: "#FFF", marginLeft: 5 }}>
+              You don't have a appointment yet
+            </Text>
+          </View>
+        )}
+        {containAppointment && (
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-around",
+              width: "100%",
+            }}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <AntDesign name="calendar" size={16} color="white" />
+              <Text style={{ color: "#FFF", marginLeft: 5 }}>{Date}</Text>
+            </View>
+            <Text style={{ color: "white" }}>|</Text>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <AntDesign name="clockcircleo" size={14} color="white" />
+              <Text style={{ color: "#FFF", marginLeft: 5 }}>{Time}</Text>
+            </View>
+          </View>
+        )}
       </View>
     </View>
   );

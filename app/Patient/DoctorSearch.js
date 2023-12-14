@@ -19,14 +19,12 @@ import {
   textBlack,
   whiteText,
 } from "../../constants/color";
+import { router, useLocalSearchParams } from "expo-router";
+import { backendUrl } from "../../constants/URL";
 
-const DoctorCard = ({
-  DoctorName,
-  Speciality,
-  Experience,
-  Hospital,
-  Location,
-}) => {
+const DoctorCard = (data) => {
+  // console.log(data);
+  // const { name, email, experience, location, rating } = data;
   return (
     <TouchableOpacity
       onPress={() => {
@@ -52,12 +50,17 @@ const DoctorCard = ({
                 objectFit: "fill",
                 borderRadius: 99,
               }}
+              // source={
+              //   user.imageUrl
+              //     ? { uri: user.imageUrl }
+              //     : require("../../assets/images/Image.png")
+              // }
               source={require("../../assets/images/Image.png")}
             />
           </View>
           <View style={{ gap: 3, justifyContent: "center" }}>
             <Text style={{ fontSize: 16, fontWeight: "600", color: textBlack }}>
-              {DoctorName}
+              {name}
             </Text>
             <Text
               style={{
@@ -66,7 +69,7 @@ const DoctorCard = ({
                 color: lightTextColor,
               }}
             >
-              {Speciality}
+              dentist
             </Text>
           </View>
         </View>
@@ -101,7 +104,7 @@ const DoctorCard = ({
               textAlign: "center",
             }}
           >
-            {Experience} years experience
+            12 years experience
           </Text>
           <Text style={{ color: lightBlueColor }}>|</Text>
           <Text
@@ -112,7 +115,7 @@ const DoctorCard = ({
               textAlign: "center",
             }}
           >
-            {Location}
+            mumbai
           </Text>
         </View>
         {/* <TouchableOpacity
@@ -198,18 +201,37 @@ const DoctorCard = ({
 // };
 const DoctorSearch = () => {
   const [doctorCardData, setDoctorCardData] = useState([]);
+  const { containCategory } = useLocalSearchParams();
   useEffect(() => {
-    axios
-      .get("https://my.api.mockaroo.com/doctor.json?key=8a2c2e20")
-      .then((response) => {
-        setDoctorCardData(Object.values(response.data));
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching data: ", error);
-        setDoctorCardData(Object.values(DoctorCardData));
-        setIsLoading(false);
-      });
+    if (containCategory === "") {
+      axios
+        .get(`${backendUrl}/getdoctors`)
+        .then((response) => {
+          // console.log(response);
+          console.log("hello");
+          setDoctorCardData(response.data.doctors);
+          setIsLoading(false);
+          console.log(response.data.doctors[1]);
+          // console.log(doctorCardData);
+          // setDoctorCardData(Object.values(response.data));
+        })
+        .catch((error) => {
+          console.error("Error fetching data: ", error);
+          // Fallback to default data
+          setDoctorCardData(Object.values(DoctorCardData));
+        });
+    }
+    // axios
+    //   .get("https://my.api.mockaroo.com/doctor.json?key=8a2c2e20")
+    //   .then((response) => {
+    //     setDoctorCardData(Object.values(response.data));
+    //
+    //   })
+    //   .catch((error) => {
+    //     console.error("Error fetching data: ", error);
+    //     setDoctorCardData(Object.values(DoctorCardData));
+    //     setIsLoading(false);
+    //   });
   }, []);
 
   const [searchTerm, setSearchTerm] = useState("");
