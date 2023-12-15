@@ -23,7 +23,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import { backendUrl } from "../../constants/URL";
 
 const DoctorCard = (data) => {
-  console.log("data", data);
+  // console.log("data", data);
   return (
     <TouchableOpacity
       onPress={() => {
@@ -129,64 +129,6 @@ const DoctorCard = (data) => {
   );
 };
 
-// const DoctorCard = ({
-//   DoctorName,
-//   Speciality,
-//   Experience,
-//   Hospital,
-//   Location,
-// }) => {
-//   return (
-//     <View style={styles.mainContainer}>
-//       <View style={{ flexDirection: "row", gap: 20 }}>
-//         <View style={{ borderRadius: 15 }}>
-//           <Image
-//             style={styles.img}
-//             source={require("../../assets/images/Image.png")}
-//           />
-//         </View>
-//         <View style={{ flexDirection: "column", gap: 2 }}>
-//           <Text style={{ fontSize: 17, fontWeight: "600" }}>{DoctorName}</Text>
-//           <View style={{ flexDirection: "row" }}>
-//             <Zocial name="persona" size={14} color="#777777" />
-//             <Text
-//               style={{
-//                 fontSize: 14,
-//                 fontWeight: "400",
-//                 color: "#777777",
-//                 paddingLeft: 5,
-//               }}
-//             >
-//               {Speciality}
-//             </Text>
-//           </View>
-//           <Text style={{ fontSize: 14, fontWeight: "400", color: "#777777" }}>
-//             <AntDesign name="clockcircleo" size={14} color="#777777" />
-//             {Experience}+ years experience
-//           </Text>
-//           <Text style={{ fontSize: 14, fontWeight: "400", color: "#777777" }}>
-//             <FontAwesome5 name="building" size={14} color="#777777" />{" "}
-//             {Hospital}
-//           </Text>
-//           <Text style={{ fontSize: 14, fontWeight: "400", color: "#777777" }}>
-//             <Ionicons name="ios-location-outline" size={14} color="#777777" />
-//             {Location}
-//           </Text>
-//         </View>
-//       </View>
-//       <TouchableOpacity
-//         style={styles.btn}
-//         //   onPress={() => {
-//         //     router.push("/Patient/doctorDetails");
-//         //   }}
-//       >
-//         <Text style={{ fontSize: 18, fontWeight: "500", color: "#246BFD" }}>
-//           Make Appointment
-//         </Text>
-//       </TouchableOpacity>
-//     </View>
-//   );
-// };
 const DoctorSearch = () => {
   const [doctorCardData, setDoctorCardData] = useState([]);
   const { containCategory } = useLocalSearchParams();
@@ -279,7 +221,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     marginTop: 12,
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "center", 
   },
   iconContainer: {
     display: "flex",

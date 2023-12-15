@@ -13,6 +13,11 @@ const index = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (email === null || password === null) {
+      Alert.alert("Missing Information", "Please fill all the fields");
+      return;
+    }
+
     let { data } = await axios.post(
       "https://medicure-avi420-69.koyeb.app/login",
       {
@@ -23,8 +28,9 @@ const index = () => {
     );
     // console.log(data);
     if (data.output === true) {
+      console.log("Login Successful");
       AsyncStorage.setItem("userInfo", JSON.stringify(data.token));
-      router.push("/Doctor/menu");
+      router.push("/Doctor/Doctormenu");
     } else alert(data.output);
   };
   const ResetPasswordAlert = () => {
@@ -88,8 +94,8 @@ const index = () => {
             backgroundColor="#000"
             color="#FFF"
             label="Sign In"
-            // onPress={handleSubmit}
-            onPress={() => router.push("/Doctor/Doctormenu")}
+            onPress={handleSubmit}
+            // onPress={}
           />
           {/* <Text style={{ textAlign: "center", paddingVertical: 15 }}>
             Don't have an account?{" "}

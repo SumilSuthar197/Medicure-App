@@ -201,9 +201,6 @@ const doctorDetails = () => {
                   }}
                 >
                   <Text style={styles.bottomCardTitle2}>Anonymous Patient</Text>
-                  {/* <Text style={styles.bottomCardText3}>
-                    Rating : {item.rating}/5
-                  </Text> */}
                 </View>
                 <View
                   style={{
@@ -232,7 +229,7 @@ const doctorDetails = () => {
   };
 
   const doctorData = useLocalSearchParams();
-  console.log(doctorData);
+  // console.log(doctorData);
   const [doctorCompleteData, setDoctorCompleteData] = useState({});
   useEffect(() => {
     const fetchData = async () => {
@@ -240,7 +237,7 @@ const doctorDetails = () => {
         const response = await axios.get(
           `${backendUrl}/get_doctor_email/${doctorData.email}`
         );
-        console.log(response.data);
+        // console.log(response.data);
         setDoctorCompleteData(response.data);
       } catch (error) {
         console.error("Error fetching data: ", error);

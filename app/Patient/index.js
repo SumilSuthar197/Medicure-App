@@ -15,12 +15,17 @@ const index = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (email === null || password === null) {
+      Alert.alert("Missing Information", "Please fill all the fields");
+      return;
+    }
+
     let { data } = await axios.post(`${backendUrl}/login`, {
       user: "PATIENT",
       email: email,
       password: password,
     });
-    // console.log(data);
+    console.log(data);
     if (data.output === true) {
       AsyncStorage.setItem("userInfo", JSON.stringify(data.token));
       router.push("/Patient/menu");
