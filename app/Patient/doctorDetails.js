@@ -6,11 +6,11 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { iconItem } from "../../constants/data";
 import PrimaryButton from "../../components/PrimaryButton";
 import { Ionicons, FontAwesome5, AntDesign } from "@expo/vector-icons";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import {
   backgroundColor,
   blueColor,
@@ -27,6 +27,8 @@ import MapView, {
   PROVIDER_GOOGLE,
   Region,
 } from "react-native-maps";
+import axios from "axios";
+import { backendUrl } from "../../constants/URL";
 
 const doctorDetails = () => {
   const data = [
@@ -67,15 +69,21 @@ const doctorDetails = () => {
   const renderContent = () => {
     switch (activeIndex) {
       case 0:
+        const daysOfWeek = [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday",
+        ];
         return (
           <View>
             <View style={styles.bottomCard}>
               <Text style={styles.bottomCardTitle}>About</Text>
               <Text style={styles.bottomCardText}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                {doctorCompleteData.bio}
               </Text>
             </View>
             <View
@@ -83,12 +91,17 @@ const doctorDetails = () => {
                 marginVertical: 10,
               }}
             >
-              <Text style={styles.bottomCardTitle}>Speciality</Text>
-              {data.map((specialty, index) => (
-                <Text key={index} style={styles.bottomCardText}>
-                  {specialty}
-                </Text>
-              ))}
+              <Text style={styles.bottomCardTitle}>Schedule</Text>
+              {daysOfWeek && !doctorCompleteData.schedule && (
+                <Text style={styles.bottomCardText}>No Hospital Available</Text>
+              )}
+              {daysOfWeek &&
+                doctorCompleteData.schedule &&
+                daysOfWeek.map((day, index) => (
+                  <Text key={index} style={styles.bottomCardText}>
+                    {day}: {doctorCompleteData.schedule[index] || "No Hospital"}
+                  </Text>
+                ))}
             </View>
           </View>
         );
@@ -99,11 +112,13 @@ const doctorDetails = () => {
             <View>
               <View style={styles.contactRow}>
                 <Ionicons name="md-call" size={20} color={lightTextColor} />
-                <Text style={styles.bottomCardText2}> 123456789</Text>
+                <Text style={styles.bottomCardText2}>
+                  {doctorCompleteData.mobile}
+                </Text>
               </View>
               <View style={styles.contactRow}>
                 <Ionicons name="md-mail" size={20} color={lightTextColor} />
-                <Text style={styles.bottomCardText2}> sarthak@gmail.com</Text>
+                <Text style={styles.bottomCardText2}> {doctorData.email}</Text>
               </View>
               <View style={styles.contactRow}>
                 <FontAwesome5
@@ -112,8 +127,9 @@ const doctorDetails = () => {
                   color={lightTextColor}
                 />
                 <Text style={styles.bottomCardText2}>
-                  {" "}
-                  Linking Road, Bandra 400050
+                  {doctorCompleteData.hospital.location
+                    ? doctorCompleteData.hospital.location
+                    : "Hospital Address:"}
                 </Text>
               </View>
             </View>
@@ -122,18 +138,31 @@ const doctorDetails = () => {
             >
               <MapView
                 style={{ flex: 1, height: 200 }}
-                initialRegion={location}
+                initialRegion={{
+                  latitude: doctorCompleteData.location.latitude,
+                  longitude: doctorCompleteData.location.longitude,
+                  latitudeDelta: 0.01,
+                  longitudeDelta: 0.01,
+                }}
                 provider={PROVIDER_GOOGLE}
-                showsUserLocation
-                showsMyLocationButton
               >
-                <Marker coordinate={location} title="Your Location" />
+                {doctorCompleteData.location &&
+                  typeof doctorCompleteData.location.latitude === "number" &&
+                  typeof doctorCompleteData.location.longitude === "number" && (
+                    <Marker
+                      coordinate={{
+                        latitude: doctorCompleteData.location.latitude,
+                        longitude: doctorCompleteData.location.longitude,
+                      }}
+                      title="Doctor's Location"
+                    />
+                  )}
               </MapView>
             </View>
           </View>
         );
       case 2:
-        return completedData.map((item, index) => (
+        return doctorCompleteData.ratings.map((item, index) => (
           <View
             key={index}
             style={{
@@ -149,12 +178,12 @@ const doctorDetails = () => {
               <View>
                 <Image
                   style={{
-                    width: 50,
-                    height: 50,
+                    width: 35,
+                    height: 35,
                     objectFit: "fill",
                     borderRadius: 99,
                   }}
-                  source={require("../../assets/images/Image.png")}
+                  source={require("../../assets/images/user1.png")}
                 />
               </View>
               <View
@@ -164,11 +193,17 @@ const doctorDetails = () => {
                   flex: 1,
                 }}
               >
-                <View style={{ justifyContent: "center", gap: 2 }}>
-                  <Text style={styles.bottomCardTitle2}>
-                    Dr Sarthak Tanpure
-                  </Text>
-                  <Text style={styles.bottomCardText3}>2 days ago</Text>
+                <View
+                  style={{
+                    justifyContent: "center",
+                    alignItems: "flex-start",
+                    gap: 2,
+                  }}
+                >
+                  <Text style={styles.bottomCardTitle2}>Anonymous Patient</Text>
+                  {/* <Text style={styles.bottomCardText3}>
+                    Rating : {item.rating}/5
+                  </Text> */}
                 </View>
                 <View
                   style={{
@@ -182,14 +217,12 @@ const doctorDetails = () => {
                   }}
                 >
                   <AntDesign name="star" size={15} color="#F2921D" />
-                  <Text>5.0</Text>
+                  <Text>{item.rating}</Text>
                 </View>
               </View>
             </View>
             <View style={{ paddingTop: 8 }}>
-              <Text style={styles.bottomCardText}>
-                Many thanks to Dr. Sarthak! he is professional and best doctor
-              </Text>
+              <Text style={styles.bottomCardText}>{item.description}</Text>
             </View>
           </View>
         ));
@@ -198,6 +231,24 @@ const doctorDetails = () => {
     }
   };
 
+  const doctorData = useLocalSearchParams();
+  console.log(doctorData);
+  const [doctorCompleteData, setDoctorCompleteData] = useState({});
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `${backendUrl}/get_doctor_email/${doctorData.email}`
+        );
+        console.log(response.data);
+        setDoctorCompleteData(response.data);
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+      }
+    };
+    fetchData();
+  }, []);
+
   return (
     <View style={styles.main}>
       <View style={styles.topContainer}>
@@ -205,77 +256,30 @@ const doctorDetails = () => {
           <View style={{ borderRadius: 15 }}>
             <Image
               style={styles.doctorImage}
-              source={require("../../assets/images/Image.png")}
+              source={
+                doctorCompleteData.image
+                  ? { uri: doctorCompleteData.image }
+                  : require("../../assets/images/Image.png")
+              }
             />
           </View>
           <View style={styles.topCardRow}>
-            <Text style={styles.doctorName}>Dr Sarthak Tanpure</Text>
-            <Text style={styles.doctorType}>Dentist</Text>
-            <Text style={styles.doctorReviews}>4.8 (2.3K review)</Text>
+            <Text style={styles.doctorName}>{doctorCompleteData.name}</Text>
+            <Text style={styles.doctorType}>
+              {doctorCompleteData.education &&
+                doctorCompleteData.education.field}
+              {/* {doctorCompleteData.education.field} */}
+            </Text>
+            <Text style={styles.doctorReviews}>
+              {doctorData.rating} ({doctorData.count} review)
+            </Text>
           </View>
         </View>
-        {/* <View style={styles.button}>
-            <PrimaryButton
-              backgroundColor={blueColor}
-              style={{ borderWidth: 1, borderColor: whiteText, width: "47%" }}
-              color={whiteText}
-              labelStyle={{ paddingHorizontal: 0 }}
-              label="Call the Doctor"
-              // onPress={(}
-            />
-            <PrimaryButton
-              backgroundColor={blueColor}
-              style={{ borderWidth: 1, borderColor: whiteText, width: "47%" }}
-              labelStyle={{ paddingHorizontal: 0 }}
-              color={whiteText}
-              label="Call the Doctor"
-              // onPress={(}
-            />
-          </View> */}
-        {/* <View
-            style={{
-              flexDirection: "row",
-              flexWrap: "wrap",
-              paddingTop: 20,
-              paddingBottom: 0,
-              borderTopWidth: 1,
-              borderTopColor: "#e5e5e5",
-            }}
-          >
-            {iconItem.map((item, index) => (
-              <View
-                key={index}
-                style={{ width: "25%", alignItems: "center", marginBottom: 10 }}
-              >
-                <View
-                  style={{
-                    backgroundColor: "#dbeafe",
-                    padding: 15,
-                    borderRadius: 99,
-                  }}
-                >
-                  {item.icon}
-                </View>
-                <Text
-                  style={{
-                    fontSize: 16,
-                    fontWeight: "500",
-                    marginTop: 4,
-                    color: "#246BFD",
-                  }}
-                >
-                  {item.name}
-                </Text>
-                <Text style={{ color: "#777777" }}>Patients</Text>
-              </View>
-            ))}
-          </View> */}
         <View style={styles.bottonContainer}>
           <View style={styles.tabContainer}>
             {tabs.map((tab) => (
               <TouchableOpacity
                 key={tab.index}
-                // onPress={() => handleTabPress(tab.index)}
                 onPress={() => setActiveIndex(tab.index)}
                 style={[
                   activeIndex === tab.index
@@ -373,7 +377,7 @@ const styles = StyleSheet.create({
   bottomCardText: { color: lightTextColor, fontSize: 16, lineHeight: 22 },
   bottomCardText2: {
     color: lightTextColor,
-    fontSize: 16,
+    fontSize: 15,
     lineHeight: 22,
     marginLeft: 5,
   },

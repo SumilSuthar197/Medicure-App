@@ -36,12 +36,12 @@ const Booking = () => {
   ];
 
   const upcomingData = [
-    // "Upcoming Item 1",
-    // "Upcoming Item 2",
-    // "Upcoming Item 1",
-    // "Upcoming Item 2",
-    // "Upcoming Item 1",
-    // "Upcoming Item 2",
+    "Upcoming Item 1",
+    "Upcoming Item 2",
+    "Upcoming Item 1",
+    "Upcoming Item 2",
+    "Upcoming Item 1",
+    "Upcoming Item 2",
   ];
   const cancelData = ["Cancelled Item 1", "Cancelled Item 2"];
   const completedData = ["Completed Item 1", "Completed Item 2"];
@@ -268,7 +268,7 @@ const Booking = () => {
         ))}
       </View>
 
-      {/* <View
+      <View
         style={{
           marginHorizontal: 20,
           backgroundColor: whiteText,
@@ -395,7 +395,7 @@ const Booking = () => {
             </TouchableOpacity>
           </View>
         </View>
-      </View> */}
+      </View>
 
       <ScrollView style={{ flex: 1, paddingTop: 20 }}>
         <View style={{ paddingHorizontal: 20, marginBottom: 60 }}>
