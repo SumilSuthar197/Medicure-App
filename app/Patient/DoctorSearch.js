@@ -21,113 +21,7 @@ import {
 } from "../../constants/color";
 import { router, useLocalSearchParams } from "expo-router";
 import { backendUrl } from "../../constants/URL";
-
-const DoctorCard = (data) => {
-  // console.log("data", data);
-  return (
-    <TouchableOpacity
-      onPress={() => {
-        router.push({
-          pathname: "/Patient/doctorDetails",
-          params: {
-            email: data.email,
-            rating: data.average_rating,
-            count: data.review_count,
-          },
-        });
-      }}
-    >
-      <View
-        style={{
-          marginVertical: 10,
-          padding: 12,
-          borderRadius: 15,
-          backgroundColor: whiteText,
-          borderWidth: 1,
-          borderColor: borderColor,
-        }}
-      >
-        <View style={{ flexDirection: "row", gap: 20 }}>
-          <View>
-            <Image
-              style={{
-                width: 50,
-                height: 50,
-                objectFit: "fill",
-                borderRadius: 99,
-              }}
-              source={
-                data.image
-                  ? { uri: data.image }
-                  : require("../../assets/images/Image.png")
-              }
-              // source={require("../../assets/images/Image.png")}
-            />
-          </View>
-          <View style={{ gap: 3, justifyContent: "center" }}>
-            <Text style={{ fontSize: 16, fontWeight: "600", color: textBlack }}>
-              {data.name}
-            </Text>
-            <Text
-              style={{
-                fontSize: 14,
-                fontWeight: "500",
-                color: lightTextColor,
-              }}
-            >
-              {data.education.field}
-            </Text>
-          </View>
-        </View>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            paddingTop: 10,
-            paddingHorizontal: 5,
-          }}
-        >
-          <View style={{ flexDirection: "row" }}>
-            {/* <AntDesign name="star" size={12} color="yellow" /> */}
-            <Text
-              style={{
-                color: lightTextColor,
-                fontSize: 12,
-                fontWeight: "500",
-                textAlign: "center",
-              }}
-            >
-              {data.average_rating} ({data.review_count} review)
-            </Text>
-          </View>
-          <Text style={{ color: lightTextColor }}>|</Text>
-          <Text
-            style={{
-              color: lightTextColor,
-              fontSize: 12,
-              fontWeight: "500",
-              textAlign: "center",
-            }}
-          >
-            {data.experience} years experience
-          </Text>
-          <Text style={{ color: lightTextColor }}>|</Text>
-          <Text
-            style={{
-              color: lightTextColor,
-              fontSize: 12,
-              fontWeight: "500",
-              textAlign: "center",
-            }}
-          >
-            {data.hospital.location}
-          </Text>
-        </View>
-      </View>
-    </TouchableOpacity>
-  );
-};
+import DoctorCard from "../../components/HomeComponent/DoctorCard";
 
 const DoctorSearch = () => {
   const [doctorCardData, setDoctorCardData] = useState([]);
@@ -140,7 +34,7 @@ const DoctorSearch = () => {
           response = await axios.get(`${backendUrl}/getdoctors`);
         } else {
         }
-        setDoctorCardData(response.data.doctors);
+        setDoctorCardData(response.data.doctors.reverse());
         setIsLoading(false);
       } catch (error) {
         console.error("Error fetching data: ", error);
@@ -221,7 +115,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     marginTop: 12,
     alignItems: "center",
-    justifyContent: "center", 
+    justifyContent: "center",
   },
   iconContainer: {
     display: "flex",

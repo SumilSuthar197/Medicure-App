@@ -6,12 +6,20 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
-import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { MaterialIcons, Ionicons, FontAwesome } from "@expo/vector-icons";
 import BottomSheet, { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 import PrimaryButton from "../../../components/PrimaryButton";
 import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { backendUrl } from "../../../constants/URL";
+import axios from "axios";
 const DoctorProfile = () => {
   const snapPoint = useMemo(() => ["25%"], []);
   const bottomSheetRef = useRef(null);
@@ -29,6 +37,24 @@ const DoctorProfile = () => {
     []
   );
 
+  const [user, setUser] = useState({});
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const storedItem = await AsyncStorage.getItem("doctorEmail");
+        const doctorEmail = JSON.parse(storedItem);
+        const response = await axios.get(
+          `${backendUrl}/get_doctor_email/${doctorEmail}`
+        );
+        setUser(response.data);
+        console.log(response.data);
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+      }
+    };
+    fetchData();
+  }, []);
+
   return (
     <View style={{ flex: 1 }}>
       <ScrollView style={{ backgroundColor: "#FFF" }}>
@@ -41,7 +67,11 @@ const DoctorProfile = () => {
         >
           <View style={{ position: "relative", width: 120 }}>
             <Image
-              source={require("../../../assets/images/user1.png")}
+              source={
+                user.image
+                  ? { uri: user.image }
+                  : require("../../../assets/images/user1.png")
+              }
               style={{
                 borderRadius: 75,
                 width: 120,
@@ -49,29 +79,6 @@ const DoctorProfile = () => {
                 objectFit: "fill",
               }}
             />
-            {/* <TouchableOpacity
-              onPress={pickImage}
-              style={{
-                backgroundColor: "#246BFD",
-                aspectRatio: 1,
-                height: 30,
-                borderRadius: 75,
-                justifyContent: "center",
-                alignItems: "center",
-                position: "absolute",
-                bottom: 8,
-                right: 0,
-              }}
-            >
-              <AntDesign
-                name="edit"
-                size={18}
-                color="black"
-                style={{ color: "#FFF" }}
-              />
-            </TouchableOpacity> */}
-            {/* <Button title="Pick Image" onPress={pickImage} /> */}
-            {/* <Button title="Upload Image" onPress={uploadImage} /> */}
           </View>
           <View>
             <Text
@@ -84,7 +91,7 @@ const DoctorProfile = () => {
                 color: "black",
               }}
             >
-              Sumil Suthar
+              {user.name}
             </Text>
             <Text
               style={{
@@ -94,12 +101,23 @@ const DoctorProfile = () => {
                 color: "#777777",
               }}
             >
-              {"sumil.suthar@gmail.com"}
+              {user.email}
             </Text>
           </View>
         </View>
         <View style={{ marginTop: 20 }}>
-          <TouchableOpacity onPress={() => router.push("/Patient/Profile")}>
+          <TouchableOpacity
+            onPress={() =>
+              router.push({
+                pathname: "/Doctor/showProfile",
+                params: {
+                  email: user.email,
+                  rating: 4.7,
+                  count: 100,
+                },
+              })
+            }
+          >
             <View style={styles.navContainer}>
               <View style={styles.nav1}>
                 <FontAwesome name="user-o" size={22} color="#777777" />
@@ -147,58 +165,6 @@ const DoctorProfile = () => {
             </View>
           </TouchableOpacity>
         </View>
-        {/* <View style={styles.form}>
-          <View>
-            <Text style={styles.textTitle}>Name</Text>
-            <TextInput
-              placeholder={user.name}
-              editable={false}
-              style={styles.textContainer}
-            />
-          </View>
-          <View>
-            <Text style={styles.textTitle}>Email</Text>
-            <TextInput
-              keyboardType="email-address"
-              placeholder={user.email}
-              editable={false}
-              style={styles.textContainer}
-            />
-          </View>
-          <View>
-            <Text style={styles.textTitle}>Phone Number</Text>
-            <TextInput
-              keyboardType="phone-pad"
-              placeholder="Your Phone Number"
-              style={styles.textContainer}
-              onChangeText={(text) => setUser({ ...user, number: text })}
-              maxLength={10}
-            />
-          </View>
-          <View>
-            <Text style={styles.textTitle}>Password</Text>
-            <TextInput
-              placeholder="Your Password"
-              secureTextEntry={true}
-              onChangeText={(text) => setUser({ ...user, password: text })}
-              style={styles.textContainer}
-            />
-          </View>
-  
-          <View style={{ marginTop: 10 }}>
-            <PrimaryButton
-              backgroundColor="#000"
-              color="#FFF"
-              label="Create Account"
-              onPress={() =>
-                router.push({
-                  pathname: "/Patient/menu",
-                  params: { ...user },
-                })
-              }
-            />
-          </View>
-        </View> */}
       </ScrollView>
       <BottomSheet
         ref={bottomSheetRef}
@@ -243,7 +209,7 @@ const DoctorProfile = () => {
             label="Yes, Logout"
             style={{ width: "47%" }}
             onPress={() => {
-              AsyncStorage.removeItem("userInfo");
+              AsyncStorage.removeItem("doctorInfo");
               router.push("/getStarted");
             }} // Corrected function call
             color="#FFF"

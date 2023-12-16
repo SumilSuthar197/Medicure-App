@@ -6,8 +6,9 @@ import {
   StyleSheet,
   TouchableOpacity,
   Linking,
+  Dimensions,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { iconItem } from "../../constants/data";
 import PrimaryButton from "../../components/PrimaryButton";
 import { Ionicons, FontAwesome5, AntDesign } from "@expo/vector-icons";
@@ -28,17 +29,42 @@ import MapView, {
   PROVIDER_GOOGLE,
   Region,
 } from "react-native-maps";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { backendUrl } from "../../constants/URL";
+import axios from "axios";
 
 const patientPublicProfile = () => {
   const translateX = useSharedValue(0);
   const [activeIndex, setActiveIndex] = useState(0);
   const item = useLocalSearchParams();
+  console.log(item);
   const [user, setUser] = useState({ ...item });
   const tabs = [
     { title: "Profile", index: 0 },
     { title: "Report", index: 1 },
   ];
 
+  // const [patientData, setPatientData] = useState({});
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const storedItem = await AsyncStorage.getItem("userInfo");
+  //       const jwtToken = JSON.parse(storedItem);
+  //       // console.log(`Bearer ${jwtToken}`);
+  //       const response = await axios.get(`${backendUrl}/patientprofile`, {
+  //         headers: {
+  //           Authorization: `Bearer ${jwtToken}`,
+  //         },
+  //       });
+  //       setPatientData({ ...response.data });
+  //       console.log(response.data);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, []);
   const location = {
     latitude: 19.3046288,
     longitude: 72.8544423,
@@ -120,104 +146,88 @@ const patientPublicProfile = () => {
       case 1:
         return (
           <View>
-            <Text style={styles.bottomCardTitle}>Contact Info</Text>
+            <Text style={styles.bottomCardTitle}>Prescription:</Text>
             <View>
-              <View style={styles.contactRow}>
-                <Ionicons name="md-call" size={20} color={lightTextColor} />
-                <Text style={styles.bottomCardText2}> 123456789</Text>
+              <View>
+                {/*  */}
+                <View
+                  style={{
+                    marginVertical: 10,
+                    padding: 12,
+                    borderRadius: 15,
+                    backgroundColor: whiteText,
+                    borderWidth: 1,
+                    borderColor: borderColor,
+                  }}
+                >
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <View style={{ gap: 3, justifyContent: "center" }}>
+                      <Text
+                        style={{
+                          fontSize: 14,
+                          fontWeight: "600",
+                          color: textBlack,
+                        }}
+                      >
+                        Report 1 - 12/12/2020
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: 13,
+                          fontWeight: "500",
+                          color: lightTextColor,
+                        }}
+                      >
+                        Prescribed by Dr. Sarthak Tanpure
+                      </Text>
+                    </View>
+                    <View
+                      style={{
+                        justifyContent: "center",
+                        alignItems: "center",
+                        // backgroundColor: textBlack,
+                        paddingHorizontal: 5,
+                      }}
+                    >
+                      <TouchableOpacity>
+                        <AntDesign name="download" size={24} color="black" />
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </View>
+                {/*  */}
+                {/*  */}
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginTop: Dimensions.get("window").height * 0.1,
+                  }}
+                >
+                  <Image
+                    source={require("../../assets/images/Appointment.png")}
+                    style={{
+                      width: Dimensions.get("window").width * 0.8,
+                      height: Dimensions.get("window").height * 0.3,
+                    }}
+                  />
+                  <Text
+                    style={{ fontSize: 18, fontWeight: "600", marginTop: 20 }}
+                  >
+                    You don't have any report yet
+                  </Text>
+                </View>
+                {/*  */}
               </View>
-              <View style={styles.contactRow}>
-                <Ionicons name="md-mail" size={20} color={lightTextColor} />
-                <Text style={styles.bottomCardText2}> sarthak@gmail.com</Text>
-              </View>
-              <View style={styles.contactRow}>
-                <FontAwesome5
-                  name="location-arrow"
-                  size={18}
-                  color={lightTextColor}
-                />
-                <Text style={styles.bottomCardText2}>
-                  {" "}
-                  Linking Road, Bandra 400050
-                </Text>
-              </View>
-            </View>
-            <View
-              style={{ borderRadius: 25, overflow: "hidden", marginTop: 20 }}
-            >
-              <MapView
-                style={{ flex: 1, height: 200 }}
-                initialRegion={location}
-                provider={PROVIDER_GOOGLE}
-                showsUserLocation
-                showsMyLocationButton
-              >
-                <Marker coordinate={location} title="Your Location" />
-              </MapView>
             </View>
           </View>
         );
-      //   case 2:
-      //     return completedData.map((item, index) => (
-      //       <View
-      //         key={index}
-      //         style={{
-      //           marginVertical: 10,
-      //           padding: 12,
-      //           borderRadius: 15,
-      //           backgroundColor: whiteText,
-      //           borderWidth: 1,
-      //           borderColor: borderColor,
-      //         }}
-      //       >
-      //         <View style={{ flexDirection: "row", gap: 20 }}>
-      //           <View>
-      //             <Image
-      //               style={{
-      //                 width: 50,
-      //                 height: 50,
-      //                 objectFit: "fill",
-      //                 borderRadius: 99,
-      //               }}
-      //               source={require("../../assets/images/Image.png")}
-      //             />
-      //           </View>
-      //           <View
-      //             style={{
-      //               justifyContent: "space-between",
-      //               flexDirection: "row",
-      //               flex: 1,
-      //             }}
-      //           >
-      //             <View style={{ justifyContent: "center", gap: 2 }}>
-      //               <Text style={styles.bottomCardTitle2}>
-      //                 Dr Sarthak Tanpure
-      //               </Text>
-      //               <Text style={styles.bottomCardText3}>2 days ago</Text>
-      //             </View>
-      //             <View
-      //               style={{
-      //                 justifyContent: "center",
-      //                 alignItems: "center",
-      //                 backgroundColor: "#FFF2CC",
-      //                 borderRadius: 25,
-      //                 paddingHorizontal: 8,
-      //                 flexDirection: "row",
-      //                 height: 30,
-      //               }}
-      //             >
-      //               <AntDesign name="star" size={15} color="#F2921D" />
-      //               <Text>5.0</Text>
-      //             </View>
-      //           </View>
-      //         </View>
-      //         <View style={{ paddingTop: 8 }}>
-      //           <Text style={styles.bottomCardText}>
-      //             Many thanks to Dr. Sarthak! he is professional and best doctor
-      //           </Text>
-      //         </View>
-      //       </View>
-      //     ));
       default:
         return null;
     }
@@ -230,7 +240,11 @@ const patientPublicProfile = () => {
           <View style={{ borderRadius: 15 }}>
             <Image
               style={styles.doctorImage}
-              source={require("../../assets/images/Image.png")}
+              source={
+                user.imageUrl
+                  ? { uri: user.imageUrl }
+                  : require("../../assets/images/Image.png")
+              }
             />
           </View>
           <View style={styles.topCardRow}>
@@ -241,7 +255,7 @@ const patientPublicProfile = () => {
               onPress={() => Linking.openURL(`tel:${user.mobile}`)}
             >
               <Text style={styles.doctorReviews}>Call Patient</Text>
-            </TouchableOpacity> */} 
+            </TouchableOpacity> */}
           </View>
         </View>
         <View style={styles.bottonContainer}>

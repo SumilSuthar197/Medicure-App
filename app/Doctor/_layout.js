@@ -13,6 +13,24 @@ const PatientLayout = () => {
         options={{ headerTitle: "Apply for Leave" }}
       />
       <Stack.Screen
+        name="showProfile"
+        options={{
+          headerTitle: "Doctor's Profile",
+          headerStyle: {
+            backgroundColor: blueColor,
+          },
+          headerShadowVisible: false,
+          headerTitleStyle: {
+            color: whiteText,
+            fontWeight: "600",
+            fontSize: 18,
+          },
+          headerTintColor: whiteText,
+          headerTitleAlign: "center",
+          // statusBarStyle: "light-content",
+        }}
+      />
+      <Stack.Screen
         name="patientProfile"
         options={{
           headerTitle: "Patient's Profile",

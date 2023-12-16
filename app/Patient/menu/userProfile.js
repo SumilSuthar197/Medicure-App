@@ -13,7 +13,12 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { MaterialIcons, Ionicons, FontAwesome } from "@expo/vector-icons";
+import {
+  MaterialIcons,
+  Feather,
+  Ionicons,
+  FontAwesome,
+} from "@expo/vector-icons";
 import BottomSheet, { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 import PrimaryButton from "../../../components/PrimaryButton";
 import { router } from "expo-router";
@@ -140,7 +145,7 @@ const profile = () => {
           >
             <View style={styles.navContainer}>
               <View style={styles.nav1}>
-                <FontAwesome name="user-o" size={22} color="#777777" />
+                <Feather name="edit" size={22} color="#777777" />
                 <Text style={styles.navText}>Edit Profile</Text>
               </View>
               <FontAwesome name="angle-right" size={24} color="#777777" />
@@ -185,58 +190,6 @@ const profile = () => {
             </View>
           </TouchableOpacity>
         </View>
-        {/* <View style={styles.form}>
-        <View>
-          <Text style={styles.textTitle}>Name</Text>
-          <TextInput
-            placeholder={user.name}
-            editable={false}
-            style={styles.textContainer}
-          />
-        </View>
-        <View>
-          <Text style={styles.textTitle}>Email</Text>
-          <TextInput
-            keyboardType="email-address"
-            placeholder={user.email}
-            editable={false}
-            style={styles.textContainer}
-          />
-        </View>
-        <View>
-          <Text style={styles.textTitle}>Phone Number</Text>
-          <TextInput
-            keyboardType="phone-pad"
-            placeholder="Your Phone Number"
-            style={styles.textContainer}
-            onChangeText={(text) => setUser({ ...user, number: text })}
-            maxLength={10}
-          />
-        </View>
-        <View>
-          <Text style={styles.textTitle}>Password</Text>
-          <TextInput
-            placeholder="Your Password"
-            secureTextEntry={true}
-            onChangeText={(text) => setUser({ ...user, password: text })}
-            style={styles.textContainer}
-          />
-        </View>
-
-        <View style={{ marginTop: 10 }}>
-          <PrimaryButton
-            backgroundColor="#000"
-            color="#FFF"
-            label="Create Account"
-            onPress={() =>
-              router.push({
-                pathname: "/Patient/menu",
-                params: { ...user },
-              })
-            }
-          />
-        </View>
-      </View> */}
       </ScrollView>
       <BottomSheet
         ref={bottomSheetRef}

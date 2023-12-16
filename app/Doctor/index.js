@@ -5,6 +5,8 @@ import PrimaryButton from "../../components/PrimaryButton";
 import { router } from "expo-router";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { backendUrl } from "../../constants/URL";
+import * as Location from "expo-location";
 
 const index = () => {
   const [email, setEmail] = useState(null);
@@ -18,14 +20,11 @@ const index = () => {
       return;
     }
 
-    let { data } = await axios.post(
-      "https://medicure-avi420-69.koyeb.app/login",
-      {
-        user: "DOCTOR",
-        email: email,
-        password: password,
-      }
-    );
+    let { data } = await axios.post(`${backendUrl}/login`, {
+      user: "DOCTOR",
+      email: email,
+      password: password,
+    });
     // console.log(data);
     if (data.output === true) {
       console.log("Login Successful");
@@ -33,6 +32,97 @@ const index = () => {
       router.push("/Doctor/Doctormenu");
     } else alert(data.output);
   };
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    // const fetchLocation = async () => {
+    //   let { status } = await Location.requestForegroundPermissionsAsync();
+    //   if (status !== "granted") {
+    //     Alert.alert(
+    //       "Permission was denied",
+    //       "Please allow location access to use this feature"
+    //     );
+    //     return null;
+    //   }
+
+    //   try {
+    //     const userLocation = await Location.getCurrentPositionAsync({});
+    //     return {
+    //       latitude: userLocation.coords.latitude,
+    //       longitude: userLocation.coords.longitude,
+    //     };
+    //   } catch (error) {
+    //     console.error("Error fetching location:", error);
+    //     Alert.alert("Error", "An error occurred while fetching location.");
+    //     return null;
+    //   }
+    // };
+    const fetchLocation = async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert(
+          "Permission was denied",
+          "Please allow location access to use this feature"
+        );
+        return null;
+      }
+
+      try {
+        const userLocation = await Location.getCurrentPositionAsync({});
+        return {
+          latitude: userLocation.coords.latitude,
+          longitude: userLocation.coords.longitude,
+        };
+      } catch (error) {
+        console.error("Error fetching location:", error);
+        Alert.alert("Error", "An error occurred while fetching location.");
+        return null;
+      }
+    };
+
+    const login = async (location) => {
+      try {
+        if (email === null || password === null) {
+          Alert.alert("Missing Information", "Please fill all the fields");
+          return;
+        }
+        // console.log(location);
+        const { data } = await axios.post(`${backendUrl}/login`, {
+          user: "DOCTOR",
+          email: email,
+          password: password,
+          location: location,
+        });
+
+        if (data.output === true) {
+          console.log("Login Successful");
+          AsyncStorage.setItem("doctorInfo", JSON.stringify(data.token));
+          AsyncStorage.setItem("doctorEmail", JSON.stringify(email));
+          router.push("/Doctor/Doctormenu");
+        } else {
+          Alert.alert(
+            "Login Failed",
+            "Please check your credentials and try again."
+          );
+        }
+      } catch (error) {
+        console.error("Error during login:", error);
+        Alert.alert(
+          "Error",
+          "An error occurred during login. Please try again later."
+        );
+      }
+    };
+
+    // Fetch location and then proceed with login
+    const userLocation = await fetchLocation();
+    // console.log(userLocation);
+    if (userLocation) {
+      await login(userLocation);
+    }
+  };
+
   const ResetPasswordAlert = () => {
     Alert.alert(
       "Reset Password",
@@ -94,7 +184,7 @@ const index = () => {
             backgroundColor="#000"
             color="#FFF"
             label="Sign In"
-            onPress={handleSubmit}
+            onPress={handleLogin}
             // onPress={}
           />
           {/* <Text style={{ textAlign: "center", paddingVertical: 15 }}>

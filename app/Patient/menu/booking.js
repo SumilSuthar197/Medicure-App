@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -24,10 +24,55 @@ import Animated, {
   runOnJS,
   useAnimatedStyle,
 } from "react-native-reanimated";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import { backendUrl } from "../../../constants/URL";
 
 const Booking = () => {
   const translateX = useSharedValue(0);
   const [activeIndex, setActiveIndex] = useState(0);
+  // const [patientData, setPatientData] = useState({});
+  const [upcomingData, setUpcomingData] = useState([]);
+  const [cancelData, setCancelData] = useState([]);
+  const [completedData, setCompletedData] = useState([]);
+
+  function getUpcomingData(data) {
+    setUpcomingData(data);
+  }
+
+  function getCancelData(data) {
+    setCancelData(data);
+  }
+
+  function getCompletedData(data) {
+    setCompletedData(data);
+  }
+
+  useEffect(() => {
+    const fetchData = async (typeOfAppointment, settingFunction) => {
+      try {
+        const storedItem = await AsyncStorage.getItem("userInfo");
+        const jwtToken = JSON.parse(storedItem);
+        // console.log(`Bearer ${jwtToken}`);
+        const response = await axios.get(
+          `${backendUrl}/getpatientappointments/${typeOfAppointment}`,
+          {
+            headers: {
+              Authorization: `Bearer ${jwtToken}`,
+            },
+          }
+        );
+        settingFunction(response.data);
+        // setPatientData({ ...response.data });
+        console.log(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchData("Upcoming", getUpcomingData);
+    // fetchData("Cancelled", getCancelData);
+    // fetchData("Completed", getCompletedData);
+  }, []);
 
   const tabs = [
     { title: "Upcoming", index: 0 },
@@ -35,20 +80,21 @@ const Booking = () => {
     { title: "Completed", index: 2 },
   ];
 
-  const upcomingData = [
-    "Upcoming Item 1",
-    "Upcoming Item 2",
-    "Upcoming Item 1",
-    "Upcoming Item 2",
-    "Upcoming Item 1",
-    "Upcoming Item 2",
-  ];
-  const cancelData = ["Cancelled Item 1", "Cancelled Item 2"];
-  const completedData = ["Completed Item 1", "Completed Item 2"];
+  // const upcomingData = [
+  //   "Upcoming Item 1",
+  //   "Upcoming Item 2",
+  //   "Upcoming Item 1",
+  //   "Upcoming Item 2",
+  //   "Upcoming Item 1",
+  //   "Upcoming Item 2",
+  // ];
+  // const cancelData = ["Cancelled Item 1", "Cancelled Item 2"];
+  // const completedData = ["Completed Item 1", "Completed Item 2"];
 
   const renderContent = () => {
     switch (activeIndex) {
       case 0:
+        console.log(upcomingData);
         if (upcomingData.length === 0)
           return (
             <View
@@ -138,7 +184,6 @@ const Booking = () => {
               <TouchableOpacity
                 style={{
                   backgroundColor: "#dbeafe",
-                  // paddingHorizontal: 32,
                   height: 40,
                   width: "45%",
                   borderRadius: 15,
@@ -159,7 +204,6 @@ const Booking = () => {
               <TouchableOpacity
                 style={{
                   backgroundColor: "#dbeafe",
-                  // paddingHorizontal: 32,
                   height: 40,
                   width: "50%",
                   borderRadius: 15,
@@ -181,6 +225,7 @@ const Booking = () => {
           </View>
         ));
       case 1:
+        console.log(cancelData);
         if (cancelData.length === 0)
           return (
             <View
@@ -205,6 +250,7 @@ const Booking = () => {
           );
         return cancelData.map((item, index) => <Text key={index}>{item}</Text>);
       case 2:
+        console.log(completedData);
         if (completedData.length === 0)
           return (
             <View
@@ -234,14 +280,42 @@ const Booking = () => {
         return null;
     }
   };
-  // const handleTabPress = (index) => {
-  //   translateX.value = withTiming(index * 100);
-  //   runOnJS(setActiveIndex)(index);
-  // };
 
-  // const tabContainerStyle = useAnimatedStyle(() => ({
-  //   transform: [{ translateX: translateX.value }],
-  // }));
+  const handleTabPress = async (index) => {
+    setActiveIndex(index);
+    const typeOfAppointment = tabs[index].title; // Get the type of appointment based on the selected tab
+    try {
+      const storedItem = await AsyncStorage.getItem("userInfo");
+      const jwtToken = JSON.parse(storedItem);
+
+      const response = await axios.get(
+        `${backendUrl}/getpatientappointments/${typeOfAppointment}`,
+        {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        }
+      );
+
+      switch (typeOfAppointment) {
+        case "Upcoming":
+          setUpcomingData(response.data);
+          break;
+        case "Cancelled":
+          setCancelData(response.data);
+          break;
+        case "Completed":
+          setCompletedData(response.data);
+          break;
+        default:
+          break;
+      }
+
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <View style={{ flex: 1, paddingTop: 5, backgroundColor: backgroundColor }}>
@@ -250,7 +324,7 @@ const Booking = () => {
           <TouchableOpacity
             key={tab.index}
             // onPress={() => handleTabPress(tab.index)}
-            onPress={() => setActiveIndex(tab.index)}
+            onPress={() => handleTabPress(tab.index)}
             style={[
               activeIndex === tab.index ? styles.activeTab : styles.inActiveTab,
             ]}
