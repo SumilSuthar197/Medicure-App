@@ -1,3 +1,4 @@
+import { CommonActions } from "@react-navigation/native";
 import {
   View,
   Text,
@@ -22,11 +23,14 @@ import {
 import BottomSheet, { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 import PrimaryButton from "../../../components/PrimaryButton";
 import { router } from "expo-router";
+import { useNavigation } from "expo-router";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { backgroundColor, textBlack } from "../../../constants/color";
 import axios from "axios";
 import { backendUrl } from "../../../constants/URL";
 const profile = () => {
+  const navigation = useNavigation();
   const snapPoint = useMemo(() => ["25%"], []);
   const bottomSheetRef = useRef(null);
 
@@ -120,7 +124,7 @@ const profile = () => {
               router.push({
                 pathname: "/Patient/patientPublicProfile",
                 params: {
-                  ...user,
+                  email: user.email,
                 },
               })
             }
@@ -233,10 +237,15 @@ const profile = () => {
             backgroundColor="#000"
             label="Yes, Logout"
             style={{ width: "47%" }}
-            onPress={() => {
-              AsyncStorage.removeItem("userInfo");
-              router.push("/getStarted");
-            }} // Corrected function call
+            onPress={async () => {
+              await AsyncStorage.removeItem("userInfo");
+              navigation.dispatch(
+                CommonActions.reset({
+                  index: 0,
+                  routes: [{ name: "getStarted" }], // Replace 'Login' with the name of your login screen
+                })
+              );
+            }}
             color="#FFF"
           />
         </View>

@@ -7,7 +7,7 @@ import {
   FlatList,
   StatusBar,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "../../../components/HomeComponent/Header";
 import BlueCard from "../../../components/HomeComponent/BlueCard";
@@ -24,8 +24,34 @@ import {
   whiteText,
 } from "../../../constants/color";
 import DoctorCard from "../../../components/HomeComponent/DoctorCard";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import { backendUrl } from "../../../constants/URL";
 
 const index = () => {
+  const [getUpcomingData, setUpcomingData] = useState({});
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const storedItem = await AsyncStorage.getItem("userInfo");
+        const jwtToken = JSON.parse(storedItem);
+        const response = await axios.get(
+          `${backendUrl}/getpatientappointments/Upcoming`,
+          {
+            headers: {
+              Authorization: `Bearer ${jwtToken}`,
+            },
+          }
+        );
+        if (response.data.length !== 0) {
+          setUpcomingData({ ...response.data[0] });
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchData();
+  }, []);
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
@@ -47,16 +73,18 @@ const index = () => {
         <Text style={{ color: textBlack, fontSize: 18, fontWeight: "600" }}>
           Upcomming Appointments
         </Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => router.push("/Patient/menu/booking")}>
           <Text style={{ color: blueColor }}>See All</Text>
         </TouchableOpacity>
       </View>
       <BlueCard
-        containAppointment={true}
-        name="Dr Shashank Gupta"
-        imagePath="../../assets/images/user1.png"
-        type="Dentist Consultation"
-        Date="Monday, 26 July"
+        containAppointment={
+          Object.keys(getUpcomingData).length === 0 ? false : true
+        }
+        name={getUpcomingData.name}
+        imagePath={getUpcomingData.image}
+        type={getUpcomingData.field}
+        Date={getUpcomingData.date}
         Time="09:00 - 10:00"
       />
       <View

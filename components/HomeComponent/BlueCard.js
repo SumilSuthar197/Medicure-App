@@ -23,7 +23,11 @@ const BlueCard = ({
       {containAppointment && (
         <View style={{ flexDirection: "row", marginBottom: 15 }}>
           <Image
-            source={require("../../assets/images/user1.png")}
+            source={
+              imagePath
+                ? { uri: imagePath }
+                : require("../../assets/images/user1.png")
+            }
             style={{
               width: 45,
               height: 45,

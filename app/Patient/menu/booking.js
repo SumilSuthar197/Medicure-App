@@ -70,8 +70,6 @@ const Booking = () => {
       }
     };
     fetchData("Upcoming", getUpcomingData);
-    // fetchData("Cancelled", getCancelData);
-    // fetchData("Completed", getCompletedData);
   }, []);
 
   const tabs = [
@@ -80,21 +78,10 @@ const Booking = () => {
     { title: "Completed", index: 2 },
   ];
 
-  // const upcomingData = [
-  //   "Upcoming Item 1",
-  //   "Upcoming Item 2",
-  //   "Upcoming Item 1",
-  //   "Upcoming Item 2",
-  //   "Upcoming Item 1",
-  //   "Upcoming Item 2",
-  // ];
-  // const cancelData = ["Cancelled Item 1", "Cancelled Item 2"];
-  // const completedData = ["Completed Item 1", "Completed Item 2"];
-
   const renderContent = () => {
     switch (activeIndex) {
       case 0:
-        console.log(upcomingData);
+        // console.log(upcomingData);
         if (upcomingData.length === 0)
           return (
             <View
@@ -121,111 +108,167 @@ const Booking = () => {
           <View
             key={index}
             style={{
-              padding: 12,
-              borderRadius: 15,
-              // backgroundColor: "F5F7F8",
-              marginBottom: 15,
+              backgroundColor: whiteText,
+              padding: 15,
+              borderRadius: 10,
               borderWidth: 1,
-              borderColor: "#e5e5e5",
+              borderColor: borderColor,
+              marginVertical: 8,
             }}
           >
-            <View style={{ flexDirection: "row", gap: 20 }}>
-              <View style={{ borderRadius: 15 }}>
-                <Image
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                borderBottomColor: backgroundColor,
+                paddingBottom: 15,
+                borderBottomWidth: 1,
+              }}
+            >
+              <View style={{ justifyContent: "center" }}>
+                <Text
                   style={{
-                    width: 100,
-                    height: 110,
-                    objectFit: "fill",
-                    borderRadius: 15,
+                    color: textBlack,
+                    fontSize: 16,
+                    paddingBottom: 3,
+                    fontWeight: "600",
                   }}
-                  source={require("../../../assets/images/Image.png")}
-                />
-              </View>
-              <View style={{ flexDirection: "column", gap: 2 }}>
-                <Text style={{ fontSize: 17, fontWeight: "600" }}>
-                  Dr Sarthak Tanpure
+                >
+                  Dr. {item.name}
                 </Text>
-                <View style={{ flexDirection: "row" }}>
-                  <Zocial name="persona" size={14} color="#777777" />
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      fontWeight: "400",
-                      color: "#777777",
-                      paddingLeft: 5,
-                    }}
-                  >
-                    Dentist Consultation
+                <Text
+                  style={{ color: "grey", fontSize: 14, fontWeight: "500" }}
+                >
+                  {item.field}
+                </Text>
+              </View>
+              <Image
+                style={{
+                  width: 50,
+                  height: 50,
+                  objectFit: "fill",
+                  borderRadius: 99,
+                }}
+                source={
+                  item.image
+                    ? { uri: item.image }
+                    : require("../../../assets/images/Image.png")
+                }
+              />
+            </View>
+            <View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  paddingVertical: 15,
+                  justifyContent: "space-between",
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <AntDesign name="calendar" size={14} color="#777777" />
+                  <Text style={{ color: lightTextColor }}>
+                    {" "}
+                    {new Date(
+                      item.date.split("-").reverse().join("-")
+                    ).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
                   </Text>
                 </View>
-                <Text
-                  style={{ fontSize: 14, fontWeight: "400", color: "#777777" }}
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
                 >
-                  <Feather name="phone" size={14} color="#777777" /> +91
-                  9988998899
-                </Text>
-                <Text
-                  style={{ fontSize: 14, fontWeight: "400", color: "#777777" }}
+                  <AntDesign name="clockcircleo" size={14} color="#777777" />
+                  <Text style={{ color: lightTextColor }}>
+                    {" "}
+                    {item.time || "10:30 AM"}
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
                 >
-                  <AntDesign name="calendar" size={14} color="#777777" />{" "}
-                  Monday, 26 July
-                </Text>
-                <Text
-                  style={{ fontSize: 14, fontWeight: "400", color: "#777777" }}
-                >
-                  <AntDesign name="clockcircleo" size={14} color="#777777" />{" "}
-                  09:00-10:00
-                </Text>
+                  <FontAwesome
+                    name="circle"
+                    size={10}
+                    color={item.status === "UPCOMING" ? "green" : "red"}
+                  />
+                  <Text style={{ color: lightTextColor }}> Confirmed</Text>
+                </View>
               </View>
-            </View>
-            <View
-              style={{ flexDirection: "row", justifyContent: "space-between" }}
-            >
-              <TouchableOpacity
+              <View
                 style={{
-                  backgroundColor: "#dbeafe",
-                  height: 40,
-                  width: "45%",
-                  borderRadius: 15,
-                  marginTop: 12,
-                  alignItems: "center",
-                  justifyContent: "center",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
                 }}
-                // onPress={() => {
-                //   router.push("/Patient/doctorDetails");
-                // }}
               >
-                <Text
-                  style={{ fontSize: 16, fontWeight: "500", color: "#246BFD" }}
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: backgroundColor,
+                    height: 40,
+                    width: "45%",
+                    borderRadius: 15,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                  // onPress={() => {
+                  //   router.push("/Patient/doctorDetails");
+                  // }}
                 >
-                  Cancel
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{
-                  backgroundColor: "#dbeafe",
-                  height: 40,
-                  width: "50%",
-                  borderRadius: 15,
-                  marginTop: 12,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-                // onPress={() => {
-                //   router.push("/Patient/doctorDetails");
-                // }}
-              >
-                <Text
-                  style={{ fontSize: 16, fontWeight: "500", color: "#246BFD" }}
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      fontWeight: "500",
+                      color: textBlack,
+                    }}
+                  >
+                    Cancel
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: blueColor,
+                    height: 40,
+                    width: "50%",
+                    borderRadius: 15,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                  // onPress={() => {
+                  //   router.push("/Patient/doctorDetails");
+                  // }}
                 >
-                  Reschedule
-                </Text>
-              </TouchableOpacity>
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      fontWeight: "500",
+                      color: whiteText,
+                    }}
+                  >
+                    Reschedule
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         ));
       case 1:
-        console.log(cancelData);
+        // console.log(cancelData);
         if (cancelData.length === 0)
           return (
             <View
@@ -248,9 +291,116 @@ const Booking = () => {
               </Text>
             </View>
           );
-        return cancelData.map((item, index) => <Text key={index}>{item}</Text>);
+        return cancelData.map((item, index) => (
+          <View
+            key={index}
+            style={{
+              backgroundColor: whiteText,
+              padding: 15,
+              borderRadius: 10,
+              borderWidth: 1,
+              borderColor: borderColor,
+              marginVertical: 8,
+            }}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                borderBottomColor: backgroundColor,
+                paddingBottom: 15,
+                borderBottomWidth: 1,
+              }}
+            >
+              <View style={{ justifyContent: "center" }}>
+                <Text
+                  style={{
+                    color: textBlack,
+                    fontSize: 16,
+                    paddingBottom: 3,
+                    fontWeight: "600",
+                  }}
+                >
+                  Dr. {item.name}
+                </Text>
+                <Text
+                  style={{ color: "grey", fontSize: 14, fontWeight: "500" }}
+                >
+                  {item.field}
+                </Text>
+              </View>
+              <Image
+                style={{
+                  width: 50,
+                  height: 50,
+                  objectFit: "fill",
+                  borderRadius: 99,
+                }}
+                source={
+                  item.image
+                    ? { uri: item.image }
+                    : require("../../../assets/images/Image.png")
+                }
+              />
+            </View>
+            <View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  paddingTop: 16,
+                  paddingBottom: 5,
+                  justifyContent: "space-between",
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <AntDesign name="calendar" size={14} color="#777777" />
+                  <Text style={{ color: lightTextColor }}>
+                    {" "}
+                    {new Date(
+                      item.date.split("-").reverse().join("-")
+                    ).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <AntDesign name="clockcircleo" size={14} color="#777777" />
+                  <Text style={{ color: lightTextColor }}>
+                    {" "}
+                    {item.time || "10:30 AM"}
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <FontAwesome name="circle" size={10} color="red" />
+                  <Text style={{ color: lightTextColor }}> Cancelled</Text>
+                </View>
+              </View>
+            </View>
+          </View>
+          
+        ));
       case 2:
-        console.log(completedData);
+        // console.log(completedData);
         if (completedData.length === 0)
           return (
             <View
@@ -274,7 +424,167 @@ const Booking = () => {
             </View>
           );
         return completedData.map((item, index) => (
-          <Text key={index}>{item}</Text>
+          <View
+            key={index}
+            style={{
+              backgroundColor: whiteText,
+              padding: 15,
+              borderRadius: 10,
+              borderWidth: 1,
+              borderColor: borderColor,
+              marginVertical: 8,
+            }}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                borderBottomColor: backgroundColor,
+                paddingBottom: 15,
+                borderBottomWidth: 1,
+              }}
+            >
+              <View style={{ justifyContent: "center" }}>
+                <Text
+                  style={{
+                    color: textBlack,
+                    fontSize: 16,
+                    paddingBottom: 3,
+                    fontWeight: "600",
+                  }}
+                >
+                  Dr. {item.name}
+                </Text>
+                <Text
+                  style={{ color: "grey", fontSize: 14, fontWeight: "500" }}
+                >
+                  {item.field}
+                </Text>
+              </View>
+              <Image
+                style={{
+                  width: 50,
+                  height: 50,
+                  objectFit: "fill",
+                  borderRadius: 99,
+                }}
+                source={
+                  item.image
+                    ? { uri: item.image }
+                    : require("../../../assets/images/Image.png")
+                }
+              />
+            </View>
+            <View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  paddingVertical: 15,
+                  justifyContent: "space-between",
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <AntDesign name="calendar" size={14} color="#777777" />
+                  <Text style={{ color: lightTextColor }}>
+                    {" "}
+                    {new Date(
+                      item.date.split("-").reverse().join("-")
+                    ).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <AntDesign name="clockcircleo" size={14} color="#777777" />
+                  <Text style={{ color: lightTextColor }}>
+                    {" "}
+                    {item.time || "10:30 AM"}
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <FontAwesome
+                    name="circle"
+                    size={10}
+                    color={item.status === "UPCOMING" ? "green" : "red"}
+                  />
+                  <Text style={{ color: lightTextColor }}> Completed</Text>
+                </View>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: backgroundColor,
+                    height: 40,
+                    width: "45%",
+                    borderRadius: 15,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                  // onPress={() => {
+                  //   router.push("/Patient/doctorDetails");
+                  // }}
+                >
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      fontWeight: "500",
+                      color: textBlack,
+                    }}
+                  >
+                    Review
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: blueColor,
+                    height: 40,
+                    width: "50%",
+                    borderRadius: 15,
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                  // onPress={() => {
+                  //   router.push("/Patient/doctorDetails");
+                  // }}
+                >
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      fontWeight: "500",
+                      color: whiteText,
+                    }}
+                  >
+                    Prescription
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
         ));
       default:
         return null;
@@ -340,135 +650,6 @@ const Booking = () => {
             </Text>
           </TouchableOpacity>
         ))}
-      </View>
-
-      <View
-        style={{
-          marginHorizontal: 20,
-          backgroundColor: whiteText,
-          padding: 15,
-          borderRadius: 10,
-          borderWidth: 1,
-          borderColor: borderColor,
-          marginVertical: 10,
-        }}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            borderBottomColor: backgroundColor,
-            paddingBottom: 15,
-            borderBottomWidth: 1,
-          }}
-        >
-          <View style={{ justifyContent: "center" }}>
-            <Text
-              style={{
-                color: textBlack,
-                fontSize: 16,
-                paddingBottom: 3,
-                fontWeight: "600",
-              }}
-            >
-              Dr. Sumil Suthar
-            </Text>
-            <Text style={{ color: "grey", fontSize: 14, fontWeight: "500" }}>
-              Cardiologist
-            </Text>
-          </View>
-          <Image
-            style={{
-              width: 50,
-              height: 50,
-              objectFit: "fill",
-              borderRadius: 99,
-            }}
-            source={require("../../../assets/images/Image.png")}
-          />
-        </View>
-        <View>
-          <View
-            style={{
-              flexDirection: "row",
-              paddingVertical: 15,
-              justifyContent: "space-between",
-            }}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <AntDesign name="calendar" size={14} color="#777777" />
-              <Text style={{ color: lightTextColor }}> 12/03/2023</Text>
-            </View>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <AntDesign name="clockcircleo" size={14} color="#777777" />
-              <Text style={{ color: lightTextColor }}> 10:30 AM</Text>
-            </View>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <FontAwesome name="circle" size={10} color="green" />
-              <Text style={{ color: lightTextColor }}> Confirmed</Text>
-            </View>
-          </View>
-          <View
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
-          >
-            <TouchableOpacity
-              style={{
-                backgroundColor: backgroundColor,
-                height: 40,
-                width: "45%",
-                borderRadius: 15,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-              // onPress={() => {
-              //   router.push("/Patient/doctorDetails");
-              // }}
-            >
-              <Text
-                style={{ fontSize: 16, fontWeight: "500", color: textBlack }}
-              >
-                Cancel
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                backgroundColor: blueColor,
-                height: 40,
-                width: "50%",
-                borderRadius: 15,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-              // onPress={() => {
-              //   router.push("/Patient/doctorDetails");
-              // }}
-            >
-              <Text
-                style={{ fontSize: 16, fontWeight: "500", color: whiteText }}
-              >
-                Reschedule
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
       </View>
 
       <ScrollView style={{ flex: 1, paddingTop: 20 }}>

@@ -35,29 +35,6 @@ const index = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
-    // const fetchLocation = async () => {
-    //   let { status } = await Location.requestForegroundPermissionsAsync();
-    //   if (status !== "granted") {
-    //     Alert.alert(
-    //       "Permission was denied",
-    //       "Please allow location access to use this feature"
-    //     );
-    //     return null;
-    //   }
-
-    //   try {
-    //     const userLocation = await Location.getCurrentPositionAsync({});
-    //     return {
-    //       latitude: userLocation.coords.latitude,
-    //       longitude: userLocation.coords.longitude,
-    //     };
-    //   } catch (error) {
-    //     console.error("Error fetching location:", error);
-    //     Alert.alert("Error", "An error occurred while fetching location.");
-    //     return null;
-    //   }
-    // };
     const fetchLocation = async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {

@@ -183,7 +183,11 @@ const doctorDetails = () => {
                     objectFit: "fill",
                     borderRadius: 99,
                   }}
-                  source={require("../../assets/images/user1.png")}
+                  source={
+                    item.image
+                      ? { uri: item.image }
+                      : require("../../assets/images/user1.png")
+                  }
                 />
               </View>
               <View
@@ -200,7 +204,7 @@ const doctorDetails = () => {
                     gap: 2,
                   }}
                 >
-                  <Text style={styles.bottomCardTitle2}>Anonymous Patient</Text>
+                  <Text style={styles.bottomCardTitle2}>{item.patient}</Text>
                 </View>
                 <View
                   style={{
@@ -237,7 +241,7 @@ const doctorDetails = () => {
         const response = await axios.get(
           `${backendUrl}/get_doctor_email/${doctorData.email}`
         );
-        // console.log(response.data);
+        console.log(response.data);
         setDoctorCompleteData(response.data);
       } catch (error) {
         console.error("Error fetching data: ", error);

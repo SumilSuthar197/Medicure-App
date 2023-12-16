@@ -8,6 +8,7 @@ import {
   Linking,
   Dimensions,
 } from "react-native";
+
 import React, { useEffect, useState } from "react";
 import { iconItem } from "../../constants/data";
 import PrimaryButton from "../../components/PrimaryButton";
@@ -37,34 +38,32 @@ const patientPublicProfile = () => {
   const translateX = useSharedValue(0);
   const [activeIndex, setActiveIndex] = useState(0);
   const item = useLocalSearchParams();
-  console.log(item);
-  const [user, setUser] = useState({ ...item });
+  console.log("item", item.email);
   const tabs = [
     { title: "Profile", index: 0 },
     { title: "Report", index: 1 },
   ];
 
+  const [user, setUser] = useState({});
   // const [patientData, setPatientData] = useState({});
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const storedItem = await AsyncStorage.getItem("userInfo");
-  //       const jwtToken = JSON.parse(storedItem);
-  //       // console.log(`Bearer ${jwtToken}`);
-  //       const response = await axios.get(`${backendUrl}/patientprofile`, {
-  //         headers: {
-  //           Authorization: `Bearer ${jwtToken}`,
-  //         },
-  //       });
-  //       setPatientData({ ...response.data });
-  //       console.log(response.data);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const storedItem = await AsyncStorage.getItem("userInfo");
+        const jwtToken = JSON.parse(storedItem);
+        const response = await axios.get(`${backendUrl}/patientprofile`, {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        });
+        setUser({ ...response.data });
+        // console.log(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchData();
+  }, []);
   const location = {
     latitude: 19.3046288,
     longitude: 72.8544423,
@@ -144,87 +143,94 @@ const patientPublicProfile = () => {
           </View>
         );
       case 1:
+        if (user.ehr.length === 0)
+          return (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+                marginTop: Dimensions.get("window").height * 0.1,
+              }}
+            >
+              <Image
+                source={require("../../assets/images/Appointment.png")}
+                style={{
+                  width: Dimensions.get("window").width * 0.8,
+                  height: Dimensions.get("window").height * 0.3,
+                }}
+              />
+              <Text style={{ fontSize: 18, fontWeight: "600", marginTop: 20 }}>
+                You don't have any report yet
+              </Text>
+            </View>
+          );
         return (
           <View>
             <Text style={styles.bottomCardTitle}>Prescription:</Text>
             <View>
-              <View>
-                {/*  */}
-                <View
-                  style={{
-                    marginVertical: 10,
-                    padding: 12,
-                    borderRadius: 15,
-                    backgroundColor: whiteText,
-                    borderWidth: 1,
-                    borderColor: borderColor,
-                  }}
-                >
+              {user.ehr.map((item, index) => (
+                <View key={index}>
                   <View
                     style={{
-                      flexDirection: "row",
-                      justifyContent: "space-between",
+                      marginVertical: 10,
+                      padding: 12,
+                      borderRadius: 15,
+                      backgroundColor: whiteText,
+                      borderWidth: 1,
+                      borderColor: borderColor,
                     }}
                   >
-                    <View style={{ gap: 3, justifyContent: "center" }}>
-                      <Text
-                        style={{
-                          fontSize: 14,
-                          fontWeight: "600",
-                          color: textBlack,
-                        }}
-                      >
-                        Report 1 - 12/12/2020
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: 13,
-                          fontWeight: "500",
-                          color: lightTextColor,
-                        }}
-                      >
-                        Prescribed by Dr. Sarthak Tanpure
-                      </Text>
-                    </View>
                     <View
                       style={{
-                        justifyContent: "center",
-                        alignItems: "center",
-                        // backgroundColor: textBlack,
-                        paddingHorizontal: 5,
+                        flexDirection: "row",
+                        justifyContent: "space-between",
                       }}
                     >
-                      <TouchableOpacity>
-                        <AntDesign name="download" size={24} color="black" />
-                      </TouchableOpacity>
+                      <View style={{ gap: 3, justifyContent: "center" }}>
+                        <Text
+                          style={{
+                            fontSize: 14,
+                            fontWeight: "600",
+                            color: textBlack,
+                          }}
+                        >
+                          Report {index + 1} -{" "}
+                          {new Date(
+                            item.date.split("-").reverse().join("-")
+                          ).toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          })}
+                        </Text>
+                        <Text
+                          style={{
+                            fontSize: 13,
+                            fontWeight: "500",
+                            color: lightTextColor,
+                          }}
+                        >
+                          Prescribed by Dr. {item.doctor_name}
+                        </Text>
+                      </View>
+                      <View
+                        style={{
+                          justifyContent: "center",
+                          alignItems: "center",
+                          paddingHorizontal: 5,
+                        }}
+                      >
+                        <TouchableOpacity
+                          onPress={() => Linking.openURL(item.prescription_url)}
+                        >
+                          <AntDesign name="download" size={24} color="black" />
+                        </TouchableOpacity>
+                      </View>
                     </View>
                   </View>
                 </View>
-                {/*  */}
-                {/*  */}
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    marginTop: Dimensions.get("window").height * 0.1,
-                  }}
-                >
-                  <Image
-                    source={require("../../assets/images/Appointment.png")}
-                    style={{
-                      width: Dimensions.get("window").width * 0.8,
-                      height: Dimensions.get("window").height * 0.3,
-                    }}
-                  />
-                  <Text
-                    style={{ fontSize: 18, fontWeight: "600", marginTop: 20 }}
-                  >
-                    You don't have any report yet
-                  </Text>
-                </View>
-                {/*  */}
-              </View>
+              ))}
             </View>
           </View>
         );
