@@ -32,6 +32,6 @@ yarn-error.*
 .env*.local
 app.json
 eas.json
-
+android
 # typescript
 *.tsbuildinfo

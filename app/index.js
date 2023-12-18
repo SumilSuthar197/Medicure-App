@@ -21,11 +21,16 @@ const HomePage = () => {
     const checkUserInfo = async () => {
       try {
         const userInfoString = await AsyncStorage.getItem("userInfo");
+        const DoctorInfoString = await AsyncStorage.getItem("doctorInfo");
 
         if (userInfoString) {
           const userInfo = JSON.parse(userInfoString);
           console.log(userInfo);
           router.push("/Patient/menu");
+        } else if (DoctorInfoString) {
+          const userInfo = JSON.parse(DoctorInfoString);
+          console.log(userInfo);
+          router.push("/Doctor/Doctormenu");
         } else {
           router.push("/onboarding");
         }

@@ -17,12 +17,44 @@ import {
   textBlack,
   whiteText,
 } from "../constants/color";
+import { backendUrl } from "../constants/URL";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const BottomSheetComponent = ({ onClosePress, onLogoutPress }) => {
+const BottomSheetComponent = ({
+  appointId,
+  emailPat,
+  onClosePress,
+  onLogoutPress,
+}) => {
   const [data, setData] = useState({
     paragraph: "",
     advisory: "",
   });
+
+  const handleSubmit = async () => {
+    try {
+      const storedItem = await AsyncStorage.getItem("doctorInfo");
+      const jwtToken = JSON.parse(storedItem);
+      const response = await axios.post(
+        `${backendUrl}/`,
+        {
+          patient_email: emailPat,
+          appointment_id: appointId,
+          advisory_text: data.advisory,
+          prescription_text: data.paragraph,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        }
+      );
+      onClosePress();
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <View style={styles.main}>
       <Text style={styles.navText}>Prescription and Advisory</Text>
@@ -39,7 +71,7 @@ const BottomSheetComponent = ({ onClosePress, onLogoutPress }) => {
             style={styles.textContainer}
           />
         </View>
-        <View style={{marginTop:20}}>
+        <View style={{ marginTop: 20 }}>
           <Text style={styles.textTitle}>Advisory</Text>
           <TextInput
             multiline
@@ -64,7 +96,7 @@ const BottomSheetComponent = ({ onClosePress, onLogoutPress }) => {
           backgroundColor={blueColor}
           label="Complete"
           style={styles.button}
-          onPress={onLogoutPress}
+          onPress={handleSubmit}
           color="#FFF"
         />
       </View>

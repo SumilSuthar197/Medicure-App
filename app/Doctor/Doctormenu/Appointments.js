@@ -9,7 +9,13 @@ import {
   Dimensions,
   Animated,
 } from "react-native";
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
 import BottomSheet, { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
@@ -28,55 +34,14 @@ import {
 import PrimaryButton from "../../../components/PrimaryButton";
 import BottomSheetComponent from "../../../components/BottomSheetComponent";
 import { router } from "expo-router";
-
-const defaultItems = [
-  {
-    key: "0",
-    title: "Herb Tonic",
-    price: 10.0,
-    quantity: 1,
-  },
-  {
-    key: "1",
-    title: "Spicy Tuna",
-    price: 12.8,
-    quantity: 1,
-  },
-  {
-    key: "2",
-    title: "Tunacado",
-    price: 10.2,
-    quantity: 1,
-  },
-  {
-    key: "3",
-    title: "Power Shake",
-    price: 10,
-    quantity: 1,
-  },
-  {
-    key: "4",
-    title: "Power Shake",
-    price: 10,
-    quantity: 1,
-  },
-  {
-    key: "5",
-    title: "Power Shake",
-    price: 10,
-    quantity: 1,
-  },
-  {
-    key: "6",
-    title: "Power Shake",
-    price: 10,
-    quantity: 2,
-  },
-];
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import { backendUrl } from "../../../constants/URL";
 
 const screenWidth = Dimensions.get("window").width;
 const Item = (props) => {
-  const leftSwipe = (progress, dragX) => {
+  console.log(props);
+  const leftSwipe = (emailPat, progress, dragX) => {
     const scale = dragX.interpolate({
       inputRange: [0, 100],
       outputRange: [0, 1],
@@ -91,7 +56,12 @@ const Item = (props) => {
     return (
       <TouchableOpacity
         activeOpacity={0.6}
-        onPress={() => router.push("/Doctor/patientProfile")}
+        onPress={() =>
+          router.push({
+            pathname: "/Doctor/patientProfile",
+            params: { email: emailPat },
+          })
+        }
       >
         <Animated.View
           style={[
@@ -108,7 +78,7 @@ const Item = (props) => {
       </TouchableOpacity>
     );
   };
-  const rightSwipe = (progress, dragX) => {
+  const rightSwipe = (emailPat, appointmentID, progress, dragX) => {
     const scale = dragX.interpolate({
       inputRange: [-100, 0],
       outputRange: [1, 0],
@@ -123,7 +93,7 @@ const Item = (props) => {
     return (
       <TouchableOpacity
         activeOpacity={0.6}
-        onPress={() => props.handleOpenPress()}
+        onPress={() => props.handleOpenPress(emailPat, appointmentID)}
       >
         <Animated.View
           style={[
@@ -141,20 +111,31 @@ const Item = (props) => {
     );
   };
   return (
-    <Swipeable renderLeftActions={leftSwipe} renderRightActions={rightSwipe}>
+    <Swipeable
+      renderLeftActions={(progress, dragX) =>
+        leftSwipe(props.patient_email, progress, dragX)
+      }
+      renderRightActions={(progress, dragX) =>
+        rightSwipe(props.patient_email, props.appointment_id, progress, dragX)
+      }
+    >
       <View style={styles.cardMain}>
         <View style={styles.cardRow}>
           <View style={{ flexDirection: "row" }}>
             <Image
               style={styles.cardImage}
-              source={require("../../../assets/images/Image.png")}
+              source={
+                props.imageUrl
+                  ? { uri: props.imageUrl }
+                  : require("../../../assets/images/Image.png")
+              }
             />
             <View style={styles.nameView}>
-              <Text style={styles.name}>Sumil Suthar</Text>
+              <Text style={styles.name}>{props.patient_name}</Text>
             </View>
           </View>
           <View>
-            <Text style={styles.timeText}>09:00 PM</Text>
+            <Text style={styles.timeText}>{props.time}</Text>
           </View>
         </View>
       </View>
@@ -164,9 +145,79 @@ const Item = (props) => {
 const Appointments = () => {
   const snapPoint = useMemo(() => ["75%"], []);
   const bottomSheetRef = useRef(null);
+  const [defaultItems, setDefaultItems] = useState([]);
+  const fetchData = async (searchData) => {
+    try {
+      let dateObj = new Date(searchData);
+      let formattedDate =
+        dateObj.getUTCFullYear() +
+        "-" +
+        String(dateObj.getUTCMonth() + 1).padStart(2, "0") +
+        "-" +
+        String(dateObj.getUTCDate()).padStart(2, "0");
+      console.log(formattedDate);
+      const storedItem = await AsyncStorage.getItem("doctorInfo");
+      const jwtToken = JSON.parse(storedItem);
+      console.log(jwtToken);
+      const response = await axios.post(
+        `${backendUrl}/doctor_appoitments_date`,
+        {
+          date: formattedDate,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        }
+      );
+      setDefaultItems(response.data);
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    const fetchDataDoc = async () => {
+      try {
+        let dateObj = new Date(date);
+        let formattedDate =
+          dateObj.getUTCFullYear() +
+          "-" +
+          String(dateObj.getUTCMonth() + 1).padStart(2, "0") +
+          "-" +
+          String(dateObj.getUTCDate()).padStart(2, "0");
+        console.log(formattedDate);
+        const storedItem = await AsyncStorage.getItem("doctorInfo");
+        const jwtToken = JSON.parse(storedItem);
+        console.log(jwtToken);
+        const response = await axios.post(
+          `${backendUrl}/doctor_appoitments_date`,
+          {
+            date: formattedDate,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${jwtToken}`,
+            },
+          }
+        );
+        setDefaultItems(response.data);
+        console.log(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchDataDoc();
+  }, []);
 
   const handleClosePress = () => bottomSheetRef.current?.close();
-  const handleOpenPress = () => bottomSheetRef.current?.expand();
+  const [selectedEmail, setSelectedEmail] = useState("");
+  const [selectedAppointment, setSelectedAppointment] = useState("");
+  const handleOpenPress = ({ emailPat, appointmentID }) => {
+    setSelectedEmail(emailPat);
+    setSelectedAppointment(appointmentID);
+    bottomSheetRef.current?.expand();
+  };
   const renderBackdrop = useCallback(
     (props) => (
       <BottomSheetBackdrop
@@ -179,6 +230,14 @@ const Appointments = () => {
   );
   const handleLogoutPress = () => {
     // Handle logout logic here
+    let dateObj = new Date(date);
+    let formattedDate =
+      dateObj.getUTCFullYear() +
+      "-" +
+      String(dateObj.getUTCMonth() + 1).padStart(2, "0") +
+      "-" +
+      String(dateObj.getUTCDate()).padStart(2, "0");
+    console.log(formattedDate);
     // Example: AsyncStorage.removeItem("userInfo");
     // Example: router.push("/getStarted");
     handleClosePress();
@@ -198,6 +257,7 @@ const Appointments = () => {
       setDate(currentDate);
       toggleDatePicker();
       setAppointmentDate(currentDate.toDateString());
+      fetchData(currentDate);
     } else {
       toggleDatePicker();
     }
@@ -259,6 +319,8 @@ const Appointments = () => {
         <BottomSheetComponent
           onClosePress={handleClosePress}
           onLogoutPress={handleLogoutPress}
+          emailPat={selectedEmail}
+          appointId={selectedAppointment}
         />
       </BottomSheet>
     </View>
