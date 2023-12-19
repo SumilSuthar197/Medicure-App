@@ -317,7 +317,15 @@ const doctorDetails = () => {
             backgroundColor="#246BFD"
             color="#FFF"
             label="Book Appointment"
-            onPress={() => router.push("./bookAppointment")}
+            onPress={() =>
+              router.push({
+                pathname: "./bookAppointment",
+                params: {
+                  email: doctorData.email,
+                  question: doctorCompleteData.questions,
+                },
+              })
+            }
           />
         </View>
       </View>

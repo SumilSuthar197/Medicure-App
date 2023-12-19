@@ -60,7 +60,7 @@ const HomePage = () => {
         />
         <Text style={styles.logotext}>MediCure</Text>
       </View>
-      <Text style={{}}>Logo Screen</Text>
+      {/* <Text style={{}}>Logo Screen</Text> */}
     </View>
   );
 };
@@ -77,6 +77,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "row",
+    marginBottom: 40,
   },
   logoimage: {
     width: 50,

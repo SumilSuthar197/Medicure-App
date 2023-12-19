@@ -31,6 +31,18 @@ const PatientLayout = () => {
         }}
       />
       <Stack.Screen
+        name="EditProfileDoc"
+        options={{
+          headerTitle: "Edit Profile",
+        }}
+      />
+      <Stack.Screen
+        name="Emergency"
+        options={{
+          headerTitle: "Emergency",
+        }}
+      />
+      <Stack.Screen
         name="patientProfile"
         options={{
           headerTitle: "Patient's Profile",

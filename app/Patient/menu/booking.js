@@ -27,6 +27,7 @@ import Animated, {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { backendUrl } from "../../../constants/URL";
+import { router } from "expo-router";
 
 const Booking = () => {
   const translateX = useSharedValue(0);
@@ -35,6 +36,18 @@ const Booking = () => {
   const [upcomingData, setUpcomingData] = useState([]);
   const [cancelData, setCancelData] = useState([]);
   const [completedData, setCompletedData] = useState([]);
+
+  async function cancelAppointment(appointment_id, email, date) {
+    try {
+      const response = axios.post(
+        `${backendUrl}/cancel_appointment_after/${appointment_id}`,
+        { appointment_id, email, date }
+      );
+      console.log("appointment sent to backend:", response.data);
+    } catch (error) {
+      console.error("Error sending location to backend:", error);
+    }
+  }
 
   function getUpcomingData(data) {
     setUpcomingData(data);
@@ -226,9 +239,15 @@ const Booking = () => {
                     alignItems: "center",
                     justifyContent: "center",
                   }}
-                  // onPress={() => {
-                  //   router.push("/Patient/doctorDetails");
-                  // }}
+                  onPress={() => {
+                    cancelAppointment(
+                      item.appointment_id,
+                      item.email,
+                      item.date
+                    );
+                    // router.push("/Patient/doctorDetails");
+                    handleTabPress(0);
+                  }}
                 >
                   <Text
                     style={{
@@ -249,9 +268,17 @@ const Booking = () => {
                     alignItems: "center",
                     justifyContent: "center",
                   }}
-                  // onPress={() => {
-                  //   router.push("/Patient/doctorDetails");
-                  // }}
+                  onPress={() => {
+                    cancelAppointment(
+                      item.appointment_id,
+                      item.email,
+                      item.date
+                    );
+                    router.push({
+                      pathname: "/Patient/doctorDetails",
+                      params: { email: item.email },
+                    });
+                  }}
                 >
                   <Text
                     style={{
@@ -397,7 +424,6 @@ const Booking = () => {
               </View>
             </View>
           </View>
-          
         ));
       case 2:
         // console.log(completedData);

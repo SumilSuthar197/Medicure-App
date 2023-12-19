@@ -31,10 +31,10 @@ const Header = () => {
           latitude: location.coords.latitude,
           longitude: location.coords.longitude,
         });
-
+        console.log(addressResult);
         if (addressResult.length > 0) {
           setAddress({
-            street: addressResult[0].street || "Unknown Street",
+            street: addressResult[0].district || "Unknown Street",
             city: addressResult[0].city || "Unknown City",
           });
         }

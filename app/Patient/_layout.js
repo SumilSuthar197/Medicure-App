@@ -55,6 +55,16 @@ const PatientLayout = () => {
         }}
       />
       <Stack.Screen
+        name="HospitalSearch"
+        options={{
+          headerStyle: {
+            backgroundColor: backgroundColor,
+          },
+          headerShadowVisible: false,
+          headerTitle: "Search a Hospital",
+        }}
+      />
+      <Stack.Screen
         name="bookAppointment"
         options={{ headerTitle: "Book Appointment" }}
       />

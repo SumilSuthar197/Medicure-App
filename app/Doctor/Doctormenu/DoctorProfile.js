@@ -13,7 +13,15 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { MaterialIcons, Ionicons, FontAwesome } from "@expo/vector-icons";
+import {
+  MaterialIcons,
+  Ionicons,
+  MaterialCommunityIcons,
+  Feather,
+  FontAwesome,
+} from "@expo/vector-icons";
+import { useNavigation } from "expo-router";
+import { CommonActions } from "@react-navigation/native";
 import BottomSheet, { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 import PrimaryButton from "../../../components/PrimaryButton";
 import { router } from "expo-router";
@@ -23,7 +31,7 @@ import axios from "axios";
 const DoctorProfile = () => {
   const snapPoint = useMemo(() => ["25%"], []);
   const bottomSheetRef = useRef(null);
-
+  const navigation = useNavigation();
   const handleClosePress = () => bottomSheetRef.current?.close();
   const handleOpenPress = () => bottomSheetRef.current?.expand();
   const renderBackdrop = useCallback(
@@ -126,11 +134,43 @@ const DoctorProfile = () => {
               <FontAwesome name="angle-right" size={24} color="#777777" />
             </View>
           </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() =>
+              router.push({
+                pathname: "/Doctor/EditProfileDoc",
+                params: {
+                  ...user,
+                },
+              })
+            }
+          >
+            <View style={styles.navContainer}>
+              <View style={styles.nav1}>
+                <Feather name="edit" size={22} color="#777777" />
+                <Text style={styles.navText}>Edit Profile</Text>
+              </View>
+              <FontAwesome name="angle-right" size={24} color="#777777" />
+            </View>
+          </TouchableOpacity>
           <TouchableOpacity onPress={() => router.push("/Doctor/DoctorLeave")}>
             <View style={styles.navContainer}>
               <View style={styles.nav1}>
                 <MaterialIcons name="payment" size={24} color="#777777" />
                 <Text style={styles.navText}>Apply for leave</Text>
+              </View>
+              <FontAwesome name="angle-right" size={24} color="#777777" />
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push("/Doctor/Emergency")}>
+            <View style={styles.navContainer}>
+              <View style={styles.nav1}>
+                <MaterialCommunityIcons
+                  name="alert"
+                  size={24}
+                  color="#777777"
+                />
+                {/* <MaterialIcons name="payment" size={24} color="#777777" /> */}
+                <Text style={styles.navText}>Emergency</Text>
               </View>
               <FontAwesome name="angle-right" size={24} color="#777777" />
             </View>
@@ -208,10 +248,20 @@ const DoctorProfile = () => {
             backgroundColor="#000"
             label="Yes, Logout"
             style={{ width: "47%" }}
-            onPress={() => {
-              AsyncStorage.removeItem("doctorInfo");
-              router.push("/getStarted");
-            }} // Corrected function call
+            // onPress={() => {
+            //   AsyncStorage.removeItem("doctorInfo");
+            //   router.push("/getStarted");
+            // }} // Corrected function call
+            onPress={async () => {
+              await AsyncStorage.removeItem("doctorInfo");
+              await AsyncStorage.removeItem("doctorEmail");
+              navigation.dispatch(
+                CommonActions.reset({
+                  index: 0,
+                  routes: [{ name: "getStarted" }], // Replace 'Login' with the name of your login screen
+                })
+              );
+            }}
             color="#FFF"
           />
         </View>

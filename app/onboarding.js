@@ -143,7 +143,7 @@ function Onboarding1() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFFBEB",
+    backgroundColor: "#FFF",
   },
   itemContainer: {
     flex: 1,

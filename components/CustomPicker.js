@@ -492,6 +492,7 @@ import {
   FlatList,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
+import { ScrollView } from "react-native-gesture-handler";
 
 const CustomPicker = ({
   countryList,
@@ -588,11 +589,10 @@ const CustomPicker = ({
               paddingLeft: 20,
             }}
           />
-
-          <FlatList
-            data={data}
-            renderItem={({ item }) => (
+          <ScrollView>
+            {data.map((item, index) => (
               <TouchableOpacity
+                key={index}
                 style={{
                   width: "85%",
                   alignSelf: "center",
@@ -605,8 +605,14 @@ const CustomPicker = ({
               >
                 <Text style={{ fontWeight: "600" }}>{item.country}</Text>
               </TouchableOpacity>
+            ))}
+          </ScrollView>
+          {/* <FlatList
+            data={data}
+            renderItem={({ item }) => (
+              
             )}
-          />
+          /> */}
         </View>
       ) : null}
     </View>

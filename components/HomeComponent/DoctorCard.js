@@ -9,6 +9,7 @@ import {
 import { router } from "expo-router";
 
 const DoctorCard = (data) => {
+  console.log(data);
   return (
     <TouchableOpacity
       onPress={() => {
@@ -106,7 +107,7 @@ const DoctorCard = (data) => {
               textAlign: "center",
             }}
           >
-            {data.hospital.location}
+            {data?.hospital[0]?.location ? data.hospital[0].location : "Mysuru"}
           </Text>
         </View>
       </View>

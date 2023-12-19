@@ -37,7 +37,7 @@ const BottomSheetComponent = ({
       const storedItem = await AsyncStorage.getItem("doctorInfo");
       const jwtToken = JSON.parse(storedItem);
       const response = await axios.post(
-        `${backendUrl}/`,
+        `${backendUrl}/submit_review`,
         {
           patient_email: emailPat,
           appointment_id: appointId,

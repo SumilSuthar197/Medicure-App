@@ -131,6 +131,24 @@ const index = () => {
           </View>
         ))}
       </View>
+      <View style={{ justifyContent: "center", alignItems: "center" }}>
+        <TouchableOpacity
+          style={{
+            backgroundColor: blueColor,
+            width: "50%",
+            paddingHorizontal: 0,
+            borderRadius: 10,
+            paddingVertical: 5,
+          }}
+          onPress={() => {
+            router.push("/Patient/HospitalSearch");
+          }}
+        >
+          <Text style={{ color: "#FFF", textAlign: "center" }}>
+            + Search By Hospital
+          </Text>
+        </TouchableOpacity>
+      </View>
       <View
         style={{
           justifyContent: "space-between",

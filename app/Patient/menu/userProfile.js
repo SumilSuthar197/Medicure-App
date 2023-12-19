@@ -52,7 +52,6 @@ const profile = () => {
       try {
         const storedItem = await AsyncStorage.getItem("userInfo");
         const jwtToken = JSON.parse(storedItem);
-        // console.log(`Bearer ${jwtToken}`);
         const response = await axios.get(`${backendUrl}/patientprofile`, {
           headers: {
             Authorization: `Bearer ${jwtToken}`,
@@ -159,7 +158,7 @@ const profile = () => {
             <View style={styles.navContainer}>
               <View style={styles.nav1}>
                 <MaterialIcons name="payment" size={24} color="#777777" />
-                <Text style={styles.navText}>Payment method</Text>
+                <Text style={styles.navText}>Wallet : {user.wallet}</Text>
               </View>
               <FontAwesome name="angle-right" size={24} color="#777777" />
             </View>
