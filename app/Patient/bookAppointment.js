@@ -38,12 +38,14 @@ const BookAppointment = () => {
     setItemQuestion(item.question);
     console.log(itemQuestion);
   }, []);
+  // console.log("date: ", selectedDate);
   const postingAppointment = async () => {
     setLoading(true);
     try {
       console.log(selectedCountries);
       const storedItem = await AsyncStorage.getItem("userInfo");
       const jwtToken = JSON.parse(storedItem);
+      // console.log(selectedDate);
       const response = await axios.post(
         `${backendUrl}/book_appointment`,
         {
@@ -230,7 +232,7 @@ const BookAppointment = () => {
               </View>
             ))}
         </View>
-        <View style={{ paddingHorizontal: 20, marginVertical: 20 }}>
+        <View style={{ paddingHorizontal: 20, marginVertical: 10 }}>
           <TouchableOpacity
             style={
               clicked
@@ -271,7 +273,8 @@ const BookAppointment = () => {
             </Text>
           </TouchableOpacity>
         </View>
-        <View style={{ marginHorizontal: 20, marginTop: 20 }}>
+        <Text style={{ color: textBlack, textAlign: "center" }}>OR</Text>
+        <View style={{ marginHorizontal: 20, marginTop: 10 }}>
           <CardField
             postalCodeEnabled={false}
             placeholder={{

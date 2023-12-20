@@ -32,9 +32,15 @@ const DoctorSearch = () => {
         let response;
         if (containCategory === "") {
           response = await axios.get(`${backendUrl}/getdoctors`);
+          setDoctorCardData(response.data.doctors.reverse());
         } else {
+          response = await axios.get(
+            `${backendUrl}/get_doctors/${containCategory}`
+          );
+          setDoctorCardData(response.data.reverse());
+          // console.log("sfgdfszh", response.data);
         }
-        setDoctorCardData(response.data.doctors.reverse());
+
         setIsLoading(false);
       } catch (error) {
         console.error("Error fetching data: ", error);

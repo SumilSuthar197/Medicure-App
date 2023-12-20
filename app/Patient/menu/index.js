@@ -45,6 +45,7 @@ const index = () => {
         );
         if (response.data.length !== 0) {
           setUpcomingData({ ...response.data[0] });
+          // console.log("jlaskfal",response.data[0]);
         }
       } catch (error) {
         console.log(error);
@@ -103,9 +104,15 @@ const index = () => {
       </View>
       <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
         {iconItem.map((item, index) => (
-          <View
+          <TouchableOpacity
             key={index}
             style={{ width: "25%", alignItems: "center", marginBottom: 10 }}
+            onPress={() =>
+              router.push({
+                pathname: "/Patient/DoctorSearch",
+                params: { containCategory: item.name },
+              })
+            }
           >
             <View
               style={{
@@ -128,7 +135,7 @@ const index = () => {
             <Text style={{ fontSize: 12, fontWeight: "500", marginTop: 4 }}>
               {item.name}
             </Text>
-          </View>
+          </TouchableOpacity>
         ))}
       </View>
       <View style={{ justifyContent: "center", alignItems: "center" }}>

@@ -131,12 +131,22 @@ const Chat = () => {
               color={whiteText}
               label="Book Appointment"
               onPress={async () => {
-                await axios.post(`${backendUrl}/book_appointment`, {
-                  doctor_email: item.message[0].email,
-                  date: item.message[0].date,
-                  symptoms: item.message[0].symptoms,
-                  answers: ["yes", "no", "yes"],
-                });
+                const storedItem = await AsyncStorage.getItem("userInfo");
+                const jwtToken = JSON.parse(storedItem);
+                await axios.post(
+                  `${backendUrl}/book_appointment`,
+                  {
+                    doctor_email: item.message[0].email,
+                    date: item.message[0].date,
+                    symptoms: item.message[0].symptoms,
+                    answers: ["yes", "no", "yes"],
+                  },
+                  {
+                    headers: {
+                      Authorization: `Bearer ${jwtToken}`,
+                    },
+                  }
+                );
               }}
             />
           </View>
