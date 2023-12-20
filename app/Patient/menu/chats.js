@@ -134,7 +134,7 @@ const Chat = () => {
                 const storedItem = await AsyncStorage.getItem("userInfo");
                 const jwtToken = JSON.parse(storedItem);
                 await axios.post(
-                  `${backendUrl}/book_appointment`,
+                  `${backendUrl}/ai_schedule`,
                   {
                     doctor_email: item.message[0].email,
                     date: item.message[0].date,

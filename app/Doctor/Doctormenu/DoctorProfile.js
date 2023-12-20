@@ -161,7 +161,7 @@ const DoctorProfile = () => {
               <FontAwesome name="angle-right" size={24} color="#777777" />
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => router.push("/Doctor/Emergency")}>
+          {/* <TouchableOpacity onPress={() => router.push("/Doctor/Emergency")}>
             <View style={styles.navContainer}>
               <View style={styles.nav1}>
                 <MaterialCommunityIcons
@@ -169,12 +169,12 @@ const DoctorProfile = () => {
                   size={24}
                   color="#777777"
                 />
-                {/* <MaterialIcons name="payment" size={24} color="#777777" /> */}
+                <MaterialIcons name="payment" size={24} color="#777777" />
                 <Text style={styles.navText}>Emergency</Text>
               </View>
               <FontAwesome name="angle-right" size={24} color="#777777" />
             </View>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <View style={styles.navContainer}>
             <View style={styles.nav1}>
               <Ionicons

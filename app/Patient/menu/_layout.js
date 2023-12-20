@@ -1,7 +1,7 @@
 import { View, Text } from "react-native";
 import React from "react";
 import { Tabs } from "expo-router";
-import { FontAwesome, Ionicons } from "@expo/vector-icons";
+import { FontAwesome, Ionicons, Feather } from "@expo/vector-icons";
 import { backgroundColor, textBlack } from "../../../constants/color";
 
 const ChildLayout = () => {
@@ -26,13 +26,7 @@ const ChildLayout = () => {
           title: "Explore",
           name: "Explore",
           tabBarIcon: ({ color }) => {
-            return (
-              <Ionicons
-                name="ios-chatbubble-ellipses-outline"
-                size={24}
-                color={color}
-              />
-            );
+            return <Feather name="map" size={22} color={color} />;
           },
         }}
       />
@@ -64,18 +58,12 @@ const ChildLayout = () => {
             color: textBlack,
             fontWeight: "600",
             fontSize: 22,
-            paddingLeft:10
+            paddingLeft: 10,
           },
           title: "Appointment",
           name: "booking",
           tabBarIcon: ({ color }) => {
-            return (
-              <Ionicons
-                name="ios-chatbubble-ellipses-outline"
-                size={24}
-                color={color}
-              />
-            );
+            return <FontAwesome name="list-alt" size={22} color={color} />;
           },
         }}
       />
