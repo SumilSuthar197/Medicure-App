@@ -11,6 +11,7 @@ const BlueCard = ({
   Date,
   Time,
 }) => {
+  // console.log("imagePath", imagePath);
   return (
     <View
       style={{

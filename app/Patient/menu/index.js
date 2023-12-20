@@ -35,17 +35,14 @@ const index = () => {
       try {
         const storedItem = await AsyncStorage.getItem("userInfo");
         const jwtToken = JSON.parse(storedItem);
-        const response = await axios.get(
-          `${backendUrl}/getpatientappointments/Upcoming`,
-          {
-            headers: {
-              Authorization: `Bearer ${jwtToken}`,
-            },
-          }
-        );
+        const response = await axios.get(`${backendUrl}/get_appt/UPCOMING`, {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        });
         if (response.data.length !== 0) {
-          setUpcomingData({ ...response.data[0] });
-          // console.log("jlaskfal",response.data[0]);
+          // console.log("response.data.appointments", response.data.appointments[0]);
+          setUpcomingData({ ...response.data.appointments[0] });
         }
       } catch (error) {
         console.log(error);
@@ -82,11 +79,11 @@ const index = () => {
         containAppointment={
           Object.keys(getUpcomingData).length === 0 ? false : true
         }
-        name={getUpcomingData.name}
+        name={getUpcomingData.doctor_name}
         imagePath={getUpcomingData.image}
-        type={getUpcomingData.field}
+        type={getUpcomingData.doctor_email}
         Date={getUpcomingData.date}
-        Time="09:00 - 10:00"
+        Time={getUpcomingData.time}
       />
       <View
         style={{

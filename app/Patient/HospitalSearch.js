@@ -288,7 +288,7 @@ const HospitalSearch = () => {
               marginBottom: 20,
             }}
             value={symptoms}
-            onChange={(text) => setSymptoms(text)}
+            onChangeText={(text) => setSymptoms(text)}
           />
           <PrimaryButton
             backgroundColor="#000"

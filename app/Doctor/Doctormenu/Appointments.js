@@ -113,10 +113,10 @@ const Item = (props) => {
   return (
     <Swipeable
       renderLeftActions={(progress, dragX) =>
-        leftSwipe(props.patient_email, progress, dragX)
+        leftSwipe(props.patient.email, progress, dragX)
       }
       renderRightActions={(progress, dragX) =>
-        rightSwipe(props.patient_email, props.appointment_id, progress, dragX)
+        rightSwipe(props.patient.email, props.appointment_id, progress, dragX)
       }
     >
       <View style={styles.cardMain}>
@@ -125,13 +125,13 @@ const Item = (props) => {
             <Image
               style={styles.cardImage}
               source={
-                props.imageUrl
-                  ? { uri: props.imageUrl }
+                props.patient.imageUrl
+                  ? { uri: props.patient.imageUrl }
                   : require("../../../assets/images/Image.png")
               }
             />
             <View style={styles.nameView}>
-              <Text style={styles.name}>{props.patient_name}</Text>
+              <Text style={styles.name}>{props.patient.name}</Text>
             </View>
           </View>
           <View>
@@ -159,19 +159,16 @@ const Appointments = () => {
       const storedItem = await AsyncStorage.getItem("doctorInfo");
       const jwtToken = JSON.parse(storedItem);
       console.log(jwtToken);
-      const response = await axios.post(
-        `${backendUrl}/doctor_appoitments_date`,
-        {
-          date: formattedDate,
-        },
+      const response = await axios.get(
+        `${backendUrl}/get_appt_doctor/${formattedDate}`,
         {
           headers: {
             Authorization: `Bearer ${jwtToken}`,
           },
         }
       );
-      setDefaultItems(response.data);
-      console.log(response.data);
+      setDefaultItems(response.data.appointments);
+      console.log("dgsgfdsz", response.data.appointments);
     } catch (error) {
       console.log(error);
     }

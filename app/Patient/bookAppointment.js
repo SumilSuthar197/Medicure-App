@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
   Alert,
+  StyleSheet,
 } from "react-native";
 import { Calendar } from "react-native-calendars";
 import axios from "axios";
@@ -46,12 +47,15 @@ const BookAppointment = () => {
       const storedItem = await AsyncStorage.getItem("userInfo");
       const jwtToken = JSON.parse(storedItem);
       // console.log(selectedDate);
+      const newFormattedTime = startTime + "-" + endTime;
+      // console.log(newFormattedTime);
       const response = await axios.post(
-        `${backendUrl}/book_appointment`,
+        `${backendUrl}/ai_schedule`,
         {
           date: selectedDate,
-          symptoms: selectedCountries.join(", "),
+          symptoms: selectedCountries,
           doctor_email: item.email,
+          time: newFormattedTime,
           answers: responses,
         },
         {
@@ -94,6 +98,8 @@ const BookAppointment = () => {
 
   const { confirmPayment } = useStripe();
   const [loading, setLoading] = useState(false);
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
   // console.log(selectedDate)
 
   const handlePayment = async () => {
@@ -232,6 +238,30 @@ const BookAppointment = () => {
               </View>
             ))}
         </View>
+        <View style={{ paddingHorizontal: 20, gap: 15, marginBottom: 15 }}>
+          <View>
+            <Text style={styles.textTitle}>
+              Your preferred timeslot start time{" "}
+            </Text>
+            <TextInput
+              placeholder="09:30 AM"
+              value={startTime}
+              style={styles.textContainer}
+              onChangeText={(text) => setStartTime(text)}
+            />
+          </View>
+          <View>
+            <Text style={styles.textTitle}>
+              Your preferred timeslot end time
+            </Text>
+            <TextInput
+              placeholder="09:30 PM"
+              value={endTime}
+              style={styles.textContainer}
+              onChangeText={(text) => setEndTime(text)}
+            />
+          </View>
+        </View>
         <View style={{ paddingHorizontal: 20, marginVertical: 10 }}>
           <TouchableOpacity
             style={
@@ -304,5 +334,30 @@ const BookAppointment = () => {
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  textTitle: {
+    fontSize: 14,
+    fontWeight: "600",
+    marginBottom: 3,
+    marginLeft: 3,
+    color: textBlack,
+  },
+  textContainer: {
+    fontSize: 14,
+    fontWeight: "500",
+    paddingLeft: 12,
+    paddingRight: 12,
+    height: 48,
+    borderRadius: 12,
+    backgroundColor: whiteText,
+    borderColor: borderColor,
+    borderWidth: 1,
+    color: lightTextColor,
+    textDecorationLine: "none",
+    width: "100%",
+    marginHorizontal: "auto",
+  },
+});
 
 export default BookAppointment;

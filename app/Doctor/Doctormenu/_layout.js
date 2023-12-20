@@ -1,7 +1,7 @@
 import { View, Text } from "react-native";
 import React from "react";
 import { Tabs } from "expo-router";
-import { FontAwesome, Ionicons } from "@expo/vector-icons";
+import { FontAwesome, Ionicons, AntDesign } from "@expo/vector-icons";
 import { useFonts } from "expo-font";
 import {
   backgroundColor,
@@ -19,18 +19,6 @@ const ChildLayout = () => {
   }
   return (
     <Tabs>
-      <Tabs.Screen
-        name="index"
-        options={{
-          // headerTranslucent: true,
-          headerShown: false,
-          title: "Home",
-          name: "home",
-          tabBarIcon: ({ color }) => {
-            return <FontAwesome name="home" size={24} color={color} />;
-          },
-        }}
-      />
       {/* <Tabs.Screen
         name="explore"
         options={{
@@ -84,13 +72,19 @@ const ChildLayout = () => {
           headerShadowVisible: false,
           headerTintColor: whiteText,
           tabBarIcon: ({ color }) => {
-            return (
-              <Ionicons
-                name="ios-chatbubble-ellipses-outline"
-                size={24}
-                color={color}
-              />
-            );
+            return <FontAwesome name="list-alt" size={24} color={color} />;
+          },
+        }}
+      />
+      <Tabs.Screen
+        name="index"
+        options={{
+          // headerTranslucent: true,
+          headerShown: false,
+          title: "Apply leave",
+          name: "home",
+          tabBarIcon: ({ color }) => {
+            return <AntDesign name="form" size={24} color={color} />;
           },
         }}
       />

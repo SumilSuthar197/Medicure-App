@@ -68,27 +68,27 @@ const Booking = () => {
         const jwtToken = JSON.parse(storedItem);
         // console.log(`Bearer ${jwtToken}`);
         const response = await axios.get(
-          `${backendUrl}/getpatientappointments/${typeOfAppointment}`,
+          `${backendUrl}/get_appt/${typeOfAppointment}`,
           {
             headers: {
               Authorization: `Bearer ${jwtToken}`,
             },
           }
         );
-        settingFunction(response.data);
+        settingFunction(response.data.appointments);
         // setPatientData({ ...response.data });
-        console.log(response.data);
+        console.log(response.data.appointments);
       } catch (error) {
         console.log(error);
       }
     };
-    fetchData("Upcoming", getUpcomingData);
+    fetchData("UPCOMING", getUpcomingData);
   }, []);
 
   const tabs = [
-    { title: "Upcoming", index: 0 },
-    { title: "Cancel", index: 1 },
-    { title: "Completed", index: 2 },
+    { title: "UPCOMING", index: 0 },
+    { title: "CANCEL", index: 1 },
+    { title: "COMPLETED", index: 2 },
   ];
 
   const renderContent = () => {
@@ -147,12 +147,12 @@ const Booking = () => {
                     fontWeight: "600",
                   }}
                 >
-                  Dr. {item.name}
+                  Dr. {item.doctor_name}
                 </Text>
                 <Text
                   style={{ color: "grey", fontSize: 14, fontWeight: "500" }}
                 >
-                  {item.field}
+                  {item.doctor_email}
                 </Text>
               </View>
               <Image
@@ -185,15 +185,8 @@ const Booking = () => {
                   }}
                 >
                   <AntDesign name="calendar" size={14} color="#777777" />
-                  <Text style={{ color: lightTextColor }}>
-                    {" "}
-                    {new Date(
-                      item.date.split("-").reverse().join("-")
-                    ).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
+                  <Text style={{ color: lightTextColor, marginLeft: 5 }}>
+                    {item.date}
                   </Text>
                 </View>
                 <View
@@ -239,12 +232,30 @@ const Booking = () => {
                     alignItems: "center",
                     justifyContent: "center",
                   }}
-                  onPress={() => {
-                    cancelAppointment(
-                      item.appointment_id,
-                      item.email,
-                      item.date
-                    );
+                  onPress={async () => {
+                    try {
+                      const storedItem = await AsyncStorage.getItem("userInfo");
+                      const jwtToken = JSON.parse(storedItem);
+                      const response = await axios.post(
+                        `${backendUrl}/cancel_appt`,
+                        {
+                          time: item.time,
+                          doctor_email: item.doctor_email,
+                          date: item.date,
+                        },
+                        {
+                          headers: {
+                            Authorization: `Bearer ${jwtToken}`,
+                          },
+                        }
+                      );
+                      console.log(response.data.msg);
+                    } catch (error) {
+                      console.error(
+                        "Error sending location to backend:",
+                        error
+                      );
+                    }
                     // router.push("/Patient/doctorDetails");
                     handleTabPress(0);
                   }}
@@ -268,16 +279,34 @@ const Booking = () => {
                     alignItems: "center",
                     justifyContent: "center",
                   }}
-                  onPress={() => {
-                    cancelAppointment(
-                      item.appointment_id,
-                      item.email,
-                      item.date
-                    );
-                    router.push({
-                      pathname: "/Patient/doctorDetails",
-                      params: { email: item.email },
-                    });
+                  onPress={async () => {
+                    try {
+                      const storedItem = await AsyncStorage.getItem("userInfo");
+                      const jwtToken = JSON.parse(storedItem);
+                      const response = await axios.post(
+                        `${backendUrl}/cancel_appt`,
+                        {
+                          time: item.time,
+                          doctor_email: item.doctor_email,
+                          date: item.date,
+                        },
+                        {
+                          headers: {
+                            Authorization: `Bearer ${jwtToken}`,
+                          },
+                        }
+                      );
+                      console.log(response.data.msg);
+                      router.push({
+                        pathname: "/Patient/doctorDetails",
+                        params: { email: item.doctor_email },
+                      });
+                    } catch (error) {
+                      console.error(
+                        "Error sending location to backend:",
+                        error
+                      );
+                    }
                   }}
                 >
                   <Text
@@ -348,12 +377,12 @@ const Booking = () => {
                     fontWeight: "600",
                   }}
                 >
-                  Dr. {item.name}
+                  Dr. {item.doctor_name}
                 </Text>
                 <Text
                   style={{ color: "grey", fontSize: 14, fontWeight: "500" }}
                 >
-                  {item.field}
+                  {item.doctor_email}
                 </Text>
               </View>
               <Image
@@ -387,15 +416,8 @@ const Booking = () => {
                   }}
                 >
                   <AntDesign name="calendar" size={14} color="#777777" />
-                  <Text style={{ color: lightTextColor }}>
-                    {" "}
-                    {new Date(
-                      item.date.split("-").reverse().join("-")
-                    ).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
+                  <Text style={{ color: lightTextColor, marginLeft: 5 }}>
+                    {item.date}
                   </Text>
                 </View>
                 <View
@@ -407,7 +429,6 @@ const Booking = () => {
                 >
                   <AntDesign name="clockcircleo" size={14} color="#777777" />
                   <Text style={{ color: lightTextColor }}>
-                    {" "}
                     {item.time || "10:30 AM"}
                   </Text>
                 </View>
@@ -479,12 +500,12 @@ const Booking = () => {
                     fontWeight: "600",
                   }}
                 >
-                  Dr. {item.name}
+                  Dr. {item.doctor_name}
                 </Text>
                 <Text
                   style={{ color: "grey", fontSize: 14, fontWeight: "500" }}
                 >
-                  {item.field}
+                  {item.doctor_email}
                 </Text>
               </View>
               <Image
@@ -517,16 +538,7 @@ const Booking = () => {
                   }}
                 >
                   <AntDesign name="calendar" size={14} color="#777777" />
-                  <Text style={{ color: lightTextColor }}>
-                    {" "}
-                    {new Date(
-                      item.date.split("-").reverse().join("-")
-                    ).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </Text>
+                  <Text style={{ color: lightTextColor }}>{item.date}</Text>
                 </View>
                 <View
                   style={{
@@ -537,7 +549,6 @@ const Booking = () => {
                 >
                   <AntDesign name="clockcircleo" size={14} color="#777777" />
                   <Text style={{ color: lightTextColor }}>
-                    {" "}
                     {item.time || "10:30 AM"}
                   </Text>
                 </View>
@@ -625,7 +636,7 @@ const Booking = () => {
       const jwtToken = JSON.parse(storedItem);
 
       const response = await axios.get(
-        `${backendUrl}/getpatientappointments/${typeOfAppointment}`,
+        `${backendUrl}/get_appt/${typeOfAppointment}`,
         {
           headers: {
             Authorization: `Bearer ${jwtToken}`,
@@ -634,14 +645,14 @@ const Booking = () => {
       );
 
       switch (typeOfAppointment) {
-        case "Upcoming":
-          setUpcomingData(response.data);
+        case "UPCOMING":
+          setUpcomingData(response.data.appointments);
           break;
-        case "Cancelled":
-          setCancelData(response.data);
+        case "CANCEL":
+          setCancelData(response.data.appointments);
           break;
-        case "Completed":
-          setCompletedData(response.data);
+        case "COMPLETED":
+          setCompletedData(response.data.appointments);
           break;
         default:
           break;
