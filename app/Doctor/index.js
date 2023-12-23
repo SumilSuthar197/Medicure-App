@@ -25,7 +25,6 @@ const index = () => {
       email: email,
       password: password,
     });
-    // console.log(data);
     if (data.output === true) {
       console.log("Login Successful");
       AsyncStorage.setItem("userInfo", JSON.stringify(data.token));
@@ -64,7 +63,6 @@ const index = () => {
           Alert.alert("Missing Information", "Please fill all the fields");
           return;
         }
-        // console.log(location);
         const { data } = await axios.post(`${backendUrl}/login`, {
           user: "DOCTOR",
           email: email,
@@ -92,9 +90,7 @@ const index = () => {
       }
     };
 
-    // Fetch location and then proceed with login
     const userLocation = await fetchLocation();
-    // console.log(userLocation);
     if (userLocation) {
       await login(userLocation);
     }
@@ -162,21 +158,7 @@ const index = () => {
             color="#FFF"
             label="Sign In"
             onPress={handleLogin}
-            // onPress={}
           />
-          {/* <Text style={{ textAlign: "center", paddingVertical: 15 }}>
-            Don't have an account?{" "}
-            <Text
-              style={{
-                textDecorationLine: "underline",
-                color: "blue",
-                fontWeight: "bold",
-              }}
-              onPress={() => router.push("/Patient/Signup")}
-            >
-              Sign Up
-            </Text>
-          </Text> */}
         </View>
       </View>
     </SafeAreaView>

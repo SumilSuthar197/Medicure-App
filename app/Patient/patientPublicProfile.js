@@ -8,7 +8,6 @@ import {
   Linking,
   Dimensions,
 } from "react-native";
-
 import React, { useEffect, useState } from "react";
 import { iconItem } from "../../constants/data";
 import PrimaryButton from "../../components/PrimaryButton";
@@ -38,14 +37,12 @@ const patientPublicProfile = () => {
   const translateX = useSharedValue(0);
   const [activeIndex, setActiveIndex] = useState(0);
   const item = useLocalSearchParams();
-  console.log("item", item.email);
   const tabs = [
     { title: "Profile", index: 0 },
     { title: "Report", index: 1 },
   ];
 
   const [user, setUser] = useState({});
-  // const [patientData, setPatientData] = useState({});
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -57,7 +54,6 @@ const patientPublicProfile = () => {
           },
         });
         setUser({ ...response.data });
-        // console.log(response.data);
       } catch (error) {
         console.log(error);
       }
@@ -65,8 +61,8 @@ const patientPublicProfile = () => {
     fetchData();
   }, []);
   const location = {
-    latitude: 19.3046288,
-    longitude: 72.8544423,
+    latitude: 25.3046288,
+    longitude: 89.8544423,
     latitudeDelta: 0.01,
     longitudeDelta: 0.01,
   };
@@ -135,9 +131,7 @@ const patientPublicProfile = () => {
                   provider={PROVIDER_GOOGLE}
                   showsUserLocation
                   showsMyLocationButton
-                >
-                  {/* <Marker coordinate={location} title="Your Location" /> */}
-                </MapView>
+                ></MapView>
               </View>
             </View>
           </View>
@@ -256,12 +250,6 @@ const patientPublicProfile = () => {
           <View style={styles.topCardRow}>
             <Text style={styles.doctorName}>{user.name}</Text>
             <Text style={styles.doctorType}>{user.city}</Text>
-            {/* <TouchableOpacity
-              style={styles.call}
-              onPress={() => Linking.openURL(`tel:${user.mobile}`)}
-            >
-              <Text style={styles.doctorReviews}>Call Patient</Text>
-            </TouchableOpacity> */}
           </View>
         </View>
         <View style={styles.bottonContainer}>
@@ -390,9 +378,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-around",
     backgroundColor: backgroundColor,
-    // marginHorizontal: 22,
     borderRadius: 25,
-    // paddingVertical: 5,
   },
   activeText: {
     textAlign: "center",
@@ -412,7 +398,6 @@ const styles = StyleSheet.create({
   },
   activeTab: {
     paddingVertical: 5,
-    // backgroundColor: blueColor,
     borderRadius: 25,
     overflow: "hidden",
     width: "40%",
@@ -424,7 +409,6 @@ const styles = StyleSheet.create({
     width: "30%",
   },
   contactRow: { flexDirection: "row", alignItems: "center", marginVertical: 5 },
-  // activeView: { borderRadius: 25 },
 });
 
 export default patientPublicProfile;

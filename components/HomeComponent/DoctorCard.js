@@ -75,7 +75,6 @@ const DoctorCard = (data) => {
           }}
         >
           <View style={{ flexDirection: "row" }}>
-            {/* <AntDesign name="star" size={12} color="yellow" /> */}
             <Text
               style={{
                 color: lightTextColor,

@@ -16,7 +16,6 @@ import React, {
 import {
   MaterialIcons,
   Ionicons,
-  MaterialCommunityIcons,
   Feather,
   FontAwesome,
 } from "@expo/vector-icons";
@@ -161,20 +160,6 @@ const DoctorProfile = () => {
               <FontAwesome name="angle-right" size={24} color="#777777" />
             </View>
           </TouchableOpacity>
-          {/* <TouchableOpacity onPress={() => router.push("/Doctor/Emergency")}>
-            <View style={styles.navContainer}>
-              <View style={styles.nav1}>
-                <MaterialCommunityIcons
-                  name="alert"
-                  size={24}
-                  color="#777777"
-                />
-                <MaterialIcons name="payment" size={24} color="#777777" />
-                <Text style={styles.navText}>Emergency</Text>
-              </View>
-              <FontAwesome name="angle-right" size={24} color="#777777" />
-            </View>
-          </TouchableOpacity> */}
           <View style={styles.navContainer}>
             <View style={styles.nav1}>
               <Ionicons
@@ -241,24 +226,20 @@ const DoctorProfile = () => {
             backgroundColor="#000"
             label="Cancel"
             style={{ width: "47%" }}
-            onPress={handleClosePress} // Corrected function call
+            onPress={handleClosePress}
             color="#FFF"
           />
           <PrimaryButton
             backgroundColor="#000"
             label="Yes, Logout"
             style={{ width: "47%" }}
-            // onPress={() => {
-            //   AsyncStorage.removeItem("doctorInfo");
-            //   router.push("/getStarted");
-            // }} // Corrected function call
             onPress={async () => {
               await AsyncStorage.removeItem("doctorInfo");
               await AsyncStorage.removeItem("doctorEmail");
               navigation.dispatch(
                 CommonActions.reset({
                   index: 0,
-                  routes: [{ name: "getStarted" }], // Replace 'Login' with the name of your login screen
+                  routes: [{ name: "getStarted" }],
                 })
               );
             }}
@@ -274,7 +255,6 @@ const styles = StyleSheet.create({
   navContainer: {
     marginHorizontal: 25,
     paddingVertical: 7,
-    // borderBottomWidth: 1,
     borderBottomColor: "#777777",
     flexDirection: "row",
     justifyContent: "space-between",

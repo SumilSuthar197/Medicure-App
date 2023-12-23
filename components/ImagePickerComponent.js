@@ -53,14 +53,8 @@ const uploadImageToImgBB = async () => {
         }
       );
 
-      console.log(response);
-
       if (response.status === 200) {
-        // Assuming the response structure is similar to the one you provided
         const imageUrl = response.data.data.url;
-
-        // Handle the imageUrl as needed (e.g., update state, send to backend)
-
         alert("Image Uploaded Successfully!");
         return imageUrl;
       } else {

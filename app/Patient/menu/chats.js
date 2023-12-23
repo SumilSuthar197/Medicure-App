@@ -27,11 +27,9 @@ const Chat = () => {
       message: "Hi, how can i help you?",
     },
   ]);
-  // console.log(messageData);
   const [message, setMessage] = useState("");
 
   const sendMessageToBackend = async (userMessage) => {
-    // Simulate sending the message to the backend
     setMessageData((prevMessages) => [
       ...prevMessages,
       { id: Math.random().toString(), message: userMessage, from: "me" },
@@ -39,7 +37,6 @@ const Chat = () => {
     await axios
       .post(`${backendUrl}/getchat`, { prompt: userMessage })
       .then((res) => {
-        console.log("res", res.data);
         if (res.data.doctor === false) {
           const response = {
             id: Math.random().toString(),
@@ -60,16 +57,12 @@ const Chat = () => {
   };
 
   const handleSendMessage = () => {
-    // You can add additional validation or checks here before sending the message
     sendMessageToBackend(message);
-    // Clear the input field after sending the message
     setMessage("");
   };
 
   const renderMessage = ({ item }) => {
     if (item.from === "doctor") {
-      console.log("item", item);
-      // Render your card component here
       return (
         <View
           style={{

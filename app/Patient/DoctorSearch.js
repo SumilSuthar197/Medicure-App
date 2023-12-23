@@ -14,10 +14,7 @@ import { ActivityIndicator } from "react-native";
 import {
   backgroundColor,
   borderColor,
-  lightBlueColor,
   lightTextColor,
-  textBlack,
-  whiteText,
 } from "../../constants/color";
 import { router, useLocalSearchParams } from "expo-router";
 import { backendUrl } from "../../constants/URL";
@@ -38,9 +35,7 @@ const DoctorSearch = () => {
             `${backendUrl}/get_doctors/${containCategory}`
           );
           setDoctorCardData(response.data.reverse());
-          // console.log("sfgdfszh", response.data);
         }
-
         setIsLoading(false);
       } catch (error) {
         console.error("Error fetching data: ", error);
@@ -80,15 +75,6 @@ const DoctorSearch = () => {
                     : false
                   : true
               )
-              // .filter((doctor) =>
-              //   locationTerm
-              //     ? doctor.Location
-              //       ? doctor.Location.toLowerCase().includes(
-              //           locationTerm.toLowerCase()
-              //         )
-              //       : false
-              //     : true
-              // )
               .map((doctor, index) => <DoctorCard key={index} {...doctor} />)
           ) : (
             <ActivityIndicator size="large" color="#246BFD" />

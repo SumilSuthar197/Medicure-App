@@ -1,9 +1,8 @@
 import { View, Text, TextInput, StyleSheet, Alert } from "react-native";
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import PrimaryButton from "../../components/PrimaryButton";
 import { router } from "expo-router";
-import { AuthContext } from "../../context/AuthContext";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { backendUrl } from "../../constants/URL";
@@ -25,7 +24,6 @@ const index = () => {
       email: email,
       password: password,
     });
-    console.log(data);
     if (data.output === true) {
       AsyncStorage.setItem("userInfo", JSON.stringify(data.token));
       router.push("/Patient/menu");

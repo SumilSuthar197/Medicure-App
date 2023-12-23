@@ -19,40 +19,6 @@ const ChildLayout = () => {
   }
   return (
     <Tabs>
-      {/* <Tabs.Screen
-        name="explore"
-        options={{
-          headerTitle: "Explore",
-          title: "Explore",
-          name: "Explore",
-          tabBarIcon: ({ color }) => {
-            return (
-              <Ionicons
-                name="ios-chatbubble-ellipses-outline"
-                size={24}
-                color={color}
-              />
-            );
-          },
-        }}
-      /> */}
-      {/* <Tabs.Screen
-        name="chats"
-        options={{
-          headerTitle: "MediCure ChatBot",
-          title: "Chat",
-          name: "chats",
-          tabBarIcon: ({ color }) => {
-            return (
-              <Ionicons
-                name="ios-chatbubble-ellipses-outline"
-                size={24}
-                color={color}
-              />
-            );
-          },
-        }}
-      /> */}
       <Tabs.Screen
         name="Appointments"
         options={{

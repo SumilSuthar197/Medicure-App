@@ -5,9 +5,7 @@ const PatientLayout = () => {
   return (
     <Stack>
       <Stack.Screen name="index" options={{ headerShown: false }} />
-      {/* <Stack.Screen name="D" options={{ headerShown: false }} /> */}
       <Stack.Screen name="Doctormenu" options={{ headerShown: false }} />
-      {/* <Stack.Screen name="Profile" /> */}
       <Stack.Screen
         name="DoctorLeave"
         options={{ headerTitle: "Apply for Leave" }}
@@ -27,7 +25,6 @@ const PatientLayout = () => {
           },
           headerTintColor: whiteText,
           headerTitleAlign: "center",
-          // statusBarStyle: "light-content",
         }}
       />
       <Stack.Screen
@@ -57,17 +54,8 @@ const PatientLayout = () => {
           },
           headerTintColor: whiteText,
           headerTitleAlign: "center",
-          // statusBarStyle: "light-content",
         }}
       />
-      {/*<Stack.Screen
-        name="DoctorSearch"
-        options={{ headerTitle: "Search a Doctor" }}
-      />
-      <Stack.Screen
-        name="bookAppointment"
-        options={{ headerTitle: "Book Appointment" }}
-      /> */}
     </Stack>
   );
 };

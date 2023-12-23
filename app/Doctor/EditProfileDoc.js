@@ -22,21 +22,8 @@ import {
   textBlack,
   whiteText,
 } from "../../constants/color";
-import { Picker } from "@react-native-picker/picker";
 import { backendUrl } from "../../constants/URL";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
-const bloodGroups = [
-  { label: "Select Blood Group", value: "" },
-  { label: "A+", value: "A+" },
-  { label: "A-", value: "A-" },
-  { label: "B+", value: "B+" },
-  { label: "B-", value: "B-" },
-  { label: "AB+", value: "AB+" },
-  { label: "AB-", value: "AB-" },
-  { label: "O+", value: "O+" },
-  { label: "O-", value: "O-" },
-];
 
 const EditProfileDoc = () => {
   const [image, setImage] = useState(null);
@@ -87,14 +74,12 @@ const EditProfileDoc = () => {
       );
       setImage(response.data.secure_url);
       setUser({ ...user, imageUrl: response.data.secure_url });
-      //   console.log(image);
     } catch (e) {
       console.log(e);
     }
   };
 
   const item = useLocalSearchParams();
-  //   console.log("item", item);
   const [user, setUser] = useState({});
   useEffect(() => {
     const fetchData = async () => {
@@ -105,26 +90,12 @@ const EditProfileDoc = () => {
           `${backendUrl}/get_doctor_email/${doctorEmail}`
         );
         setUser(response.data);
-        // console.log("advad", response.data);
       } catch (error) {
         console.error("Error fetching data: ", error);
       }
     };
     fetchData();
   }, []);
-  //   const [user, setUser] = useState({
-  //     gender: "",
-  //     city: "",
-  //     address: "",
-  //     dob: "",
-  //     bloodGroup: "",
-  //     height: "",
-  //     weight: "",
-  //     emergencyContact: "",
-  //     imageUrl: "",
-  //     ...item,
-  //   });
-  // console.log(user);
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (
@@ -162,13 +133,11 @@ const EditProfileDoc = () => {
   };
 
   const [inputs, setInputs] = useState([""]);
-  const [inputValues, setInputValues] = useState([]); // State to store input values
+  const [inputValues, setInputValues] = useState([]);
   console.log(inputValues);
   const addInput = () => {
     setInputs([...inputs, ""]);
   };
-  //   console.log(inputValues);
-
   const handleInputChange = (text, index) => {
     const newInputs = [...inputs];
     newInputs[index] = text;
@@ -177,7 +146,7 @@ const EditProfileDoc = () => {
 
   const saveInputs = () => {
     setInputValues([...inputValues, ...inputs]);
-    setInputs([""]); // Clear inputs after saving
+    setInputs([""]);
   };
   return (
     <ScrollView style={{ backgroundColor: backgroundColor }}>

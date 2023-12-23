@@ -10,7 +10,6 @@ const Pagination = ({ data, x, screenWidth }) => {
   const PaginationComp = ({ i }) => {
     const animatedDotStyle = useAnimatedStyle(() => {
       if (!x.value) {
-        // Handle the case when x.value is undefined
         return {
           width: 10,
           opacity: 0.5,

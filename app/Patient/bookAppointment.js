@@ -22,7 +22,6 @@ import {
 } from "../../constants/color";
 import { countries } from "../../constants/symptoms";
 import { CardField, useStripe } from "@stripe/stripe-react-native";
-import { confirmPayment } from "@stripe/stripe-react-native";
 import { backendUrl } from "../../constants/URL";
 import { router, useLocalSearchParams } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -34,21 +33,15 @@ const BookAppointment = () => {
   const [selectedTiming, setSelectedTiming] = useState(null);
 
   const item = useLocalSearchParams();
-  console.log("dasg", item.question);
   useEffect(() => {
     setItemQuestion(item.question);
-    console.log(itemQuestion);
   }, []);
-  // console.log("date: ", selectedDate);
   const postingAppointment = async () => {
     setLoading(true);
     try {
-      console.log(selectedCountries);
       const storedItem = await AsyncStorage.getItem("userInfo");
       const jwtToken = JSON.parse(storedItem);
-      // console.log(selectedDate);
       const newFormattedTime = startTime + "-" + endTime;
-      // console.log(newFormattedTime);
       const response = await axios.post(
         `${backendUrl}/ai_schedule`,
         {
@@ -64,7 +57,6 @@ const BookAppointment = () => {
           },
         }
       );
-      console.log(response);
       Alert.alert(
         "Appointment Booked Successfully",
         "Your appointment has been booked successfully. You will receive a confirmation email shortly."
@@ -85,10 +77,6 @@ const BookAppointment = () => {
     setSelectedTiming(null);
   };
 
-  const handleTimingPress = (timing) => {
-    setSelectedTiming(timing);
-  };
-
   const [selectedCountries, setSelectedCountries] = useState([]);
 
   const handleSelectionChange = (updatedArray) => {
@@ -100,41 +88,9 @@ const BookAppointment = () => {
   const [loading, setLoading] = useState(false);
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
-  // console.log(selectedDate)
-
-  const handlePayment = async () => {
-    setLoading(true);
-    try {
-      const clientSecret = await axios.post(`${backendUrl}/stripe_payment`, {
-        amount: 1000, // Replace with the actual amount in cents
-      });
-
-      const { paymentIntent, error } = await confirmPayment(
-        clientSecret.data.clientSecret,
-        {
-          paymentMethodType: "Card", // Change 'type' to 'paymentMethodType'
-          billingDetails: {
-            email: "customer@example.com", // Replace with the customer's email
-          },
-        }
-      );
-      if (error) {
-        console.log(`Payment failed: ${error.message}`);
-      } else if (paymentIntent) {
-        console.log(`Payment succeeded: ${paymentIntent.id}`);
-      }
-    } catch (e) {
-      console.log("Error:", e);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const [itemQuestion, setItemQuestion] = useState([]);
   const [responses, setResponses] = useState([]);
   const [clicked, setClicked] = useState(false);
-  // setItemQuestion(item.questions);
-  console.log(itemQuestion);
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: backgroundColor }}>
       <ScrollView>
@@ -213,7 +169,6 @@ const BookAppointment = () => {
                   {question}
                 </Text>
                 <TextInput
-                  // editable={false}
                   style={{
                     fontSize: 14,
                     fontWeight: "500",
@@ -322,7 +277,6 @@ const BookAppointment = () => {
         </View>
         <View style={{ marginVertical: 20, paddingHorizontal: 20 }}>
           <PrimaryButton
-            // style={{ marginTop: 15 }}
             backgroundColor="#246BFD"
             color="#FFF"
             label="Make Payment"

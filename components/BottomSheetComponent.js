@@ -9,7 +9,7 @@ import {
   ScrollView,
 } from "react-native";
 import { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
-import PrimaryButton from "./PrimaryButton"; // Update the import based on your folder structure
+import PrimaryButton from "./PrimaryButton";
 import {
   backgroundColor,
   blueColor,

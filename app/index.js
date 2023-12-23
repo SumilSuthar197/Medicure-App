@@ -1,23 +1,11 @@
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import { router } from "expo-router";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useFonts } from "expo-font";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-// import * as Notifications from "expo-notifications";
-// import { sendNotification } from "../context/NotificationSystem";
 
 const HomePage = () => {
-  // const { userInfo, isLoading, logout } = useContext(AuthContext);
   useEffect(() => {
-    // const gettingNotification = async () => {
-    //   const { status } = await Notifications.requestPermissionsAsync();
-    //   if (status !== "granted") {
-    //     alert("Permission to receive push notifications denied!");
-    //     return;
-    //   }
-    //   // sendNotification();
-    // };
     const checkUserInfo = async () => {
       try {
         const userInfoString = await AsyncStorage.getItem("userInfo");
@@ -25,11 +13,9 @@ const HomePage = () => {
 
         if (userInfoString) {
           const userInfo = JSON.parse(userInfoString);
-          console.log(userInfo);
           router.push("/Patient/menu");
         } else if (DoctorInfoString) {
           const userInfo = JSON.parse(DoctorInfoString);
-          console.log(userInfo);
           router.push("/Doctor/Doctormenu");
         } else {
           router.push("/onboarding");
@@ -40,7 +26,6 @@ const HomePage = () => {
     };
 
     const timer = setTimeout(() => {
-      // gettingNotification();
       checkUserInfo();
     }, 2000);
     return () => clearTimeout(timer);
@@ -60,7 +45,6 @@ const HomePage = () => {
         />
         <Text style={styles.logotext}>MediCure</Text>
       </View>
-      {/* <Text style={{}}>Logo Screen</Text> */}
     </View>
   );
 };

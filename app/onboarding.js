@@ -38,8 +38,6 @@ function Onboarding1() {
       x.value = event.contentOffset.x;
     },
   });
-
-  // eslint-disable-next-line react/no-unstable-nested-components
   const RenderItem = ({ item, index }) => {
     const imageAnimationStyle = useAnimatedStyle(() => {
       const opacityAnimation = interpolate(

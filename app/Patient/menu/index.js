@@ -17,11 +17,7 @@ import { router } from "expo-router";
 import {
   backgroundColor,
   blueColor,
-  borderColor,
-  lightBlueColor,
-  lightTextColor,
   textBlack,
-  whiteText,
 } from "../../../constants/color";
 import DoctorCard from "../../../components/HomeComponent/DoctorCard";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -41,7 +37,6 @@ const index = () => {
           },
         });
         if (response.data.length !== 0) {
-          // console.log("response.data.appointments", response.data.appointments[0]);
           setUpcomingData({ ...response.data.appointments[0] });
         }
       } catch (error) {
@@ -113,7 +108,7 @@ const index = () => {
           >
             <View
               style={{
-                backgroundColor: blueColor, //"#dbeafe", //dbeafe
+                backgroundColor: blueColor,
                 padding: 15,
                 borderRadius: 15,
               }}
@@ -127,7 +122,6 @@ const index = () => {
                   tintColor: "#dbeafe",
                 }}
               />
-              {/* {item.icon} */}
             </View>
             <Text style={{ fontSize: 12, fontWeight: "500", marginTop: 4 }}>
               {item.name}

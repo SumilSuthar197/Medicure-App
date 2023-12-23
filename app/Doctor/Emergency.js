@@ -20,7 +20,6 @@ const Emergency = () => {
   const handleSubmit = async () => {
     try {
       const storedItem = await AsyncStorage.getItem("doctorEmail");
-      //   const jwtToken = JSON.parse(storedItem);
       const response = await axios.post(`${backendUrl}/doctor_emergency`, {
         email: storedItem,
         minutes: parseInt(hours) * 60,

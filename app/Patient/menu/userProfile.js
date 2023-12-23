@@ -58,7 +58,6 @@ const profile = () => {
           },
         });
         setUser({ ...response.data });
-        // console.log(response.data);
       } catch (error) {
         console.log(error);
       }
@@ -200,9 +199,9 @@ const profile = () => {
         style={{
           shadowColor: "#000",
           shadowOffset: { width: 0, height: 6 },
-          shadowOpacity: 0.8, // Increase shadow opacity
+          shadowOpacity: 0.8,
           shadowRadius: 10,
-          elevation: 10, // Increase elevation
+          elevation: 10,
           borderTopLeftRadius: 25,
           borderTopRightRadius: 25,
         }}
@@ -229,7 +228,7 @@ const profile = () => {
             backgroundColor="#000"
             label="Cancel"
             style={{ width: "47%" }}
-            onPress={handleClosePress} // Corrected function call
+            onPress={handleClosePress}
             color="#FFF"
           />
           <PrimaryButton
@@ -241,7 +240,7 @@ const profile = () => {
               navigation.dispatch(
                 CommonActions.reset({
                   index: 0,
-                  routes: [{ name: "getStarted" }], // Replace 'Login' with the name of your login screen
+                  routes: [{ name: "getStarted" }],
                 })
               );
             }}
@@ -257,7 +256,6 @@ const styles = StyleSheet.create({
   navContainer: {
     marginHorizontal: 25,
     paddingVertical: 7,
-    // borderBottomWidth: 1,
     borderBottomColor: "#777777",
     flexDirection: "row",
     justifyContent: "space-between",
@@ -275,57 +273,4 @@ const styles = StyleSheet.create({
     lineHeight: 26,
   },
 });
-//   container: {
-//     flex: 1,
-//     backgroundColor: "#FFF",
-//     fontFamily: "Poppins-Regular",
-//   },
-//   form: {
-//     flex: 2,
-//     paddingHorizontal: 15,
-//     rowGap: 20,
-//   },
-//   textTitle: {
-//     fontSize: 14,
-//     fontWeight: "600",
-//     marginBottom: 3,
-//     marginLeft: 3,
-//   },
-//   textContainer: {
-//     fontSize: 14,
-//     fontWeight: "500",
-//     // color: "#000",
-//     paddingLeft: 12,
-//     paddingRight: 12,
-//     height: 48,
-//     borderRadius: 12,
-//     backgroundColor: "#F5F7F8",
-//     width: "100%",
-//     marginHorizontal: "auto",
-//   },
-//   itemTitle: {
-//     textAlign: "center",
-//     fontSize: 28,
-//     fontWeight: "800",
-//     marginBottom: 5,
-//     color: "black",
-//     paddingHorizontal: 15,
-//   },
-//   itemText: {
-//     textAlign: "center",
-//     marginHorizontal: 35,
-//     color: "black",
-//     lineHeight: 22,
-//     fontSize: 14,
-//     paddingHorizontal: 15,
-//   },
-//   bottomContainer: {
-//     flexDirection: "row",
-//     justifyContent: "space-between",
-//     alignItems: "center",
-//     marginHorizontal: 20,
-//     paddingVertical: 20,
-//   },
-// });
-
 export default profile;

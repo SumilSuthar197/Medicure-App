@@ -14,32 +14,22 @@ import React, {
   useRef,
   useState,
 } from "react";
-import {
-  Ionicons,
-  FontAwesome5,
-  Zocial,
-  AntDesign,
-  MaterialIcons,
-} from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import axios from "axios";
 import { ActivityIndicator } from "react-native";
 import {
   backgroundColor,
   borderColor,
-  lightBlueColor,
   lightTextColor,
   textBlack,
   whiteText,
 } from "../../constants/color";
 import { router, useLocalSearchParams } from "expo-router";
 import { backendUrl } from "../../constants/URL";
-
 import BottomSheet, { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
-import DoctorCard from "../../components/HomeComponent/DoctorCard";
 import PrimaryButton from "../../components/PrimaryButton";
 
 const HospitalSearch = () => {
-  const handleClosePress = () => bottomSheetRef.current?.close();
   const handleOpenPress = () => bottomSheetRef.current?.expand();
   const renderBackdrop = useCallback(
     (props) => (
@@ -52,7 +42,6 @@ const HospitalSearch = () => {
     []
   );
   const HospitalCard = (data) => {
-    console.log(data);
     return (
       <TouchableOpacity
         onPress={() => {
@@ -84,7 +73,6 @@ const HospitalSearch = () => {
                     ? { uri: data.image }
                     : require("../../assets/images/Image.png")
                 }
-                // source={require("../../assets/images/Image.png")}
               />
             </View>
             <View style={{ gap: 3, justifyContent: "center" }}>
@@ -114,7 +102,6 @@ const HospitalSearch = () => {
             }}
           >
             <View style={{ flexDirection: "row" }}>
-              {/* <AntDesign name="star" size={12} color="yellow" /> */}
               <Text
                 style={{
                   color: lightTextColor,
@@ -166,7 +153,6 @@ const HospitalSearch = () => {
   };
 
   const [doctorCardData, setDoctorCardData] = useState([]);
-  //   const { containCategory } = useLocalSearchParams();
   const [symptoms, setSymptoms] = useState("");
   const [hospital, setHospital] = useState("");
 
@@ -184,7 +170,6 @@ const HospitalSearch = () => {
     const fetchData = async () => {
       try {
         let response = await axios.get(`${backendUrl}/allhospitals`);
-        console.log("hello", response.data);
         setDoctorCardData(response.data);
         setIsLoading(false);
       } catch (error) {
@@ -227,15 +212,6 @@ const HospitalSearch = () => {
                     : false
                   : true
               )
-              // .filter((doctor) =>
-              //   locationTerm
-              //     ? doctor.Location
-              //       ? doctor.Location.toLowerCase().includes(
-              //           locationTerm.toLowerCase()
-              //         )
-              //       : false
-              //     : true
-              // )
               .map((doctor, index) => <HospitalCard key={index} {...doctor} />)
           ) : (
             <ActivityIndicator size="large" color="#246BFD" />
@@ -248,9 +224,9 @@ const HospitalSearch = () => {
         style={{
           shadowColor: "#000",
           shadowOffset: { width: 0, height: 6 },
-          shadowOpacity: 0.8, // Increase shadow opacity
+          shadowOpacity: 0.8,
           shadowRadius: 10,
-          elevation: 10, // Increase elevation
+          elevation: 10,
           borderTopLeftRadius: 25,
           borderTopRightRadius: 25,
         }}

@@ -23,7 +23,6 @@ const PatientLayout = () => {
           },
           headerTintColor: whiteText,
           headerTitleAlign: "center",
-          // statusBarStyle: "light-content",
         }}
       />
       <Stack.Screen
@@ -41,7 +40,6 @@ const PatientLayout = () => {
           },
           headerTintColor: whiteText,
           headerTitleAlign: "center",
-          // statusBarStyle: "light-content",
         }}
       />
       <Stack.Screen

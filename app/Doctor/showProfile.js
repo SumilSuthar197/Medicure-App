@@ -380,9 +380,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-around",
     backgroundColor: backgroundColor,
-    // marginHorizontal: 22,
     borderRadius: 25,
-    // paddingVertical: 5,
   },
   activeText: {
     textAlign: "center",
@@ -414,6 +412,5 @@ const styles = StyleSheet.create({
     width: "30%",
   },
   contactRow: { flexDirection: "row", alignItems: "center", marginVertical: 5 },
-  // activeView: { borderRadius: 25 },
 });
 export default showProfile;

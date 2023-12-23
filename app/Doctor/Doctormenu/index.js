@@ -1,17 +1,3 @@
-// import React from "react";
-// import { useState, useEffect, useRef } from "react";
-// import { Text, View, Button, Platform } from "react-native";
-// import * as Device from "expo-device";
-// import * as Notifications from "expo-notifications";
-
-// Notifications.setNotificationHandler({
-//   handleNotification: async () => ({
-//     shouldShowAlert: true,
-//     shouldPlaySound: false,
-//     shouldSetBadge: false,
-//   }),
-// });
-
 import { View, Text, StyleSheet, SafeAreaView } from "react-native";
 import React, { useState } from "react";
 import { backendUrl } from "../../../constants/URL";
@@ -28,107 +14,6 @@ import { TextInput } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const index = () => {
-  //   const [expoPushToken, setExpoPushToken] = useState("");
-  //   const [notification, setNotification] = useState(false);
-  //   const notificationListener = useRef();
-  //   const responseListener = useRef();
-
-  //   useEffect(() => {
-  //     registerForPushNotificationsAsync().then((token) =>
-  //       setExpoPushToken(token)
-  //     );
-
-  //     notificationListener.current =
-  //       Notifications.addNotificationReceivedListener((notification) => {
-  //         setNotification(notification);
-  //       });
-
-  //     responseListener.current =
-  //       Notifications.addNotificationResponseReceivedListener((response) => {
-  //         console.log(response);
-  //       });
-
-  //     return () => {
-  //       Notifications.removeNotificationSubscription(
-  //         notificationListener.current
-  //       );
-  //       Notifications.removeNotificationSubscription(responseListener.current);
-  //     };
-  //   }, []);
-
-  //   return (
-  //     <View
-  //       style={{
-  //         flex: 1,
-  //         alignItems: "center",
-  //         justifyContent: "space-around",
-  //       }}
-  //     >
-  //       <Text>Your expo push token: {expoPushToken}</Text>
-  //       <View style={{ alignItems: "center", justifyContent: "center" }}>
-  //         <Text>
-  //           Title: {notification && notification.request.content.title}{" "}
-  //         </Text>
-  //         <Text>Body: {notification && notification.request.content.body}</Text>
-  //         <Text>
-  //           Data:{" "}
-  //           {notification && JSON.stringify(notification.request.content.data)}
-  //         </Text>
-  //       </View>
-  //       <Button
-  //         title="Press to schedule a notification"
-  //         onPress={async () => {
-  //           await schedulePushNotification();
-  //         }}
-  //       />
-  //     </View>
-  //   );
-  // };
-
-  // async function schedulePushNotification() {
-  //   await Notifications.scheduleNotificationAsync({
-  //     content: {
-  //       title: "You've got mail! 📬",
-  //       body: "Here is the notification body",
-  //       data: { data: "goes here" },
-  //     },
-  //     trigger: { seconds: 2 },
-  //   });
-  // }
-
-  // async function registerForPushNotificationsAsync() {
-  //   let token;
-
-  //   if (Platform.OS === "android") {
-  //     await Notifications.setNotificationChannelAsync("default", {
-  //       name: "default",
-  //       importance: Notifications.AndroidImportance.MAX,
-  //       vibrationPattern: [0, 250, 250, 250],
-  //       lightColor: "#FF231F7C",
-  //     });
-  //   }
-
-  //   if (Device.isDevice) {
-  //     const { status: existingStatus } =
-  //       await Notifications.getPermissionsAsync();
-  //     let finalStatus = existingStatus;
-  //     if (existingStatus !== "granted") {
-  //       const { status } = await Notifications.requestPermissionsAsync();
-  //       finalStatus = status;
-  //     }
-  //     if (finalStatus !== "granted") {
-  //       alert("Failed to get push token for push notification!");
-  //       return;
-  //     }
-  //     token = (await Notifications.getExpoPushTokenAsync()).data;
-  //     console.log(token);
-  //   } else {
-  //     alert("Must use physical device for Push Notifications");
-  //   }
-
-  //   return token;
-  // }
-
   const [user, setUser] = useState({
     start_date: "",
     end_date: "",
@@ -138,7 +23,6 @@ const index = () => {
 
   const handleSubmit = async () => {
     try {
-      // console.log(leave);
       const storedItem = await AsyncStorage.getItem("doctorInfo");
       const jwtToken = JSON.parse(storedItem);
       const response = await axios.post(`${backendUrl}/applyleave`, user, {
@@ -162,7 +46,6 @@ const index = () => {
           <Text style={styles.textTitle}>Your leaves start from?</Text>
           <TextInput
             placeholder="YYYY-MM-DD"
-            // numberOfLines={4}
             value={user.start_date}
             style={styles.textContainer}
             onChangeText={(text) => setUser({ ...user, start_date: text })}
@@ -172,7 +55,6 @@ const index = () => {
           <Text style={styles.textTitle}>Your leaves end when?</Text>
           <TextInput
             placeholder="YYYY-MM-DD"
-            // numberOfLines={4}
             value={user.end_date}
             style={styles.textContainer}
             onChangeText={(text) => setUser({ ...user, end_date: text })}

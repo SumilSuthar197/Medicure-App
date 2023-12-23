@@ -23,7 +23,6 @@ const DoctorLeave = () => {
 
   const handleSubmit = async () => {
     try {
-      // console.log(leave);
       const storedItem = await AsyncStorage.getItem("doctorInfo");
       const jwtToken = JSON.parse(storedItem);
       const response = await axios.post(`${backendUrl}/applyleave`, user, {
@@ -46,7 +45,6 @@ const DoctorLeave = () => {
         <Text style={styles.textTitle}>Your leaves start from?</Text>
         <TextInput
           placeholder="YYYY-MM-DD"
-          // numberOfLines={4}
           value={user.start_date}
           style={styles.textContainer}
           onChangeText={(text) => setUser({ ...user, start_date: text })}
@@ -56,7 +54,6 @@ const DoctorLeave = () => {
         <Text style={styles.textTitle}>Your leaves end when?</Text>
         <TextInput
           placeholder="YYYY-MM-DD"
-          // numberOfLines={4}
           value={user.end_date}
           style={styles.textContainer}
           onChangeText={(text) => setUser({ ...user, end_date: text })}

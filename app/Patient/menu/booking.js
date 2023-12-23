@@ -32,7 +32,6 @@ import { router } from "expo-router";
 const Booking = () => {
   const translateX = useSharedValue(0);
   const [activeIndex, setActiveIndex] = useState(0);
-  // const [patientData, setPatientData] = useState({});
   const [upcomingData, setUpcomingData] = useState([]);
   const [cancelData, setCancelData] = useState([]);
   const [completedData, setCompletedData] = useState([]);
@@ -52,21 +51,11 @@ const Booking = () => {
   function getUpcomingData(data) {
     setUpcomingData(data);
   }
-
-  function getCancelData(data) {
-    setCancelData(data);
-  }
-
-  function getCompletedData(data) {
-    setCompletedData(data);
-  }
-
   useEffect(() => {
     const fetchData = async (typeOfAppointment, settingFunction) => {
       try {
         const storedItem = await AsyncStorage.getItem("userInfo");
         const jwtToken = JSON.parse(storedItem);
-        // console.log(`Bearer ${jwtToken}`);
         const response = await axios.get(
           `${backendUrl}/get_appt/${typeOfAppointment}`,
           {
@@ -76,7 +65,6 @@ const Booking = () => {
           }
         );
         settingFunction(response.data.appointments);
-        // setPatientData({ ...response.data });
         console.log(response.data.appointments);
       } catch (error) {
         console.log(error);
@@ -94,7 +82,6 @@ const Booking = () => {
   const renderContent = () => {
     switch (activeIndex) {
       case 0:
-        // console.log(upcomingData);
         if (upcomingData.length === 0)
           return (
             <View
@@ -256,7 +243,6 @@ const Booking = () => {
                         error
                       );
                     }
-                    // router.push("/Patient/doctorDetails");
                     handleTabPress(0);
                   }}
                 >
@@ -324,7 +310,6 @@ const Booking = () => {
           </View>
         ));
       case 1:
-        // console.log(cancelData);
         if (cancelData.length === 0)
           return (
             <View
@@ -447,7 +432,6 @@ const Booking = () => {
           </View>
         ));
       case 2:
-        // console.log(completedData);
         if (completedData.length === 0)
           return (
             <View
@@ -582,9 +566,6 @@ const Booking = () => {
                     alignItems: "center",
                     justifyContent: "center",
                   }}
-                  // onPress={() => {
-                  //   router.push("/Patient/doctorDetails");
-                  // }}
                 >
                   <Text
                     style={{
@@ -605,9 +586,6 @@ const Booking = () => {
                     alignItems: "center",
                     justifyContent: "center",
                   }}
-                  // onPress={() => {
-                  //   router.push("/Patient/doctorDetails");
-                  // }}
                 >
                   <Text
                     style={{
@@ -630,7 +608,7 @@ const Booking = () => {
 
   const handleTabPress = async (index) => {
     setActiveIndex(index);
-    const typeOfAppointment = tabs[index].title; // Get the type of appointment based on the selected tab
+    const typeOfAppointment = tabs[index].title;
     try {
       const storedItem = await AsyncStorage.getItem("userInfo");
       const jwtToken = JSON.parse(storedItem);
@@ -670,7 +648,6 @@ const Booking = () => {
         {tabs.map((tab) => (
           <TouchableOpacity
             key={tab.index}
-            // onPress={() => handleTabPress(tab.index)}
             onPress={() => handleTabPress(tab.index)}
             style={[
               activeIndex === tab.index ? styles.activeTab : styles.inActiveTab,

@@ -24,13 +24,7 @@ import {
 } from "../../constants/color";
 import { useSharedValue } from "react-native-reanimated";
 
-import MapView, {
-  Callout,
-  Marker,
-  PROVIDER_GOOGLE,
-  Region,
-} from "react-native-maps";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import { backendUrl } from "../../constants/URL";
 import axios from "axios";
 
@@ -255,12 +249,6 @@ const patientPublicProfile = () => {
           <View style={styles.topCardRow}>
             <Text style={styles.doctorName}>{user.name}</Text>
             <Text style={styles.doctorType}>{user.city}</Text>
-            {/* <TouchableOpacity
-              style={styles.call}
-              onPress={() => Linking.openURL(`tel:${user.mobile}`)}
-            >
-              <Text style={styles.doctorReviews}>Call Patient</Text>
-            </TouchableOpacity> */}
           </View>
         </View>
         <View style={styles.bottonContainer}>
@@ -389,9 +377,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-around",
     backgroundColor: backgroundColor,
-    // marginHorizontal: 22,
     borderRadius: 25,
-    // paddingVertical: 5,
   },
   activeText: {
     textAlign: "center",
@@ -411,7 +397,6 @@ const styles = StyleSheet.create({
   },
   activeTab: {
     paddingVertical: 5,
-    // backgroundColor: blueColor,
     borderRadius: 25,
     overflow: "hidden",
     width: "40%",
@@ -423,7 +408,6 @@ const styles = StyleSheet.create({
     width: "30%",
   },
   contactRow: { flexDirection: "row", alignItems: "center", marginVertical: 5 },
-  // activeView: { borderRadius: 25 },
 });
 
 export default patientPublicProfile;

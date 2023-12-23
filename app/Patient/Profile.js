@@ -86,14 +86,12 @@ const Profile = () => {
       );
       setImage(response.data.secure_url);
       setUser({ ...user, imageUrl: response.data.secure_url });
-      console.log(image);
     } catch (e) {
       console.log(e);
     }
   };
 
   const item = useLocalSearchParams();
-  // console.log("item", item);
   const [user, setUser] = useState({
     gender: "",
     city: "",
@@ -106,7 +104,6 @@ const Profile = () => {
     imageUrl: "",
     ...item,
   });
-  // console.log(user);
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (
@@ -126,7 +123,6 @@ const Profile = () => {
     }
     try {
       const response = await axios.post(`${backendUrl}/addpatient`, user);
-      console.log(response);
       if (response.data.msg) {
         router.push("/getStarted");
       } else {

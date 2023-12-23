@@ -100,13 +100,7 @@ const Signup = () => {
             backgroundColor="#000"
             color="#FFF"
             label="Sign Up"
-            onPress={
-              handleSubmit
-              // router.push({
-              //   pathname: "/Patient/Profile",
-              //   params: { ...user },
-              // })
-            }
+            onPress={handleSubmit}
           />
           <Text style={{ textAlign: "center", paddingVertical: 15 }}>
             Already have an account?{" "}
