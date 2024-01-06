@@ -21,6 +21,7 @@ import {
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import axios from "axios";
 import { backendUrl } from "../../constants/URL";
+import { StatusBar } from "expo-status-bar";
 
 const doctorDetails = () => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -170,6 +171,7 @@ const doctorDetails = () => {
   };
   return (
     <View style={styles.main}>
+      <StatusBar backgroundColor={blueColor} translucent={false} style="light" />
       <View style={styles.topCard}>
         <View style={{ borderRadius: 15 }}>
           <Image

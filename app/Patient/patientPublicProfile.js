@@ -24,6 +24,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { backendUrl } from "../../constants/URL";
 import axios from "axios";
 import ErrorPage from "../../components/ErrorPage";
+import { StatusBar } from "expo-status-bar";
 
 const patientPublicProfile = () => {
   const translateX = useSharedValue(0);
@@ -180,6 +181,11 @@ const patientPublicProfile = () => {
   };
   return (
     <View style={styles.main}>
+      <StatusBar
+        backgroundColor={blueColor}
+        translucent={false}
+        style="light"
+      />
       <View style={styles.topContainer}>
         <View style={styles.topCard}>
           <View style={{ borderRadius: 15 }}>

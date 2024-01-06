@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, Image } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  SafeAreaView,
+} from "react-native";
 import MapView, { Callout, Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import * as Location from "expo-location";
 import axios from "axios";
@@ -12,6 +18,7 @@ import {
   whiteText,
 } from "../../../constants/color";
 import { router } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 
 const MapObject = (data) => {
   return (
@@ -46,11 +53,11 @@ const MapObject = (data) => {
                 objectFit: "fill",
                 borderRadius: 99,
               }}
-              source={
-                data.image
-                  ? { uri: data.image }
-                  : require("../../../assets/images/Image.png")
-              }
+              source={{
+                uri: data.image
+                  ? data.image
+                  : "https://res.cloudinary.com/deohymauz/image/upload/v1704545467/demoDoctor_hkhmdp.jpg",
+              }}
             />
           </View>
           <View style={{ gap: 3, justifyContent: "center" }}>
@@ -154,7 +161,8 @@ const Explore = () => {
   };
 
   return (
-    <View style={{ flex: 1}}>
+    <SafeAreaView style={{ flex: 1 }}>
+      <StatusBar style="auto" />
       {location && (
         <MapView
           style={{ flex: 1 }}
@@ -217,7 +225,7 @@ const Explore = () => {
             ))}
         </View>
       )}
-    </View>
+    </SafeAreaView>
   );
 };
 export default Explore;

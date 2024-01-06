@@ -1,7 +1,6 @@
 import React from "react";
 import { Tabs } from "expo-router";
 import { FontAwesome, AntDesign } from "@expo/vector-icons";
-import { useFonts } from "expo-font";
 import {
   backgroundColor,
   textBlack,
@@ -9,13 +8,6 @@ import {
 } from "../../../constants/color";
 
 const ChildLayout = () => {
-  const [loaded] = useFonts({
-    PoppinsRegular: require("../../../assets/fonts/Poppins-Regular.ttf"),
-  });
-
-  if (!loaded) {
-    return null;
-  }
   return (
     <Tabs>
       <Tabs.Screen

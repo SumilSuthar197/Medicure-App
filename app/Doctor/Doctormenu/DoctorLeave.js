@@ -95,7 +95,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: backgroundColor,
-    fontFamily: "Poppins-Regular",
     paddingHorizontal: 15,
     gap: 20,
     paddingTop: 15,

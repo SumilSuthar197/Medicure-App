@@ -171,7 +171,11 @@ const showProfile = () => {
   };
   return (
     <View style={styles.main}>
-      <StatusBar style="light" />
+      <StatusBar
+        backgroundColor={blueColor}
+        translucent={false}
+        style="light"
+      />
       <View style={styles.topCard}>
         <View style={{ borderRadius: 15 }}>
           <Image

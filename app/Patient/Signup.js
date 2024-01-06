@@ -123,7 +123,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#FFF",
-    fontFamily: "Poppins-Regular",
   },
   form: {
     flex: 2,

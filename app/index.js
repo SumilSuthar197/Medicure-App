@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { router } from "expo-router";
-import { Image,View } from "react-native";
+import { Image, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StatusBar } from "expo-status-bar";
 import { useFonts } from "expo-font";
@@ -29,12 +29,6 @@ const HomePage = () => {
     };
     checkUserInfo();
   }, []);
-  const [fontsLoaded] = useFonts({
-    "Poppins-Regular": require("../assets/fonts/Poppins-Bold.ttf"),
-  });
-  if (!fontsLoaded) {
-    return null;
-  }
   return (
     <View
       style={{

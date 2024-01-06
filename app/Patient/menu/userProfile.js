@@ -55,9 +55,8 @@ const profile = () => {
         }),
     },
     {
-      title: "Wallet",
+      title: `Wallet : ${user.wallet}`,
       icon: "credit-card",
-      text: `Wallet : ${user.wallet}`,
     },
     {
       title: "Help Center",

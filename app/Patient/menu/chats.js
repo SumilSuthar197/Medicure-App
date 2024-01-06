@@ -85,11 +85,11 @@ const Chat = () => {
                   objectFit: "fill",
                   borderRadius: 99,
                 }}
-                source={
-                  item.image
-                    ? { uri: item.message[0].image }
-                    : require("../../../assets/images/Image.png")
-                }
+                source={{
+                  uri: item.message[0].image
+                    ? item.message[0].image
+                    : "https://res.cloudinary.com/deohymauz/image/upload/v1704545467/demoDoctor_hkhmdp.jpg",
+                }}
               />
             </View>
             <View style={{ gap: 3, justifyContent: "center" }}>

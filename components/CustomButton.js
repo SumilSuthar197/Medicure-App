@@ -61,7 +61,9 @@ const CustomButton = ({ flatListRef, flatListIndex, dataLength }) => {
           Get Started
         </Animated.Text>
         <Animated.Image
-          source={require("../assets/images/ArrowIcon.png")}
+          source={{
+            uri: "https://res.cloudinary.com/deohymauz/image/upload/v1704576318/ArrowIcon_wvsohh.png",
+          }}
           style={[styles.arrow, arrowAnimationStyle]}
         />
       </Animated.View>

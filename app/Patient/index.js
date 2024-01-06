@@ -107,7 +107,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#FFF",
-    fontFamily: "Poppins-Regular",
   },
   itemView: { flex: 1, justifyContent: "center", alignItems: "center" },
   itemTitle: {
