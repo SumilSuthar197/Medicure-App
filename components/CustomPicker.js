@@ -1,14 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  TextInput,
-  FlatList,
-} from "react-native";
+import { View, Text, TouchableOpacity, TextInput } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { ScrollView } from "react-native-gesture-handler";
-
 const CustomPicker = ({
   countryList,
   selectedCountries,
@@ -34,7 +27,6 @@ const CustomPicker = ({
       setData(countryList);
     }
   };
-
   const handleCountrySelection = (selectedCountry) => {
     onSelectionChange([...selectedCountries, selectedCountry]);
     setSelectedCountry("");
@@ -42,7 +34,6 @@ const CustomPicker = ({
     onSearch("");
     setSearch("");
   };
-
   return (
     <View style={{ flex: 1, position: "relative" }}>
       <TouchableOpacity

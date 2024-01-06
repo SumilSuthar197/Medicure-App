@@ -1,7 +1,6 @@
-import { View, Text } from "react-native";
 import React from "react";
 import { Tabs } from "expo-router";
-import { FontAwesome, Ionicons, AntDesign } from "@expo/vector-icons";
+import { FontAwesome, AntDesign } from "@expo/vector-icons";
 import { useFonts } from "expo-font";
 import {
   backgroundColor,
@@ -15,12 +14,12 @@ const ChildLayout = () => {
   });
 
   if (!loaded) {
-    return null; // Font is still loading
+    return null;
   }
   return (
     <Tabs>
       <Tabs.Screen
-        name="Appointments"
+        name="index"
         options={{
           headerTitle: "Schedule",
           title: "Appointment",
@@ -43,12 +42,21 @@ const ChildLayout = () => {
         }}
       />
       <Tabs.Screen
-        name="index"
+        name="DoctorLeave"
         options={{
-          // headerTranslucent: true,
-          headerShown: false,
-          title: "Apply leave",
-          name: "home",
+          headerTitle: "Apply for Leave",
+          title: "Apply Leave",
+          name: "DoctorLeave",
+          headerStyle: {
+            backgroundColor: backgroundColor,
+          },
+          headerTitleStyle: {
+            color: textBlack,
+            fontWeight: "600",
+            fontSize: 22,
+          },
+          headerShadowVisible: false,
+          headerTintColor: whiteText,
           tabBarIcon: ({ color }) => {
             return <AntDesign name="form" size={24} color={color} />;
           },
@@ -59,6 +67,16 @@ const ChildLayout = () => {
         options={{
           title: "Profile",
           name: "profile",
+          headerStyle: {
+            backgroundColor: backgroundColor,
+          },
+          headerTitleStyle: {
+            color: textBlack,
+            fontWeight: "600",
+            fontSize: 22,
+          },
+          headerShadowVisible: false,
+          headerTintColor: whiteText,
           tabBarIcon: ({ color }) => {
             return <FontAwesome name="user-o" size={22} color={color} />;
           },

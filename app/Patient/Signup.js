@@ -40,21 +40,19 @@ const Signup = () => {
     if (data.output === true) {
       router.push({
         pathname: "/Patient/Profile",
-        params: { email: user.email, name: user.name, mobile: user.mobile },
+        params: {
+          email: user.email,
+          name: user.name,
+          mobile: user.mobile,
+          type: "Create Account",
+        },
       });
     } else alert(data.output);
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <View
-        style={{
-          flex: 0.7,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: backgroundColor,
-        }}
-      >
+      <View style={styles.itemView}>
         <Text style={styles.itemTitle}>Create Account</Text>
         <Text style={styles.itemText}>Hi! Fill your information below</Text>
       </View>
@@ -155,6 +153,12 @@ const styles = StyleSheet.create({
     width: "100%",
     marginHorizontal: "auto",
   },
+  itemView: {
+    flex: 0.7,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: backgroundColor,
+  },
   itemTitle: {
     textAlign: "center",
     fontSize: 28,
@@ -170,13 +174,6 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     fontSize: 14,
     paddingHorizontal: 15,
-  },
-  bottomContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginHorizontal: 20,
-    paddingVertical: 20,
   },
 });
 

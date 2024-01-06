@@ -124,7 +124,9 @@ const Profile = () => {
     try {
       const response = await axios.post(`${backendUrl}/addpatient`, user);
       if (response.data.msg) {
-        router.push("/getStarted");
+        user.type
+          ? router.replace("/getstarted")
+          : router.replace("/Patient/menu");
       } else {
         alert("Something went wrong");
       }
@@ -134,41 +136,17 @@ const Profile = () => {
   };
   return (
     <ScrollView style={{ backgroundColor: backgroundColor }}>
-      <View
-        style={{
-          justifyContent: "center",
-          alignItems: "center",
-          marginTop: 20,
-        }}
-      >
+      <View style={styles.container}>
         <View style={{ position: "relative", width: 120 }}>
           <Image
-            source={
-              user.imageUrl
-                ? { uri: user.imageUrl }
-                : require("../../assets/images/user1.png")
-            }
-            style={{
-              borderRadius: 75,
-              width: 120,
-              height: 120,
-              objectFit: "fill",
+            source={{
+              uri: user.imageUrl
+                ? user.imageUrl
+                : "https://res.cloudinary.com/deohymauz/image/upload/v1704461039/user1_leoif6.png",
             }}
+            style={styles.image}
           />
-          <TouchableOpacity
-            onPress={pickImage}
-            style={{
-              backgroundColor: "#246BFD",
-              aspectRatio: 1,
-              height: 30,
-              borderRadius: 75,
-              justifyContent: "center",
-              alignItems: "center",
-              position: "absolute",
-              bottom: 8,
-              right: 0,
-            }}
-          >
+          <TouchableOpacity onPress={pickImage} style={styles.edit}>
             <AntDesign
               name="edit"
               size={18}
@@ -222,7 +200,10 @@ const Profile = () => {
             placeholder="Enter your address"
             numberOfLines={4}
             value={user.address}
-            style={styles.textContainer2}
+            style={[
+              styles.textContainer,
+              { textAlignVertical: "top", paddingVertical: 12, height: "auto" },
+            ]}
             onChangeText={(text) => setUser({ ...user, address: text })}
           />
         </View>
@@ -237,10 +218,10 @@ const Profile = () => {
         </View>
         <View>
           <Text style={styles.textTitle}>Gender</Text>
-          <TouchableOpacity style={styles.textPicker}>
+          <TouchableOpacity style={[styles.textContainer, styles.textPicker]}>
             <Picker
               mode={"dialog"}
-              style={styles.textPicker}
+              style={[styles.textContainer, styles.textPicker]}
               itemStyle={{ fontSize: 14, fontWeight: "600" }}
               selectedValue={user.gender}
               onValueChange={(itemValue) =>
@@ -255,10 +236,10 @@ const Profile = () => {
         </View>
         <View>
           <Text style={styles.textTitle}>bloodGroup</Text>
-          <TouchableOpacity style={styles.textPicker}>
+          <TouchableOpacity style={[styles.textContainer, styles.textPicker]}>
             <Picker
               mode={"dialog"}
-              style={styles.textPicker}
+              style={[styles.textContainer, styles.textPicker]}
               itemStyle={{ fontSize: 14, fontWeight: "600" }}
               selectedValue={user.bloodGroup}
               onValueChange={(itemValue) =>
@@ -302,7 +283,7 @@ const Profile = () => {
           <PrimaryButton
             backgroundColor="#000"
             color="#FFF"
-            label="Create Account"
+            label={user.type ? user.type : "Edit Profile Details"}
             onPress={handleSubmit}
           />
         </View>
@@ -313,9 +294,26 @@ const Profile = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "#FFF",
-    fontFamily: "Poppins-Regular",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 20,
+  },
+  image: {
+    borderRadius: 75,
+    width: 120,
+    height: 120,
+    objectFit: "fill",
+  },
+  edit: {
+    backgroundColor: "#246BFD",
+    aspectRatio: 1,
+    height: 30,
+    borderRadius: 75,
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    bottom: 8,
+    right: 0,
   },
   form: {
     flex: 2,
@@ -332,8 +330,7 @@ const styles = StyleSheet.create({
   textContainer: {
     fontSize: 14,
     fontWeight: "500",
-    paddingLeft: 12,
-    paddingRight: 12,
+    paddingHorizontal: 12,
     height: 48,
     borderRadius: 12,
     backgroundColor: whiteText,
@@ -344,58 +341,13 @@ const styles = StyleSheet.create({
     width: "100%",
     marginHorizontal: "auto",
   },
-  textContainer2: {
-    textAlignVertical: "top",
-    fontSize: 14,
-    fontWeight: "500",
-    padding: 12,
-    borderRadius: 12,
-    backgroundColor: whiteText,
-    borderColor: borderColor,
-    borderWidth: 1,
-    color: lightTextColor,
-    textDecorationLine: "none",
-    width: "100%",
-    marginHorizontal: "auto",
-  },
   textPicker: {
-    fontSize: 14,
     fontWeight: "600",
     overflow: "hidden",
     height: 44,
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 12,
-    backgroundColor: whiteText,
-    borderColor: borderColor,
-    borderWidth: 1,
-    color: lightTextColor,
-    textDecorationLine: "none",
-    width: "100%",
-    marginHorizontal: "auto",
-  },
-  itemTitle: {
-    textAlign: "center",
-    fontSize: 28,
-    fontWeight: "800",
-    marginBottom: 5,
-    color: "black",
-    paddingHorizontal: 15,
-  },
-  itemText: {
-    textAlign: "center",
-    marginHorizontal: 35,
-    color: "black",
-    lineHeight: 22,
-    fontSize: 14,
-    paddingHorizontal: 15,
-  },
-  bottomContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginHorizontal: 20,
-    paddingVertical: 20,
+    paddingHorizontal: 0,
   },
 });
 export default Profile;

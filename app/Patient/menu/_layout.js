@@ -70,6 +70,7 @@ const ChildLayout = () => {
       <Tabs.Screen
         name="userProfile"
         options={{
+          headerShown: false,
           title: "Profile",
           name: "profile",
           tabBarIcon: ({ color }) => {

@@ -1,17 +1,17 @@
-import {
-  Image,
-  Text,
-  TouchableOpacity,
-  View,
-  useWindowDimensions,
-} from "react-native";
-import React from "react";
+import { Image, Text, View, useWindowDimensions } from "react-native";
+import React, { useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import PrimaryButton from "../components/PrimaryButton";
+import { StatusBar } from "expo-status-bar";
 
 const getStarted = () => {
   const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = useWindowDimensions();
+  useEffect(() => {
+    Image.prefetch(
+      "https://res.cloudinary.com/deohymauz/image/upload/v1704449205/onboard4_mkfq3d.png"
+    );
+  }, []);
   return (
     <SafeAreaView
       style={{
@@ -21,6 +21,7 @@ const getStarted = () => {
         backgroundColor: "#FFF",
       }}
     >
+      <StatusBar style="auto" />
       <View
         style={{
           alignItems: "center",
@@ -31,7 +32,9 @@ const getStarted = () => {
         }}
       >
         <Image
-          source={require("../assets/images/onboard4.png")}
+          source={{
+            uri: "https://res.cloudinary.com/deohymauz/image/upload/v1704449205/onboard4_mkfq3d.png",
+          }}
           style={{ width: "100%", height: "100%", objectFit: "contain" }}
         />
       </View>

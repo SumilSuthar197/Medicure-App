@@ -1,34 +1,33 @@
 import React, { useEffect } from "react";
 import { router } from "expo-router";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { useFonts } from "expo-font";
+import { Image,View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { StatusBar } from "expo-status-bar";
+import { useFonts } from "expo-font";
+import * as SplashScreen from "expo-splash-screen";
 
 const HomePage = () => {
   useEffect(() => {
     const checkUserInfo = async () => {
       try {
+        await SplashScreen.preventAutoHideAsync();
         const userInfoString = await AsyncStorage.getItem("userInfo");
         const DoctorInfoString = await AsyncStorage.getItem("doctorInfo");
+        await new Promise((resolve) => setTimeout(resolve, 2000));
 
         if (userInfoString) {
-          const userInfo = JSON.parse(userInfoString);
-          router.push("/Patient/menu");
+          router.replace("/Patient/menu");
         } else if (DoctorInfoString) {
-          const userInfo = JSON.parse(DoctorInfoString);
-          router.push("/Doctor/Doctormenu");
+          router.replace("/Doctor/Doctormenu");
         } else {
-          router.push("/onboarding");
+          router.replace("/onboarding");
         }
+        await SplashScreen.hideAsync();
       } catch (error) {
         console.error("Error retrieving userInfo:", error);
       }
     };
-
-    const timer = setTimeout(() => {
-      checkUserInfo();
-    }, 2000);
-    return () => clearTimeout(timer);
+    checkUserInfo();
   }, []);
   const [fontsLoaded] = useFonts({
     "Poppins-Regular": require("../assets/fonts/Poppins-Bold.ttf"),
@@ -37,42 +36,26 @@ const HomePage = () => {
     return null;
   }
   return (
-    <View style={styles.container}>
-      <View style={styles.logo}>
-        <Image
-          style={styles.logoimage}
-          source={require("../assets/images/logo-light.png")}
-        />
-        <Text style={styles.logotext}>MediCure</Text>
-      </View>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: "#4942E4",
+      }}
+    >
+      <StatusBar backgroundColor="#4942E4" translucent={false} style="light" />
+      <Image
+        source={{
+          uri: "https://res.cloudinary.com/deohymauz/image/upload/v1704457322/100_Light_settings_invited_friends_2_n4lgbj.png",
+        }}
+        resizeMode="contain"
+        style={{
+          flex: 1,
+          width: "100%",
+          height: "100%",
+        }}
+      />
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#4942E4",
-    alignItems: "center",
-    justifyContent: "space-evenly",
-    fontSize: "20px",
-  },
-  logo: {
-    alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "row",
-    marginBottom: 40,
-  },
-  logoimage: {
-    width: 50,
-    objectFit: "contain",
-  },
-  logotext: {
-    color: "#FFF",
-    fontFamily: "Poppins-Regular",
-    fontSize: 34,
-    paddingLeft: 10,
-  },
-});
 
 export default HomePage;

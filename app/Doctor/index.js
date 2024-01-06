@@ -11,27 +11,6 @@ import * as Location from "expo-location";
 const index = () => {
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (email === null || password === null) {
-      Alert.alert("Missing Information", "Please fill all the fields");
-      return;
-    }
-
-    let { data } = await axios.post(`${backendUrl}/login`, {
-      user: "DOCTOR",
-      email: email,
-      password: password,
-    });
-    if (data.output === true) {
-      console.log("Login Successful");
-      AsyncStorage.setItem("userInfo", JSON.stringify(data.token));
-      router.push("/Doctor/Doctormenu");
-    } else alert(data.output);
-  };
-
   const handleLogin = async (e) => {
     e.preventDefault();
     const fetchLocation = async () => {
@@ -43,7 +22,6 @@ const index = () => {
         );
         return null;
       }
-
       try {
         const userLocation = await Location.getCurrentPositionAsync({});
         return {
@@ -51,12 +29,10 @@ const index = () => {
           longitude: userLocation.coords.longitude,
         };
       } catch (error) {
-        console.error("Error fetching location:", error);
         Alert.alert("Error", "An error occurred while fetching location.");
         return null;
       }
     };
-
     const login = async (location) => {
       try {
         if (email === null || password === null) {
@@ -69,12 +45,10 @@ const index = () => {
           password: password,
           location: location,
         });
-
         if (data.output === true) {
-          console.log("Login Successful");
           AsyncStorage.setItem("doctorInfo", JSON.stringify(data.token));
           AsyncStorage.setItem("doctorEmail", JSON.stringify(email));
-          router.push("/Doctor/Doctormenu");
+          router.replace("/Doctor/Doctormenu");
         } else {
           Alert.alert(
             "Login Failed",
@@ -89,26 +63,17 @@ const index = () => {
         );
       }
     };
-
     const userLocation = await fetchLocation();
     if (userLocation) {
       await login(userLocation);
     }
   };
-
   const ResetPasswordAlert = () => {
     Alert.alert(
       "Reset Password",
-      "A reset password link has been sent to your email address.",
-      [
-        {
-          text: "OK",
-          onPress: () => console.log("OK Pressed"),
-        },
-      ]
+      "A reset password link has been sent to your email address."
     );
   };
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -135,31 +100,16 @@ const index = () => {
             style={styles.textContainer}
             onChangeText={(text) => setPassword(text)}
           />
-          <Text
-            style={{
-              color: "blue",
-              textDecorationStyle: "dotted",
-              backgroundColor: "#FFF",
-              textAlign: "right",
-              paddingHorizontal: 7,
-              fontSize: 14,
-              paddingVertical: 5,
-              textDecorationLine: "underline",
-              marginBottom: 10,
-            }}
-            onPress={ResetPasswordAlert}
-          >
+          <Text style={styles.forgetPassword} onPress={ResetPasswordAlert}>
             Forgot Password
           </Text>
         </View>
-        <View>
-          <PrimaryButton
-            backgroundColor="#000"
-            color="#FFF"
-            label="Sign In"
-            onPress={handleLogin}
-          />
-        </View>
+        <PrimaryButton
+          backgroundColor="#000"
+          color="#FFF"
+          label="Sign In"
+          onPress={handleLogin}
+        />
       </View>
     </SafeAreaView>
   );
@@ -170,6 +120,22 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#FFF",
     fontFamily: "Poppins-Regular",
+  },
+  itemTitle: {
+    textAlign: "center",
+    fontSize: 28,
+    fontWeight: "800",
+    marginBottom: 10,
+    color: "black",
+    paddingHorizontal: 15,
+  },
+  itemText: {
+    textAlign: "center",
+    marginHorizontal: 35,
+    color: "black",
+    lineHeight: 22,
+    fontSize: 14,
+    paddingHorizontal: 15,
   },
   form: {
     flex: 2,
@@ -193,21 +159,16 @@ const styles = StyleSheet.create({
     width: "100%",
     marginHorizontal: "auto",
   },
-  itemTitle: {
-    textAlign: "center",
-    fontSize: 28,
-    fontWeight: "800",
-    marginBottom: 10,
-    color: "black",
-    paddingHorizontal: 15,
-  },
-  itemText: {
-    textAlign: "center",
-    marginHorizontal: 35,
-    color: "black",
-    lineHeight: 22,
+  forgetPassword: {
+    color: "blue",
+    textDecorationStyle: "dotted",
+    backgroundColor: "#FFF",
+    textAlign: "right",
+    paddingHorizontal: 7,
     fontSize: 14,
-    paddingHorizontal: 15,
+    paddingVertical: 5,
+    textDecorationLine: "underline",
+    marginBottom: 10,
   },
 });
 

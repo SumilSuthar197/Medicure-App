@@ -5,12 +5,12 @@
     "scheme": "your-app-scheme",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/icon.jpeg",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "https://res.cloudinary.com/deohymauz/image/upload/v1704457322/100_Light_settings_invited_friends_2_n4lgbj.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#4942E4"
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
@@ -20,10 +20,23 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.FOREGROUND_SERVICE"
+      ],
+      "package": "com.sumilsuthar197.medicureAppDemo"
+    },
+    "androidStatusBarColor": "#4942E4",
+    "androidStatusBar": {
+      "barStyle": "light-content",
+      "backgroundColor": "#4942E4",
+      "translucent": false
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/adaptive-icon.png"
     },
     "plugins": [
       "expo-router",
@@ -39,6 +52,14 @@
           "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
         }
       ]
-    ]
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "PROJECT_ID"
+      }
+    }
   }
 }

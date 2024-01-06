@@ -1,13 +1,5 @@
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ViewStyle,
-  StyleProp,
-  TextStyle,
-} from "react-native";
+import { Text, TouchableOpacity } from "react-native";
 import React from "react";
-
 const PrimaryButton = ({
   onPress,
   label,
@@ -32,10 +24,7 @@ const PrimaryButton = ({
       onPress={onPress}
     >
       <Text
-        style={[
-          { fontSize: 16, fontWeight: "600", color: color },
-          labelStyle,
-        ]}
+        style={[{ fontSize: 16, fontWeight: "600", color: color }, labelStyle]}
       >
         {label}
       </Text>

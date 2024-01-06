@@ -7,10 +7,6 @@ const PatientLayout = () => {
       <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen name="Doctormenu" options={{ headerShown: false }} />
       <Stack.Screen
-        name="DoctorLeave"
-        options={{ headerTitle: "Apply for Leave" }}
-      />
-      <Stack.Screen
         name="showProfile"
         options={{
           headerTitle: "Doctor's Profile",

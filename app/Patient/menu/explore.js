@@ -154,7 +154,7 @@ const Explore = () => {
   };
 
   return (
-    <View style={{ flex: 1, paddingTop: 30 }}>
+    <View style={{ flex: 1}}>
       {location && (
         <MapView
           style={{ flex: 1 }}
@@ -192,7 +192,6 @@ const Explore = () => {
           )}
         </MapView>
       )}
-
       {selectedCoordinate && (
         <View
           style={{
@@ -221,5 +220,4 @@ const Explore = () => {
     </View>
   );
 };
-
 export default Explore;

@@ -1,11 +1,18 @@
-import { View, Text, TextInput, StyleSheet, Alert } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  Alert,
+  SafeAreaView,
+} from "react-native";
 import React, { useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
 import PrimaryButton from "../../components/PrimaryButton";
 import { router } from "expo-router";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { backendUrl } from "../../constants/URL";
+import { StatusBar } from "expo-status-bar";
 
 const index = () => {
   const [email, setEmail] = useState(null);
@@ -13,12 +20,10 @@ const index = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (email === null || password === null) {
       Alert.alert("Missing Information", "Please fill all the fields");
       return;
     }
-
     let { data } = await axios.post(`${backendUrl}/login`, {
       user: "PATIENT",
       email: email,
@@ -26,7 +31,7 @@ const index = () => {
     });
     if (data.output === true) {
       AsyncStorage.setItem("userInfo", JSON.stringify(data.token));
-      router.push("/Patient/menu");
+      router.replace("/Patient/menu");
     } else alert(data.output);
   };
   const ResetPasswordAlert = () => {
@@ -36,15 +41,15 @@ const index = () => {
       [
         {
           text: "OK",
-          onPress: () => console.log("OK Pressed"),
+          onPress: () => console.log("Email Sent"),
         },
       ]
     );
   };
-
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <StatusBar style="auto" />
+      <View style={styles.itemView}>
         <Text style={styles.itemTitle}>Sign In</Text>
         <Text style={styles.itemText}>
           Hi! Welcome Back, you've been missed
@@ -68,20 +73,7 @@ const index = () => {
             style={styles.textContainer}
             onChangeText={(text) => setPassword(text)}
           />
-          <Text
-            style={{
-              color: "blue",
-              textDecorationStyle: "dotted",
-              backgroundColor: "#FFF",
-              textAlign: "right",
-              paddingHorizontal: 7,
-              fontSize: 14,
-              paddingVertical: 5,
-              textDecorationLine: "underline",
-              marginBottom: 10,
-            }}
-            onPress={ResetPasswordAlert}
-          >
+          <Text style={styles.resetText} onPress={ResetPasswordAlert}>
             Forgot Password
           </Text>
         </View>
@@ -117,6 +109,23 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
     fontFamily: "Poppins-Regular",
   },
+  itemView: { flex: 1, justifyContent: "center", alignItems: "center" },
+  itemTitle: {
+    textAlign: "center",
+    fontSize: 28,
+    fontWeight: "800",
+    marginBottom: 10,
+    color: "black",
+    paddingHorizontal: 15,
+  },
+  itemText: {
+    textAlign: "center",
+    marginHorizontal: 35,
+    color: "black",
+    lineHeight: 22,
+    fontSize: 14,
+    paddingHorizontal: 15,
+  },
   form: {
     flex: 2,
     paddingHorizontal: 15,
@@ -139,21 +148,16 @@ const styles = StyleSheet.create({
     width: "100%",
     marginHorizontal: "auto",
   },
-  itemTitle: {
-    textAlign: "center",
-    fontSize: 28,
-    fontWeight: "800",
-    marginBottom: 10,
-    color: "black",
-    paddingHorizontal: 15,
-  },
-  itemText: {
-    textAlign: "center",
-    marginHorizontal: 35,
-    color: "black",
-    lineHeight: 22,
+  resetText: {
+    color: "blue",
+    textDecorationStyle: "dotted",
+    backgroundColor: "#FFF",
+    textAlign: "right",
+    paddingHorizontal: 7,
     fontSize: 14,
-    paddingHorizontal: 15,
+    paddingVertical: 5,
+    textDecorationLine: "underline",
+    marginBottom: 10,
   },
 });
 

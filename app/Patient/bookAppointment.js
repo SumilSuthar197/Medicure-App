@@ -15,6 +15,7 @@ import PrimaryButton from "../../components/PrimaryButton";
 import CustomPicker from "../../components/CustomPicker";
 import {
   backgroundColor,
+  blueColor,
   borderColor,
   lightTextColor,
   textBlack,
@@ -30,19 +31,22 @@ import { TextInput } from "react-native-gesture-handler";
 const BookAppointment = () => {
   const [selectedDate, setSelectedDate] = useState("");
   const [markedDates, setMarkedDates] = useState({});
-  const [selectedTiming, setSelectedTiming] = useState(null);
-
+  const [selectedCountries, setSelectedCountries] = useState([]);
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
+  const [itemQuestion, setItemQuestion] = useState([]);
+  const [responses, setResponses] = useState([]);
+  const [clicked, setClicked] = useState(false);
   const item = useLocalSearchParams();
   useEffect(() => {
     setItemQuestion(item.question);
   }, []);
   const postingAppointment = async () => {
-    setLoading(true);
     try {
       const storedItem = await AsyncStorage.getItem("userInfo");
       const jwtToken = JSON.parse(storedItem);
       const newFormattedTime = startTime + "-" + endTime;
-      const response = await axios.post(
+      await axios.post(
         `${backendUrl}/ai_schedule`,
         {
           date: selectedDate,
@@ -62,128 +66,60 @@ const BookAppointment = () => {
         "Your appointment has been booked successfully. You will receive a confirmation email shortly."
       );
       setResponses([]);
-      router.push("./menu");
+      router.replace("/Patient/menu");
     } catch (e) {
       console.log(e);
-    } finally {
-      setLoading(false);
     }
   };
   const handleDayPress = (day) => {
     setSelectedDate(day.dateString);
     setMarkedDates({
-      [day.dateString]: { selected: true, marked: true, selectedColor: "blue" },
+      [day.dateString]: {
+        selected: true,
+        marked: true,
+        selectedColor: blueColor,
+      },
     });
-    setSelectedTiming(null);
   };
-
-  const [selectedCountries, setSelectedCountries] = useState([]);
-
   const handleSelectionChange = (updatedArray) => {
     setSelectedCountries(updatedArray);
   };
-  const isButtonDisabled = !selectedDate || !selectedTiming;
 
-  const { confirmPayment } = useStripe();
-  const [loading, setLoading] = useState(false);
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
-  const [itemQuestion, setItemQuestion] = useState([]);
-  const [responses, setResponses] = useState([]);
-  const [clicked, setClicked] = useState(false);
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: backgroundColor }}>
       <ScrollView>
-        <View
-          style={{
-            backgroundColor: backgroundColor,
-            flex: 1,
-            paddingHorizontal: 15,
-            paddingTop: 15,
-          }}
-        >
+        <View style={styles.topContainer}>
           <View>
             <Calendar
               style={{ borderWidth: 1, borderColor: "#e5e5e5" }}
               markedDates={markedDates}
-              markingType={"period"}
               onDayPress={handleDayPress}
             />
           </View>
-          {selectedDate && (
-            <View>
-              <Text
-                style={{
-                  fontSize: 17,
-                  fontWeight: "600",
-                  paddingVertical: 10,
-                }}
-              >
-                Selected Date: {selectedDate}
-              </Text>
-              <Text
-                style={{
-                  fontSize: 17,
-                  fontWeight: "600",
-                  paddingVertical: 10,
-                }}
-              >
-                Select Symptoms:
-              </Text>
-              <ScrollView
-                style={{
-                  backgroundColor: whiteText,
-                  height: 50,
-                  marginBottom: 20,
-                  borderRadius: 15,
-                  borderColor: "#dbeafe",
-                  paddingVertical: 8,
-                  paddingHorizontal: 10,
-                }}
-              >
-                <Text>{selectedCountries.join(", ")}</Text>
-              </ScrollView>
-              <View style={{ flex: 1 }}>
-                <CustomPicker
-                  countryList={countries}
-                  selectedCountries={selectedCountries}
-                  onSelectionChange={handleSelectionChange}
-                />
-              </View>
+          <View>
+            <Text style={styles.selectedDateText}>
+              Selected Date: {selectedDate}
+            </Text>
+            <Text style={styles.selectedDateText}>Select Symptoms:</Text>
+            <ScrollView style={styles.selectedSymptoms}>
+              <Text>{selectedCountries.join(", ")}</Text>
+            </ScrollView>
+            <View style={{ flex: 1 }}>
+              <CustomPicker
+                countryList={countries}
+                selectedCountries={selectedCountries}
+                onSelectionChange={handleSelectionChange}
+              />
             </View>
-          )}
+          </View>
         </View>
-        <View style={{ paddingHorizontal: 20, marginVertical: 20 }}>
+        <View style={styles.questionContainer}>
           {item.question &&
             item.question.split(",").map((question, index) => (
               <View key={index} style={{ marginVertical: 5 }}>
-                <Text
-                  style={{
-                    fontSize: 15,
-                    fontWeight: "600",
-                    marginBottom: 3,
-                    marginLeft: 3,
-                    color: textBlack,
-                  }}
-                >
-                  {question}
-                </Text>
+                <Text style={styles.questionText}>{question}</Text>
                 <TextInput
-                  style={{
-                    fontSize: 14,
-                    fontWeight: "500",
-                    paddingLeft: 12,
-                    paddingRight: 12,
-                    height: 48,
-                    borderRadius: 12,
-                    backgroundColor: whiteText,
-                    borderColor: borderColor,
-                    borderWidth: 1,
-                    color: lightTextColor,
-                    textDecorationLine: "none",
-                    width: "100%",
-                    marginHorizontal: "auto",
-                  }}
+                  style={styles.questionInput}
                   onChangeText={(text) => {
                     const newResponses = [...responses];
                     newResponses[index] = text;
@@ -193,10 +129,10 @@ const BookAppointment = () => {
               </View>
             ))}
         </View>
-        <View style={{ paddingHorizontal: 20, gap: 15, marginBottom: 15 }}>
+        <View style={[styles.questionContainer, { gap: 15 }]}>
           <View>
-            <Text style={styles.textTitle}>
-              Your preferred timeslot start time{" "}
+            <Text style={styles.questionText}>
+              Your preferred time slot start time
             </Text>
             <TextInput
               placeholder="09:30 AM"
@@ -206,8 +142,8 @@ const BookAppointment = () => {
             />
           </View>
           <View>
-            <Text style={styles.textTitle}>
-              Your preferred timeslot end time
+            <Text style={styles.questionText}>
+              Your preferred time slot end time
             </Text>
             <TextInput
               placeholder="09:30 PM"
@@ -217,49 +153,31 @@ const BookAppointment = () => {
             />
           </View>
         </View>
-        <View style={{ paddingHorizontal: 20, marginVertical: 10 }}>
+        <View style={styles.questionContainer}>
           <TouchableOpacity
-            style={
-              clicked
-                ? {
-                    backgroundColor: whiteText,
-                    paddingVertical: 15,
-                    paddingHorizontal: 10,
-                    flexDirection: "row",
-                    gap: 5,
-                    borderWidth: 1,
-                    borderColor: "green",
-                  }
-                : {
-                    backgroundColor: whiteText,
-                    paddingVertical: 15,
-                    paddingHorizontal: 10,
-                    flexDirection: "row",
-                    gap: 5,
-                  }
-            }
+            style={[
+              styles.paymentContainer,
+              { borderColor: clicked ? "green" : borderColor },
+            ]}
             onPress={() => setClicked(!clicked)}
           >
-            <View>
-              <Feather
-                name="check-circle"
-                size={20}
-                color={clicked ? "green" : lightTextColor}
-              />
-            </View>
-            <Text
-              style={
-                clicked
-                  ? { color: "green", paddingLeft: 5 }
-                  : { color: lightTextColor, paddingLeft: 5 }
-              }
-            >
+            <Feather
+              name="check-circle"
+              size={20}
+              color={clicked ? "green" : lightTextColor}
+            />
+            <Text style={{ color: clicked ? "green" : lightTextColor }}>
               Pay using your wallet
             </Text>
           </TouchableOpacity>
-        </View>
-        <Text style={{ color: textBlack, textAlign: "center" }}>OR</Text>
-        <View style={{ marginHorizontal: 20, marginTop: 10 }}>
+          <Text
+            style={[
+              styles.questionText,
+              { textAlign: "center", paddingVertical: 8 },
+            ]}
+          >
+            OR
+          </Text>
           <CardField
             postalCodeEnabled={false}
             placeholder={{
@@ -275,13 +193,12 @@ const BookAppointment = () => {
             }}
           />
         </View>
-        <View style={{ marginVertical: 20, paddingHorizontal: 20 }}>
+        <View style={styles.questionContainer}>
           <PrimaryButton
             backgroundColor="#246BFD"
             color="#FFF"
             label="Make Payment"
             onPress={postingAppointment}
-            disabled={loading}
           />
         </View>
       </ScrollView>
@@ -290,13 +207,55 @@ const BookAppointment = () => {
 };
 
 const styles = StyleSheet.create({
-  textTitle: {
+  topContainer: {
+    backgroundColor: backgroundColor,
+    flex: 1,
+    paddingHorizontal: 15,
+    paddingVertical: 15,
+  },
+  selectedDateText: {
+    fontSize: 17,
+    fontWeight: "600",
+    paddingVertical: 10,
+  },
+  selectedSymptoms: {
+    backgroundColor: whiteText,
+    height: 60,
+    borderRadius: 10,
+    marginBottom: 10,
+    padding: 10,
+  },
+  questionContainer: { paddingHorizontal: 20, marginBottom: 20 },
+  questionText: {
     fontSize: 14,
     fontWeight: "600",
     marginBottom: 3,
     marginLeft: 3,
     color: textBlack,
   },
+  questionInput: {
+    fontSize: 14,
+    fontWeight: "500",
+    paddingHorizontal: 12,
+    height: 48,
+    borderRadius: 12,
+    backgroundColor: whiteText,
+    borderColor: borderColor,
+    borderWidth: 1,
+    color: lightTextColor,
+    textDecorationLine: "none",
+    width: "100%",
+    marginHorizontal: "auto",
+  },
+  paymentContainer: {
+    backgroundColor: whiteText,
+    paddingVertical: 15,
+    paddingHorizontal: 10,
+    flexDirection: "row",
+    gap: 5,
+    borderWidth: 1,
+  },
+  paymentText: { color: textBlack, textAlign: "center" },
   textContainer: {
     fontSize: 14,
     fontWeight: "500",

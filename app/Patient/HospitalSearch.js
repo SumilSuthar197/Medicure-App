@@ -24,7 +24,6 @@ import {
   textBlack,
   whiteText,
 } from "../../constants/color";
-import { router, useLocalSearchParams } from "expo-router";
 import { backendUrl } from "../../constants/URL";
 import BottomSheet, { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 import PrimaryButton from "../../components/PrimaryButton";
@@ -49,110 +48,42 @@ const HospitalSearch = () => {
           setHospital(data.name);
         }}
       >
-        <View
-          style={{
-            marginVertical: 10,
-            padding: 12,
-            borderRadius: 15,
-            backgroundColor: whiteText,
-            borderWidth: 1,
-            borderColor: borderColor,
-          }}
-        >
+        <View style={styles.hospitalCard}>
           <View style={{ flexDirection: "row", gap: 20 }}>
             <View>
               <Image
-                style={{
-                  width: 50,
-                  height: 50,
-                  objectFit: "fill",
-                  borderRadius: 99,
+                style={styles.hospitalImage}
+                source={{
+                  uri: data.image
+                    ? data.image
+                    : "https://res.cloudinary.com/dp9kpxfpa/image/upload/v1702994737/g2eobivztu6qbjlvxhbp.jpg",
                 }}
-                source={
-                  data.image
-                    ? { uri: data.image }
-                    : require("../../assets/images/Image.png")
-                }
               />
             </View>
             <View style={{ gap: 3, justifyContent: "center" }}>
-              <Text
-                style={{ fontSize: 16, fontWeight: "600", color: textBlack }}
-              >
-                {data.name}
-              </Text>
-              <Text
-                style={{
-                  fontSize: 14,
-                  fontWeight: "500",
-                  color: lightTextColor,
-                }}
-              >
-                {data.city}
-              </Text>
+              <Text style={styles.hospitalName}>{data.name}</Text>
+              <Text style={styles.hospitalCity}>{data.city}</Text>
             </View>
           </View>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              paddingTop: 10,
-              paddingHorizontal: 5,
-            }}
-          >
-            <View style={{ flexDirection: "row" }}>
-              <Text
-                style={{
-                  color: lightTextColor,
-                  fontSize: 12,
-                  fontWeight: "500",
-                  textAlign: "center",
-                }}
-              >
-                <Ionicons name="ios-call" size={14} color={lightTextColor} />
-                {data.mobile}
-              </Text>
+          <View style={styles.row2}>
+            <View style={styles.subTitleView}>
+              <Ionicons name="ios-call" size={14} color={lightTextColor} />
+              <Text style={styles.subTitleText}>{data.mobile}</Text>
             </View>
-            <Text style={{ color: lightTextColor }}>|</Text>
-            <View
-              style={{
-                justifyContent: "center",
-                alignItems: "center",
-                flexDirection: "row",
-                gap: 3,
-              }}
-            >
+            <Text style={styles.subTitleText}>|</Text>
+            <View style={styles.subTitleView}>
               <MaterialIcons name="email" size={14} color={lightTextColor} />
-              <Text
-                style={{
-                  color: lightTextColor,
-                  fontSize: 12,
-                  fontWeight: "500",
-                  textAlign: "center",
-                }}
-              >
-                {data.email}
-              </Text>
+              <Text style={styles.subTitleText}>{data.email}</Text>
             </View>
-            <Text style={{ color: lightTextColor }}>|</Text>
-            <Text
-              style={{
-                color: lightTextColor,
-                fontSize: 12,
-                fontWeight: "500",
-                textAlign: "center",
-              }}
-            >
-              Karnataka
-            </Text>
+            <Text style={styles.subTitleText}>|</Text>
+            <Text style={styles.subTitleText}>Karnataka</Text>
           </View>
         </View>
       </TouchableOpacity>
     );
   };
 
-  const [doctorCardData, setDoctorCardData] = useState([]);
+  const [hospitalCardData, setHospitalCardData] = useState([]);
   const [symptoms, setSymptoms] = useState("");
   const [hospital, setHospital] = useState("");
 
@@ -170,7 +101,7 @@ const HospitalSearch = () => {
     const fetchData = async () => {
       try {
         let response = await axios.get(`${backendUrl}/allhospitals`);
-        setDoctorCardData(response.data);
+        setHospitalCardData(response.data);
         setIsLoading(false);
       } catch (error) {
         console.error("Error fetching data: ", error);
@@ -200,19 +131,21 @@ const HospitalSearch = () => {
         />
       </View>
       <ScrollView style={{ flex: 1 }}>
-        <View style={{ paddingHorizontal: 18, flex: 1 }}>
+        <View style={styles.scrollView}>
           {isLoading === false ? (
-            doctorCardData
-              .filter((doctor) =>
+            hospitalCardData
+              .filter((hospital) =>
                 searchTerm
-                  ? doctor.name
-                    ? doctor.name
+                  ? hospital.name
+                    ? hospital.name
                         .toLowerCase()
                         .includes(searchTerm.toLowerCase())
                     : false
                   : true
               )
-              .map((doctor, index) => <HospitalCard key={index} {...doctor} />)
+              .map((hospital, index) => (
+                <HospitalCard key={index} {...hospital} />
+              ))
           ) : (
             <ActivityIndicator size="large" color="#246BFD" />
           )}
@@ -221,48 +154,15 @@ const HospitalSearch = () => {
       <BottomSheet
         ref={bottomSheetRef}
         backdropComponent={renderBackdrop}
-        style={{
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: 6 },
-          shadowOpacity: 0.8,
-          shadowRadius: 10,
-          elevation: 10,
-          borderTopLeftRadius: 25,
-          borderTopRightRadius: 25,
-        }}
+        style={styles.bottomSheet}
         index={-1}
         snapPoints={snapPoint}
       >
         <View style={{ paddingHorizontal: 15, paddingVertical: 5 }}>
-          <Text
-            style={{
-              fontSize: 16,
-              fontWeight: "600",
-              marginBottom: 5,
-              marginLeft: 3,
-              color: textBlack,
-            }}
-          >
-            Enter your Symptoms
-          </Text>
+          <Text style={styles.bottomSheetText}>Enter your Symptoms</Text>
           <TextInput
             placeholder="Symptoms"
-            style={{
-              fontSize: 14,
-              fontWeight: "500",
-              paddingLeft: 12,
-              paddingRight: 12,
-              height: 48,
-              borderRadius: 12,
-              backgroundColor: whiteText,
-              borderColor: borderColor,
-              borderWidth: 1,
-              color: lightTextColor,
-              textDecorationLine: "none",
-              width: "100%",
-              marginHorizontal: "auto",
-              marginBottom: 20,
-            }}
+            style={styles.bottomSheetInput}
             value={symptoms}
             onChangeText={(text) => setSymptoms(text)}
           />
@@ -280,28 +180,6 @@ const HospitalSearch = () => {
 
 const styles = StyleSheet.create({
   main: { flex: 1, backgroundColor: backgroundColor },
-  mainContainer: {
-    padding: 10,
-    borderRadius: 15,
-    borderWidth: 1,
-    borderColor: "#e5e5e5",
-    marginBottom: 15,
-  },
-  img: {
-    width: 100,
-    height: 110,
-    objectFit: "fill",
-    borderRadius: 15,
-  },
-  btn: {
-    backgroundColor: "#dbeafe",
-    paddingHorizontal: 32,
-    height: 45,
-    borderRadius: 15,
-    marginTop: 12,
-    alignItems: "center",
-    justifyContent: "center",
-  },
   iconContainer: {
     display: "flex",
     flexDirection: "row",
@@ -317,5 +195,76 @@ const styles = StyleSheet.create({
     borderRadius: 15,
   },
   inputText: { width: "100%", color: lightTextColor },
+  scrollView: { paddingHorizontal: 18, flex: 1 },
+  bottomSheet: {
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.8,
+    shadowRadius: 10,
+    elevation: 10,
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+  },
+  bottomSheetText: {
+    fontSize: 16,
+    fontWeight: "600",
+    marginBottom: 5,
+    marginLeft: 3,
+    color: textBlack,
+  },
+  bottomSheetInput: {
+    fontSize: 14,
+    fontWeight: "500",
+    paddingHorizontal: 12,
+    height: 48,
+    borderRadius: 12,
+    backgroundColor: whiteText,
+    borderColor: borderColor,
+    borderWidth: 1,
+    color: lightTextColor,
+    textDecorationLine: "none",
+    width: "100%",
+    marginHorizontal: "auto",
+    marginBottom: 20,
+  },
+  hospitalCard: {
+    marginVertical: 10,
+    padding: 12,
+    borderRadius: 15,
+    backgroundColor: whiteText,
+    borderWidth: 1,
+    borderColor: borderColor,
+  },
+  hospitalImage: {
+    width: 50,
+    height: 50,
+    objectFit: "fill",
+    borderRadius: 99,
+  },
+  hospitalName: { fontSize: 16, fontWeight: "600", color: textBlack },
+  hospitalCity: {
+    fontSize: 14,
+    fontWeight: "500",
+    color: lightTextColor,
+  },
+  row2: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingTop: 10,
+    paddingHorizontal: 5,
+  },
+  subTitleView: {
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
+    gap: 4,
+  },
+  subTitleText: {
+    color: lightTextColor,
+    fontSize: 12,
+    fontWeight: "500",
+    textAlign: "center",
+  },
 });
 export default HospitalSearch;

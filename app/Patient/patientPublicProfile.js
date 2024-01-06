@@ -9,10 +9,7 @@ import {
   Dimensions,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { iconItem } from "../../constants/data";
-import PrimaryButton from "../../components/PrimaryButton";
 import { Ionicons, FontAwesome5, AntDesign } from "@expo/vector-icons";
-import { router, useLocalSearchParams } from "expo-router";
 import {
   backgroundColor,
   blueColor,
@@ -22,26 +19,19 @@ import {
   whiteText,
 } from "../../constants/color";
 import { useSharedValue } from "react-native-reanimated";
-
-import MapView, {
-  Callout,
-  Marker,
-  PROVIDER_GOOGLE,
-  Region,
-} from "react-native-maps";
+import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { backendUrl } from "../../constants/URL";
 import axios from "axios";
+import ErrorPage from "../../components/ErrorPage";
 
 const patientPublicProfile = () => {
   const translateX = useSharedValue(0);
   const [activeIndex, setActiveIndex] = useState(0);
-  const item = useLocalSearchParams();
   const tabs = [
     { title: "Profile", index: 0 },
     { title: "Report", index: 1 },
   ];
-
   const [user, setUser] = useState({});
   useEffect(() => {
     const fetchData = async () => {
@@ -107,11 +97,15 @@ const patientPublicProfile = () => {
               <View>
                 <View style={styles.contactRow}>
                   <Ionicons name="md-call" size={20} color={lightTextColor} />
-                  <Text style={styles.bottomCardText2}> {user.mobile}</Text>
+                  <Text style={[styles.bottomCardText, { marginLeft: 8 }]}>
+                    {user.mobile}
+                  </Text>
                 </View>
                 <View style={styles.contactRow}>
                   <Ionicons name="md-mail" size={20} color={lightTextColor} />
-                  <Text style={styles.bottomCardText2}> {user.email}</Text>
+                  <Text style={[styles.bottomCardText, { marginLeft: 8 }]}>
+                    {user.email}
+                  </Text>
                 </View>
                 <View style={styles.contactRow}>
                   <FontAwesome5
@@ -119,7 +113,9 @@ const patientPublicProfile = () => {
                     size={18}
                     color={lightTextColor}
                   />
-                  <Text style={styles.bottomCardText2}> {user.address}</Text>
+                  <Text style={[styles.bottomCardText, { marginLeft: 8 }]}>
+                    {user.address}
+                  </Text>
                 </View>
               </View>
               <View
@@ -139,89 +135,39 @@ const patientPublicProfile = () => {
       case 1:
         if (user.ehr.length === 0)
           return (
-            <View
-              style={{
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-                marginTop: Dimensions.get("window").height * 0.1,
-              }}
-            >
-              <Image
-                source={require("../../assets/images/Appointment.png")}
-                style={{
-                  width: Dimensions.get("window").width * 0.8,
-                  height: Dimensions.get("window").height * 0.3,
-                }}
-              />
-              <Text style={{ fontSize: 18, fontWeight: "600", marginTop: 20 }}>
-                You don't have any report yet
-              </Text>
-            </View>
+            <ErrorPage
+              height={Dimensions.get("window").height}
+              width={Dimensions.get("window").width}
+              textContent="You don't have any report yet"
+            />
           );
         return (
           <View>
             <Text style={styles.bottomCardTitle}>Prescription:</Text>
             <View>
               {user.ehr.map((item, index) => (
-                <View key={index}>
-                  <View
-                    style={{
-                      marginVertical: 10,
-                      padding: 12,
-                      borderRadius: 15,
-                      backgroundColor: whiteText,
-                      borderWidth: 1,
-                      borderColor: borderColor,
-                    }}
-                  >
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                      }}
+                <View key={index} style={styles.reportCard}>
+                  <View style={{ gap: 3, justifyContent: "center" }}>
+                    <Text style={styles.reportCardTitle}>
+                      Report {index + 1} -{" "}
+                      {new Date(
+                        item.date.split("-").reverse().join("-")
+                      ).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </Text>
+                    <Text style={styles.reportCardText}>
+                      Prescribed by Dr. {item.doctor_name}
+                    </Text>
+                  </View>
+                  <View style={styles.reportCardButton}>
+                    <TouchableOpacity
+                      onPress={() => Linking.openURL(item.prescription_url)}
                     >
-                      <View style={{ gap: 3, justifyContent: "center" }}>
-                        <Text
-                          style={{
-                            fontSize: 14,
-                            fontWeight: "600",
-                            color: textBlack,
-                          }}
-                        >
-                          Report {index + 1} -{" "}
-                          {new Date(
-                            item.date.split("-").reverse().join("-")
-                          ).toLocaleDateString("en-US", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                          })}
-                        </Text>
-                        <Text
-                          style={{
-                            fontSize: 13,
-                            fontWeight: "500",
-                            color: lightTextColor,
-                          }}
-                        >
-                          Prescribed by Dr. {item.doctor_name}
-                        </Text>
-                      </View>
-                      <View
-                        style={{
-                          justifyContent: "center",
-                          alignItems: "center",
-                          paddingHorizontal: 5,
-                        }}
-                      >
-                        <TouchableOpacity
-                          onPress={() => Linking.openURL(item.prescription_url)}
-                        >
-                          <AntDesign name="download" size={24} color="black" />
-                        </TouchableOpacity>
-                      </View>
-                    </View>
+                      <AntDesign name="download" size={24} color="black" />
+                    </TouchableOpacity>
                   </View>
                 </View>
               ))}
@@ -232,7 +178,6 @@ const patientPublicProfile = () => {
         return null;
     }
   };
-
   return (
     <View style={styles.main}>
       <View style={styles.topContainer}>
@@ -240,11 +185,11 @@ const patientPublicProfile = () => {
           <View style={{ borderRadius: 15 }}>
             <Image
               style={styles.doctorImage}
-              source={
-                user.imageUrl
-                  ? { uri: user.imageUrl }
-                  : require("../../assets/images/Image.png")
-              }
+              source={{
+                uri: user.imageUrl
+                  ? user.imageUrl
+                  : "https://res.cloudinary.com/deohymauz/image/upload/v1704461039/user1_leoif6.png",
+              }}
             />
           </View>
           <View style={styles.topCardRow}>
@@ -252,7 +197,7 @@ const patientPublicProfile = () => {
             <Text style={styles.doctorType}>{user.city}</Text>
           </View>
         </View>
-        <View style={styles.bottonContainer}>
+        <View style={styles.bottomContainer}>
           <View style={styles.tabContainer}>
             {tabs.map((tab) => (
               <TouchableOpacity
@@ -276,16 +221,8 @@ const patientPublicProfile = () => {
               </TouchableOpacity>
             ))}
           </View>
-
           <ScrollView style={{ paddingTop: 20 }}>
-            <View
-              style={{
-                paddingHorizontal: 5,
-                marginBottom: 60,
-              }}
-            >
-              {renderContent()}
-            </View>
+            <View style={styles.renderContent}>{renderContent()}</View>
           </ScrollView>
         </View>
       </View>
@@ -299,12 +236,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 20,
   },
-  doctorImage: {
-    width: 100,
-    height: 100,
-    objectFit: "fill",
-    borderRadius: 75,
-  },
   topCard: {
     flexDirection: "row",
     gap: 15,
@@ -313,6 +244,12 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     flex: 1,
     alignItems: "center",
+  },
+  doctorImage: {
+    width: 100,
+    height: 100,
+    objectFit: "fill",
+    borderRadius: 75,
   },
   topCardRow: {
     justifyContent: "center",
@@ -331,16 +268,7 @@ const styles = StyleSheet.create({
     marginBottom: 3,
     color: whiteText,
   },
-  call: {
-    borderWidth: 1,
-    borderColor: whiteText,
-    borderRadius: 25,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-  },
-  doctorReviews: { fontSize: 13, color: whiteText },
-  button: { flexDirection: "row" },
-  bottonContainer: {
+  bottomContainer: {
     borderRadius: 35,
     borderBottomRightRadius: 0,
     borderBottomLeftRadius: 0,
@@ -351,25 +279,10 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   bottomCardText: { color: lightTextColor, fontSize: 16, lineHeight: 22 },
-  bottomCardText2: {
-    color: lightTextColor,
-    fontSize: 16,
-    lineHeight: 22,
-    marginLeft: 5,
-  },
-  bottomCardText3: {
-    color: lightTextColor,
-    fontSize: 16,
-  },
   bottomCardTitle: {
     fontSize: 18,
     fontWeight: "600",
     marginBottom: 10,
-    color: textBlack,
-  },
-  bottomCardTitle2: {
-    fontSize: 18,
-    fontWeight: "600",
     color: textBlack,
   },
   tabContainer: {
@@ -409,6 +322,35 @@ const styles = StyleSheet.create({
     width: "30%",
   },
   contactRow: { flexDirection: "row", alignItems: "center", marginVertical: 5 },
+  reportCard: {
+    marginVertical: 10,
+    padding: 12,
+    borderRadius: 15,
+    backgroundColor: whiteText,
+    borderWidth: 1,
+    borderColor: borderColor,
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  reportCardTitle: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: textBlack,
+  },
+  reportCardText: {
+    fontSize: 13,
+    fontWeight: "500",
+    color: lightTextColor,
+  },
+  reportCardButton: {
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 5,
+  },
+  renderContent: {
+    paddingHorizontal: 5,
+    marginBottom: 60,
+  },
 });
 
 export default patientPublicProfile;

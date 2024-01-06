@@ -10,7 +10,7 @@ import {
   Alert,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { router, useLocalSearchParams } from "expo-router";
+import { router } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
 import { AntDesign } from "@expo/vector-icons";
 import PrimaryButton from "../../components/PrimaryButton";
@@ -29,6 +29,19 @@ const EditProfileDoc = () => {
   const [image, setImage] = useState(null);
 
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const storedItem = await AsyncStorage.getItem("doctorEmail");
+        const doctorEmail = JSON.parse(storedItem);
+        const response = await axios.get(
+          `${backendUrl}/get_doctor_email/${doctorEmail}`
+        );
+        setUser(response.data);
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+      }
+    };
+    fetchData();
     (async () => {
       if (Platform.OS !== "web") {
         const { status } =
@@ -73,29 +86,15 @@ const EditProfileDoc = () => {
         }
       );
       setImage(response.data.secure_url);
-      setUser({ ...user, imageUrl: response.data.secure_url });
+      setUser({ ...user, image: response.data.secure_url });
     } catch (e) {
-      console.log(e);
+      Alert.alert(
+        "Upload Failed",
+        "An error occurred while uploading the image. Please try again."
+      );
     }
   };
-
-  const item = useLocalSearchParams();
   const [user, setUser] = useState({});
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const storedItem = await AsyncStorage.getItem("doctorEmail");
-        const doctorEmail = JSON.parse(storedItem);
-        const response = await axios.get(
-          `${backendUrl}/get_doctor_email/${doctorEmail}`
-        );
-        setUser(response.data);
-      } catch (error) {
-        console.error("Error fetching data: ", error);
-      }
-    };
-    fetchData();
-  }, []);
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (
@@ -123,7 +122,7 @@ const EditProfileDoc = () => {
         }
       );
       if (response.data.msg) {
-        router.push("/Doctor/Doctormenu");
+        router.replace("/Doctor/Doctormenu");
       } else {
         alert("Something went wrong");
       }
@@ -131,10 +130,8 @@ const EditProfileDoc = () => {
       console.log(error);
     }
   };
-
   const [inputs, setInputs] = useState([""]);
   const [inputValues, setInputValues] = useState([]);
-  console.log(inputValues);
   const addInput = () => {
     setInputs([...inputs, ""]);
   };
@@ -143,48 +140,23 @@ const EditProfileDoc = () => {
     newInputs[index] = text;
     setInputs(newInputs);
   };
-
   const saveInputs = () => {
     setInputValues([...inputValues, ...inputs]);
     setInputs([""]);
   };
   return (
     <ScrollView style={{ backgroundColor: backgroundColor }}>
-      <View
-        style={{
-          justifyContent: "center",
-          alignItems: "center",
-          marginTop: 20,
-        }}
-      >
-        <View style={{ position: "relative", width: 120 }}>
+      <View style={styles.main}>
+        <View style={styles.imageContainer}>
           <Image
-            source={
-              user.image
-                ? { uri: user.image }
-                : require("../../assets/images/user1.png")
-            }
-            style={{
-              borderRadius: 75,
-              width: 120,
-              height: 120,
-              objectFit: "fill",
+            source={{
+              uri: user.image
+                ? user.image
+                : "https://res.cloudinary.com/deohymauz/image/upload/v1704545467/demoDoctor_hkhmdp.jpg",
             }}
+            style={styles.image}
           />
-          <TouchableOpacity
-            onPress={pickImage}
-            style={{
-              backgroundColor: "#246BFD",
-              aspectRatio: 1,
-              height: 30,
-              borderRadius: 75,
-              justifyContent: "center",
-              alignItems: "center",
-              position: "absolute",
-              bottom: 8,
-              right: 0,
-            }}
-          >
+          <TouchableOpacity onPress={pickImage} style={styles.pickImage}>
             <AntDesign
               name="edit"
               size={18}
@@ -235,7 +207,7 @@ const EditProfileDoc = () => {
             />
           </View>
         ))}
-        <View style={{ display: "flex", flexDirection: "row", gap: 15 }}>
+        <View style={styles.buttonRow}>
           <PrimaryButton
             style={{ width: "47%" }}
             backgroundColor="#000"
@@ -265,10 +237,28 @@ const EditProfileDoc = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#FFF",
-    fontFamily: "Poppins-Regular",
+  main: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 20,
+  },
+  imageContainer: { position: "relative", width: 120 },
+  image: {
+    borderRadius: 75,
+    width: 120,
+    height: 120,
+    objectFit: "fill",
+  },
+  pickImage: {
+    backgroundColor: "#246BFD",
+    aspectRatio: 1,
+    height: 30,
+    borderRadius: 75,
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    bottom: 8,
+    right: 0,
   },
   form: {
     flex: 2,
@@ -285,8 +275,7 @@ const styles = StyleSheet.create({
   textContainer: {
     fontSize: 14,
     fontWeight: "500",
-    paddingLeft: 12,
-    paddingRight: 12,
+    paddingHorizontal: 12,
     height: 48,
     borderRadius: 12,
     backgroundColor: whiteText,
@@ -297,58 +286,6 @@ const styles = StyleSheet.create({
     width: "100%",
     marginHorizontal: "auto",
   },
-  textContainer2: {
-    textAlignVertical: "top",
-    fontSize: 14,
-    fontWeight: "500",
-    padding: 12,
-    borderRadius: 12,
-    backgroundColor: whiteText,
-    borderColor: borderColor,
-    borderWidth: 1,
-    color: lightTextColor,
-    textDecorationLine: "none",
-    width: "100%",
-    marginHorizontal: "auto",
-  },
-  textPicker: {
-    fontSize: 14,
-    fontWeight: "600",
-    overflow: "hidden",
-    height: 44,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 12,
-    backgroundColor: whiteText,
-    borderColor: borderColor,
-    borderWidth: 1,
-    color: lightTextColor,
-    textDecorationLine: "none",
-    width: "100%",
-    marginHorizontal: "auto",
-  },
-  itemTitle: {
-    textAlign: "center",
-    fontSize: 28,
-    fontWeight: "800",
-    marginBottom: 5,
-    color: "black",
-    paddingHorizontal: 15,
-  },
-  itemText: {
-    textAlign: "center",
-    marginHorizontal: 35,
-    color: "black",
-    lineHeight: 22,
-    fontSize: 14,
-    paddingHorizontal: 15,
-  },
-  bottomContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginHorizontal: 20,
-    paddingVertical: 20,
-  },
+  buttonRow: { display: "flex", flexDirection: "row", gap: 15 },
 });
 export default EditProfileDoc;

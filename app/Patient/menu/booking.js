@@ -4,73 +4,88 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  ActivityIndicator,
-  Image,
   ScrollView,
   Dimensions,
 } from "react-native";
-import { AntDesign, Zocial, Feather, FontAwesome } from "@expo/vector-icons";
 import {
   backgroundColor,
   blueColor,
-  borderColor,
-  lightTextColor,
-  textBlack,
   whiteText,
 } from "../../../constants/color";
-import Animated, {
-  useSharedValue,
-  withTiming,
-  runOnJS,
-  useAnimatedStyle,
-} from "react-native-reanimated";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { backendUrl } from "../../../constants/URL";
 import { router } from "expo-router";
+import ErrorPage from "../../../components/ErrorPage";
+import AppointmentCard from "../../../components/AppointmentCard";
 
 const Booking = () => {
-  const translateX = useSharedValue(0);
   const [activeIndex, setActiveIndex] = useState(0);
   const [upcomingData, setUpcomingData] = useState([]);
   const [cancelData, setCancelData] = useState([]);
   const [completedData, setCompletedData] = useState([]);
-
-  async function cancelAppointment(appointment_id, email, date) {
+  var jwtToken = null;
+  const handleCancel = async ({ time, doctor_email, date }) => {
     try {
-      const response = axios.post(
-        `${backendUrl}/cancel_appointment_after/${appointment_id}`,
-        { appointment_id, email, date }
+      const response = await axios.post(
+        `${backendUrl}/cancel_appt`,
+        {
+          time: time,
+          doctor_email: doctor_email,
+          date: date,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        }
       );
-      console.log("appointment sent to backend:", response.data);
+      console.log(response.data.msg);
+    } catch (error) {
+      console.error(error);
+    }
+    handleTabPress(0);
+  };
+  const handleReschedule = async ({ time, doctor_email, date }) => {
+    try {
+      const response = await axios.post(
+        `${backendUrl}/cancel_appt`,
+        {
+          time: time,
+          doctor_email: doctor_email,
+          date: date,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        }
+      );
+      console.log(response.data.msg);
+      router.push({
+        pathname: "/Patient/doctorDetails",
+        params: { email: item.doctor_email },
+      });
     } catch (error) {
       console.error("Error sending location to backend:", error);
     }
-  }
-
-  function getUpcomingData(data) {
-    setUpcomingData(data);
-  }
+  };
   useEffect(() => {
-    const fetchData = async (typeOfAppointment, settingFunction) => {
+    const fetchData = async () => {
       try {
         const storedItem = await AsyncStorage.getItem("userInfo");
-        const jwtToken = JSON.parse(storedItem);
-        const response = await axios.get(
-          `${backendUrl}/get_appt/${typeOfAppointment}`,
-          {
-            headers: {
-              Authorization: `Bearer ${jwtToken}`,
-            },
-          }
-        );
-        settingFunction(response.data.appointments);
-        console.log(response.data.appointments);
+        jwtToken = JSON.parse(storedItem);
+        const response = await axios.get(`${backendUrl}/get_appt/UPCOMING`, {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        });
+        setUpcomingData(response.data.appointments);
       } catch (error) {
         console.log(error);
       }
     };
-    fetchData("UPCOMING", getUpcomingData);
+    fetchData();
   }, []);
 
   const tabs = [
@@ -84,522 +99,53 @@ const Booking = () => {
       case 0:
         if (upcomingData.length === 0)
           return (
-            <View
-              style={{
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-                marginTop: Dimensions.get("window").height * 0.1,
-              }}
-            >
-              <Image
-                source={require("../../../assets/images/Appointment.png")}
-                style={{
-                  width: Dimensions.get("window").width * 0.8,
-                  height: Dimensions.get("window").height * 0.3,
-                }}
-              />
-              <Text style={{ fontSize: 18, fontWeight: "600", marginTop: 20 }}>
-                You don't have an appointment yet
-              </Text>
-            </View>
+            <ErrorPage
+              height={Dimensions.get("window").height}
+              width={Dimensions.get("window").width}
+              textContent="You don't have an appointment yet"
+            />
           );
         return upcomingData.map((item, index) => (
-          <View
+          <AppointmentCard
             key={index}
-            style={{
-              backgroundColor: whiteText,
-              padding: 15,
-              borderRadius: 10,
-              borderWidth: 1,
-              borderColor: borderColor,
-              marginVertical: 8,
-            }}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                borderBottomColor: backgroundColor,
-                paddingBottom: 15,
-                borderBottomWidth: 1,
-              }}
-            >
-              <View style={{ justifyContent: "center" }}>
-                <Text
-                  style={{
-                    color: textBlack,
-                    fontSize: 16,
-                    paddingBottom: 3,
-                    fontWeight: "600",
-                  }}
-                >
-                  Dr. {item.doctor_name}
-                </Text>
-                <Text
-                  style={{ color: "grey", fontSize: 14, fontWeight: "500" }}
-                >
-                  {item.doctor_email}
-                </Text>
-              </View>
-              <Image
-                style={{
-                  width: 50,
-                  height: 50,
-                  objectFit: "fill",
-                  borderRadius: 99,
-                }}
-                source={
-                  item.image
-                    ? { uri: item.image }
-                    : require("../../../assets/images/Image.png")
-                }
-              />
-            </View>
-            <View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  paddingVertical: 15,
-                  justifyContent: "space-between",
-                }}
-              >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <AntDesign name="calendar" size={14} color="#777777" />
-                  <Text style={{ color: lightTextColor, marginLeft: 5 }}>
-                    {item.date}
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <AntDesign name="clockcircleo" size={14} color="#777777" />
-                  <Text style={{ color: lightTextColor }}>
-                    {" "}
-                    {item.time || "10:30 AM"}
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <FontAwesome
-                    name="circle"
-                    size={10}
-                    color={item.status === "UPCOMING" ? "green" : "red"}
-                  />
-                  <Text style={{ color: lightTextColor }}> Confirmed</Text>
-                </View>
-              </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
-                <TouchableOpacity
-                  style={{
-                    backgroundColor: backgroundColor,
-                    height: 40,
-                    width: "45%",
-                    borderRadius: 15,
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                  onPress={async () => {
-                    try {
-                      const storedItem = await AsyncStorage.getItem("userInfo");
-                      const jwtToken = JSON.parse(storedItem);
-                      const response = await axios.post(
-                        `${backendUrl}/cancel_appt`,
-                        {
-                          time: item.time,
-                          doctor_email: item.doctor_email,
-                          date: item.date,
-                        },
-                        {
-                          headers: {
-                            Authorization: `Bearer ${jwtToken}`,
-                          },
-                        }
-                      );
-                      console.log(response.data.msg);
-                    } catch (error) {
-                      console.error(
-                        "Error sending location to backend:",
-                        error
-                      );
-                    }
-                    handleTabPress(0);
-                  }}
-                >
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      fontWeight: "500",
-                      color: textBlack,
-                    }}
-                  >
-                    Cancel
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={{
-                    backgroundColor: blueColor,
-                    height: 40,
-                    width: "50%",
-                    borderRadius: 15,
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                  onPress={async () => {
-                    try {
-                      const storedItem = await AsyncStorage.getItem("userInfo");
-                      const jwtToken = JSON.parse(storedItem);
-                      const response = await axios.post(
-                        `${backendUrl}/cancel_appt`,
-                        {
-                          time: item.time,
-                          doctor_email: item.doctor_email,
-                          date: item.date,
-                        },
-                        {
-                          headers: {
-                            Authorization: `Bearer ${jwtToken}`,
-                          },
-                        }
-                      );
-                      console.log(response.data.msg);
-                      router.push({
-                        pathname: "/Patient/doctorDetails",
-                        params: { email: item.doctor_email },
-                      });
-                    } catch (error) {
-                      console.error(
-                        "Error sending location to backend:",
-                        error
-                      );
-                    }
-                  }}
-                >
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      fontWeight: "500",
-                      color: whiteText,
-                    }}
-                  >
-                    Reschedule
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
+            item={{ ...item, button1: "Cancel", button2: "Reschedule" }}
+            handleButton1={handleCancel}
+            handleButton2={handleReschedule}
+          />
         ));
       case 1:
         if (cancelData.length === 0)
           return (
-            <View
-              style={{
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-                marginTop: Dimensions.get("window").height * 0.1,
-              }}
-            >
-              <Image
-                source={require("../../../assets/images/Appointment.png")}
-                style={{
-                  width: Dimensions.get("window").width * 0.8,
-                  height: Dimensions.get("window").height * 0.3,
-                }}
-              />
-              <Text style={{ fontSize: 18, fontWeight: "600", marginTop: 20 }}>
-                You don't have an appointment yet
-              </Text>
-            </View>
+            <ErrorPage
+              height={Dimensions.get("window").height}
+              width={Dimensions.get("window").width}
+              textContent="You don't have an appointment yet"
+            />
           );
+
         return cancelData.map((item, index) => (
-          <View
-            key={index}
-            style={{
-              backgroundColor: whiteText,
-              padding: 15,
-              borderRadius: 10,
-              borderWidth: 1,
-              borderColor: borderColor,
-              marginVertical: 8,
-            }}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                borderBottomColor: backgroundColor,
-                paddingBottom: 15,
-                borderBottomWidth: 1,
-              }}
-            >
-              <View style={{ justifyContent: "center" }}>
-                <Text
-                  style={{
-                    color: textBlack,
-                    fontSize: 16,
-                    paddingBottom: 3,
-                    fontWeight: "600",
-                  }}
-                >
-                  Dr. {item.doctor_name}
-                </Text>
-                <Text
-                  style={{ color: "grey", fontSize: 14, fontWeight: "500" }}
-                >
-                  {item.doctor_email}
-                </Text>
-              </View>
-              <Image
-                style={{
-                  width: 50,
-                  height: 50,
-                  objectFit: "fill",
-                  borderRadius: 99,
-                }}
-                source={
-                  item.image
-                    ? { uri: item.image }
-                    : require("../../../assets/images/Image.png")
-                }
-              />
-            </View>
-            <View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  paddingTop: 16,
-                  paddingBottom: 5,
-                  justifyContent: "space-between",
-                }}
-              >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <AntDesign name="calendar" size={14} color="#777777" />
-                  <Text style={{ color: lightTextColor, marginLeft: 5 }}>
-                    {item.date}
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <AntDesign name="clockcircleo" size={14} color="#777777" />
-                  <Text style={{ color: lightTextColor }}>
-                    {item.time || "10:30 AM"}
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <FontAwesome name="circle" size={10} color="red" />
-                  <Text style={{ color: lightTextColor }}> Cancelled</Text>
-                </View>
-              </View>
-            </View>
-          </View>
+          <AppointmentCard key={index} item={item} />
         ));
       case 2:
         if (completedData.length === 0)
           return (
-            <View
-              style={{
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-                marginTop: Dimensions.get("window").height * 0.1,
-              }}
-            >
-              <Image
-                source={require("../../../assets/images/Appointment.png")}
-                style={{
-                  width: Dimensions.get("window").width * 0.8,
-                  height: Dimensions.get("window").height * 0.3,
-                }}
-              />
-              <Text style={{ fontSize: 18, fontWeight: "600", marginTop: 20 }}>
-                You don't have an appointment yet
-              </Text>
-            </View>
+            <ErrorPage
+              height={Dimensions.get("window").height}
+              width={Dimensions.get("window").width}
+              textContent="You don't have an appointment yet"
+            />
           );
         return completedData.map((item, index) => (
-          <View
+          <AppointmentCard
             key={index}
-            style={{
-              backgroundColor: whiteText,
-              padding: 15,
-              borderRadius: 10,
-              borderWidth: 1,
-              borderColor: borderColor,
-              marginVertical: 8,
+            item={{
+              ...item,
+              button1: "Rate Doctor",
+              button2: " View Prescription",
             }}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                borderBottomColor: backgroundColor,
-                paddingBottom: 15,
-                borderBottomWidth: 1,
-              }}
-            >
-              <View style={{ justifyContent: "center" }}>
-                <Text
-                  style={{
-                    color: textBlack,
-                    fontSize: 16,
-                    paddingBottom: 3,
-                    fontWeight: "600",
-                  }}
-                >
-                  Dr. {item.doctor_name}
-                </Text>
-                <Text
-                  style={{ color: "grey", fontSize: 14, fontWeight: "500" }}
-                >
-                  {item.doctor_email}
-                </Text>
-              </View>
-              <Image
-                style={{
-                  width: 50,
-                  height: 50,
-                  objectFit: "fill",
-                  borderRadius: 99,
-                }}
-                source={
-                  item.image
-                    ? { uri: item.image }
-                    : require("../../../assets/images/Image.png")
-                }
-              />
-            </View>
-            <View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  paddingVertical: 15,
-                  justifyContent: "space-between",
-                }}
-              >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <AntDesign name="calendar" size={14} color="#777777" />
-                  <Text style={{ color: lightTextColor }}>{item.date}</Text>
-                </View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <AntDesign name="clockcircleo" size={14} color="#777777" />
-                  <Text style={{ color: lightTextColor }}>
-                    {item.time || "10:30 AM"}
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <FontAwesome
-                    name="circle"
-                    size={10}
-                    color={item.status === "UPCOMING" ? "green" : "red"}
-                  />
-                  <Text style={{ color: lightTextColor }}> Completed</Text>
-                </View>
-              </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
-                <TouchableOpacity
-                  style={{
-                    backgroundColor: backgroundColor,
-                    height: 40,
-                    width: "45%",
-                    borderRadius: 15,
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      fontWeight: "500",
-                      color: textBlack,
-                    }}
-                  >
-                    Review
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={{
-                    backgroundColor: blueColor,
-                    height: 40,
-                    width: "50%",
-                    borderRadius: 15,
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      fontWeight: "500",
-                      color: whiteText,
-                    }}
-                  >
-                    Prescription
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
+            handleButton1={handleCancel}
+            handleButton2={handleReschedule}
+          />
         ));
       default:
         return null;
@@ -635,8 +181,6 @@ const Booking = () => {
         default:
           break;
       }
-
-      console.log(response.data);
     } catch (error) {
       console.log(error);
     }

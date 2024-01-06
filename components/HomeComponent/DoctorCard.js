@@ -9,7 +9,6 @@ import {
 import { router } from "expo-router";
 
 const DoctorCard = (data) => {
-  console.log(data);
   return (
     <TouchableOpacity
       onPress={() => {
@@ -42,12 +41,11 @@ const DoctorCard = (data) => {
                 objectFit: "fill",
                 borderRadius: 99,
               }}
-              source={
-                data.image
-                  ? { uri: data.image }
-                  : require("../../assets/images/Image.png")
-              }
-              // source={require("../../assets/images/Image.png")}
+              source={{
+                uri: data.image
+                  ? data.image
+                  : "https://res.cloudinary.com/deohymauz/image/upload/v1704545467/demoDoctor_hkhmdp.jpg",
+              }}
             />
           </View>
           <View style={{ gap: 3, justifyContent: "center" }}>

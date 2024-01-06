@@ -1,17 +1,7 @@
-// BottomSheetComponent.js
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  TextInput,
-  ScrollView,
-} from "react-native";
-import { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
+import { View, Text, StyleSheet, TextInput, ScrollView } from "react-native";
 import PrimaryButton from "./PrimaryButton";
 import {
-  backgroundColor,
   blueColor,
   lightTextColor,
   textBlack,

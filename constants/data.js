@@ -1,21 +1,22 @@
-import { FontAwesome5 } from "@expo/vector-icons";
-
 const data = [
   {
     id: 1,
-    image: require("../assets/images/onboard21.png"),
+    image:
+      "https://res.cloudinary.com/deohymauz/image/upload/v1704449207/onboard21_lrapgg.png",
     title: "Discover Experienced Doctors",
     text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sed.",
   },
   {
     id: 2,
-    image: require("../assets/images/onboard2.png"),
+    image:
+      "https://res.cloudinary.com/deohymauz/image/upload/v1704449331/onboard2_z3knzt.png",
     title: "Effortless Appointment Booking",
     text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sed.",
   },
   {
     id: 3,
-    image: require("../assets/images/onboard3.png"),
+    image:
+      "https://res.cloudinary.com/deohymauz/image/upload/v1704449206/onboard3_h0fc9w.png",
     title: "Learn About Your Doctors",
     text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sed.",
   },

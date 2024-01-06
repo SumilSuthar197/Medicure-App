@@ -23,11 +23,11 @@ const BlueCard = ({
       {containAppointment && (
         <View style={{ flexDirection: "row", marginBottom: 15 }}>
           <Image
-            source={
-              imagePath
-                ? { uri: imagePath }
-                : require("../../assets/images/user1.png")
-            }
+            source={{
+              uri: imagePath
+                ? imagePath
+                : "https://res.cloudinary.com/deohymauz/image/upload/v1704545467/demoDoctor_hkhmdp.jpg",
+            }}
             style={{
               width: 45,
               height: 45,

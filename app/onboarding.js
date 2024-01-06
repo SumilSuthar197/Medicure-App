@@ -1,23 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Image,
-  ImageSourcePropType,
   StyleSheet,
   Text,
   View,
   useWindowDimensions,
 } from "react-native";
-import { FlatList } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import data from "../constants/data";
-import { StatusBar } from "expo-status-bar";
 import Animated, {
   useSharedValue,
   useAnimatedScrollHandler,
   useAnimatedRef,
   useAnimatedStyle,
   interpolate,
-  Extrapolate,
   Extrapolation,
 } from "react-native-reanimated";
 import Pagination from "../components/Pagination";
@@ -39,6 +35,9 @@ function Onboarding1() {
     },
   });
   const RenderItem = ({ item, index }) => {
+    useEffect(() => {
+      Image.prefetch(item.image);
+    }, [item]);
     const imageAnimationStyle = useAnimatedStyle(() => {
       const opacityAnimation = interpolate(
         x.value,
@@ -96,7 +95,10 @@ function Onboarding1() {
     });
     return (
       <View style={[styles.itemContainer, { width: SCREEN_WIDTH }]}>
-        <Animated.Image source={item.image} style={imageAnimationStyle} />
+        <Animated.Image
+          source={{ uri: item.image }}
+          style={imageAnimationStyle}
+        />
         <Animated.View style={textAnimationStyle}>
           <Text style={styles.itemTitle}>{item.title}</Text>
           <Text style={styles.itemText}>{item.text}</Text>
@@ -107,6 +109,7 @@ function Onboarding1() {
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* <StatusBar style="auto" /> */}
       <Animated.FlatList
         ref={flatListRef}
         onScroll={onScroll}
@@ -147,8 +150,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "space-around",
     alignItems: "center",
-    // backgroundColor: "#FFF",
-    // #246BFD
   },
   itemTitle: {
     textAlign: "center",

@@ -43,7 +43,6 @@ const Header = () => {
       }
     })();
   }, []);
-
   let text = "Waiting...";
   if (errorMsg) {
     text = errorMsg;

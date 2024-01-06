@@ -16,8 +16,11 @@ import axios from "axios";
 
 const Emergency = () => {
   const [hours, setHours] = useState("");
-
   const handleSubmit = async () => {
+    if (hours === "") {
+      Alert.alert("Missing Fields", "Please select the hours.");
+      return;
+    }
     try {
       const storedItem = await AsyncStorage.getItem("doctorEmail");
       const response = await axios.post(`${backendUrl}/doctor_emergency`, {
@@ -30,15 +33,8 @@ const Emergency = () => {
     }
   };
   return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: backgroundColor,
-        paddingHorizontal: 15,
-        paddingVertical: 20,
-      }}
-    >
-      <View>
+    <View style={styles.main}>
+      <View style={{ marginBottom: 15 }}>
         <Text style={styles.textTitle}>
           Time you are not available for in hours
         </Text>
@@ -60,34 +56,20 @@ const Emergency = () => {
           </Picker>
         </TouchableOpacity>
       </View>
-      <View
-        style={{
-          marginTop: 20,
-          flexDirection: "row",
-          justifyContent: "center",
-          alignContent: "center",
-        }}
-      >
-        <View style={{ alignContent: "center", marginTop: 6 }}>
-          <FontAwesome name="circle" size={10} color="black" />
+      <View style={styles.instructions}>
+        <View style={styles.icon}>
+          <FontAwesome name="circle" size={8} color="black" />
         </View>
-        <Text style={[styles.textTitle]}>
+        <Text style={styles.textTitle}>
           All of the patients in the above time slot will be notified that you
           are not present to treat them currently
         </Text>
       </View>
-      <View
-        style={{
-          marginTop: 5,
-          flexDirection: "row",
-          justifyContent: "center",
-          alignContent: "center",
-        }}
-      >
-        <View style={{ alignContent: "center", marginTop: 6 }}>
-          <FontAwesome name="circle" size={10} color="black" />
+      <View style={styles.instructions}>
+        <View style={styles.icon}>
+          <FontAwesome name="circle" size={8} color="black" />
         </View>
-        <Text style={[styles.textTitle]}>
+        <Text style={styles.textTitle}>
           Note that all of the appointments in the above mentioned time frame
           would either be cancelled according to the patient
         </Text>
@@ -105,15 +87,11 @@ const Emergency = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
+  main: {
     flex: 1,
-    backgroundColor: "#FFF",
-    fontFamily: "Poppins-Regular",
-  },
-  form: {
-    flex: 2,
+    backgroundColor: backgroundColor,
     paddingHorizontal: 15,
-    rowGap: 20,
+    paddingVertical: 20,
   },
   textTitle: {
     fontSize: 16,
@@ -121,35 +99,6 @@ const styles = StyleSheet.create({
     marginBottom: 6,
     marginLeft: 3,
     color: textBlack,
-  },
-  textContainer: {
-    fontSize: 14,
-    fontWeight: "500",
-    paddingLeft: 12,
-    paddingRight: 12,
-    height: 48,
-    borderRadius: 12,
-    backgroundColor: whiteText,
-    borderColor: borderColor,
-    borderWidth: 1,
-    color: lightTextColor,
-    textDecorationLine: "none",
-    width: "100%",
-    marginHorizontal: "auto",
-  },
-  textContainer2: {
-    textAlignVertical: "top",
-    fontSize: 14,
-    fontWeight: "500",
-    padding: 12,
-    borderRadius: 12,
-    backgroundColor: whiteText,
-    borderColor: borderColor,
-    borderWidth: 1,
-    color: lightTextColor,
-    textDecorationLine: "none",
-    width: "100%",
-    marginHorizontal: "auto",
   },
   textPicker: {
     fontSize: 14,
@@ -167,29 +116,13 @@ const styles = StyleSheet.create({
     width: "100%",
     marginHorizontal: "auto",
   },
-  itemTitle: {
-    textAlign: "center",
-    fontSize: 28,
-    fontWeight: "800",
-    marginBottom: 5,
-    color: "black",
-    paddingHorizontal: 15,
-  },
-  itemText: {
-    textAlign: "center",
-    marginHorizontal: 35,
-    color: "black",
-    lineHeight: 22,
-    fontSize: 14,
-    paddingHorizontal: 15,
-  },
-  bottomContainer: {
+  instructions: {
+    marginTop: 6,
     flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginHorizontal: 20,
-    paddingVertical: 20,
+    justifyContent: "center",
+    alignContent: "center",
   },
+  icon: { alignContent: "center", marginTop: 6, marginRight: 3 },
 });
 
 export default Emergency;
