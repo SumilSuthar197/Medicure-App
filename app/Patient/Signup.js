@@ -12,6 +12,7 @@ import {
   whiteText,
 } from "../../constants/color";
 import { backendUrl } from "../../constants/URL";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Signup = () => {
   const [user, setUser] = useState({
@@ -38,6 +39,7 @@ const Signup = () => {
     });
 
     if (data.output === true) {
+      AsyncStorage.setItem("userInfo", JSON.stringify(data.token));
       router.push({
         pathname: "/Patient/Profile",
         params: {

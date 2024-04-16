@@ -16,8 +16,6 @@ const DoctorCard = (data) => {
           pathname: "/Patient/doctorDetails",
           params: {
             email: data.email,
-            rating: data.average_rating,
-            count: data.review_count,
           },
         });
       }}
@@ -38,7 +36,7 @@ const DoctorCard = (data) => {
               style={{
                 width: 50,
                 height: 50,
-                objectFit: "fill",
+                objectFit: "cover",
                 borderRadius: 99,
               }}
               source={{
@@ -59,14 +57,15 @@ const DoctorCard = (data) => {
                 color: lightTextColor,
               }}
             >
-              {data.education.field}
+              {data.field}
             </Text>
           </View>
         </View>
         <View
           style={{
             flexDirection: "row",
-            justifyContent: "space-between",
+            justifyContent: "space-around",
+            width: "100%",
             alignItems: "center",
             paddingTop: 10,
             paddingHorizontal: 5,
@@ -81,7 +80,7 @@ const DoctorCard = (data) => {
                 textAlign: "center",
               }}
             >
-              {data.average_rating} ({data.review_count} review)
+              {data.rating_score} ({data.rating_count} review)
             </Text>
           </View>
           <Text style={{ color: lightTextColor }}>|</Text>
@@ -91,6 +90,7 @@ const DoctorCard = (data) => {
               fontSize: 12,
               fontWeight: "500",
               textAlign: "center",
+              // width:"50%"
             }}
           >
             {data.experience} years experience
@@ -102,9 +102,10 @@ const DoctorCard = (data) => {
               fontSize: 12,
               fontWeight: "500",
               textAlign: "center",
+              // width:"33%"
             }}
           >
-            {data?.hospital[0]?.location ? data.hospital[0].location : "Mysuru"}
+            {data.location || "India"}
           </Text>
         </View>
       </View>

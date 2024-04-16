@@ -1,16 +1,42 @@
 import { View, Text } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { Tabs } from "expo-router";
 import { FontAwesome, Ionicons, Feather } from "@expo/vector-icons";
 import { backgroundColor, textBlack } from "../../../constants/color";
+import { usePatientProfile } from "../../../context/PatientProfileProvider";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import { backendUrl } from "../../../constants/URL";
 
 const ChildLayout = () => {
+  const { setPatientProfile } = usePatientProfile();
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const storedItem = await AsyncStorage.getItem("userInfo");
+        const jwtToken = JSON.parse(storedItem);
+        const response = await axios.get(
+          `${backendUrl}/get_mobile_dashboard_data`,
+          {
+            headers: {
+              Authorization: `Bearer ${jwtToken}`,
+            },
+          }
+        );
+        setPatientProfile({ ...response.data });
+        console.log(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchData();
+  }, []);
+
   return (
     <Tabs>
       <Tabs.Screen
         name="index"
         options={{
-          // headerTranslucent: true,
           headerShown: false,
           title: "Home",
           name: "home",

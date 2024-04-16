@@ -24,6 +24,8 @@ import {
 } from "../../constants/color";
 import { Picker } from "@react-native-picker/picker";
 import { backendUrl } from "../../constants/URL";
+import { usePatientProfile } from "../../context/PatientProfileProvider";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const bloodGroups = [
   { label: "Select Blood Group", value: "" },
@@ -90,9 +92,10 @@ const Profile = () => {
       console.log(e);
     }
   };
-
   const item = useLocalSearchParams();
+  const { patientProfile, setPatientProfile } = usePatientProfile();
   const [user, setUser] = useState({
+    mobile: "",
     gender: "",
     city: "",
     address: "",
@@ -102,12 +105,14 @@ const Profile = () => {
     weight: "",
     emergencyContact: "",
     imageUrl: "",
+    ...patientProfile.patient,
     ...item,
   });
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (
       user.email === "" ||
+      user.mobile === "" ||
       user.gender === "" ||
       user.city === "" ||
       user.address === "" ||
@@ -122,11 +127,15 @@ const Profile = () => {
       return;
     }
     try {
-      const response = await axios.post(`${backendUrl}/addpatient`, user);
-      if (response.data.msg) {
-        user.type
-          ? router.replace("/getstarted")
-          : router.replace("/Patient/menu");
+      const storedItem = await AsyncStorage.getItem("userInfo");
+      const jwtToken = JSON.parse(storedItem);
+      const response = await axios.post(`${backendUrl}/updatepatient`, user, {
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+        },
+      });
+      if (response.data.output === true) {
+        router.replace("/Patient/menu");
       } else {
         alert("Something went wrong");
       }
@@ -160,9 +169,10 @@ const Profile = () => {
         <View>
           <Text style={styles.textTitle}>Name</Text>
           <TextInput
-            placeholder={user.name}
-            editable={false}
+            placeholder="Enter your name"
+            value={user.name}
             style={styles.textContainer}
+            onChangeText={(text) => setUser({ ...user, name: text })}
           />
         </View>
         <View>
@@ -175,10 +185,21 @@ const Profile = () => {
           />
         </View>
         <View>
+          <Text style={styles.textTitle}>Mobile Number</Text>
+          <TextInput
+            placeholder="Enter your contact number"
+            inputMode="numeric"
+            maxLength={10}
+            value={user.mobile}
+            style={styles.textContainer}
+            onChangeText={(text) => setUser({ ...user, mobile: text })}
+          />
+        </View>
+        <View>
           <Text style={styles.textTitle}>Height</Text>
           <TextInput
             keyboardType="phone-pad"
-            value={user.height}
+            value={user.height.toString()}
             placeholder="Enter height in cm"
             style={styles.textContainer}
             onChangeText={(text) => setUser({ ...user, height: text })}
@@ -188,7 +209,7 @@ const Profile = () => {
           <Text style={styles.textTitle}>Weight</Text>
           <TextInput
             keyboardType="phone-pad"
-            value={user.weight}
+            value={user.weight.toString()}
             placeholder="Enter weight in kg"
             style={styles.textContainer}
             onChangeText={(text) => setUser({ ...user, weight: text })}
@@ -229,8 +250,8 @@ const Profile = () => {
               }
             >
               <Picker.Item label="Select Gender" value="" />
-              <Picker.Item label="Male" value="Male" />
-              <Picker.Item label="Female" value="Female" />
+              <Picker.Item label="Male" value="male" />
+              <Picker.Item label="Female" value="female" />
             </Picker>
           </TouchableOpacity>
         </View>
@@ -278,7 +299,6 @@ const Profile = () => {
             }
           />
         </View>
-
         <View style={{ marginBottom: 20 }}>
           <PrimaryButton
             backgroundColor="#000"

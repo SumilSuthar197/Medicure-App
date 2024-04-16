@@ -23,7 +23,9 @@ import { backgroundColor, textBlack } from "../../../constants/color";
 import axios from "axios";
 import { backendUrl } from "../../../constants/URL";
 import { StatusBar } from "expo-status-bar";
+import { usePatientProfile } from "../../../context/PatientProfileProvider";
 const profile = () => {
+  const { patientProfile } = usePatientProfile();
   const snapPoint = useMemo(() => ["22%"], []);
   const bottomSheetRef = useRef(null);
   const handleClosePress = () => bottomSheetRef.current?.close();
@@ -38,7 +40,8 @@ const profile = () => {
     ),
     []
   );
-  const [user, setUser] = useState({});
+
+  const [user, setUser] = useState(patientProfile.patient);
   const navItems = [
     {
       title: "Your Profile",
@@ -48,11 +51,7 @@ const profile = () => {
     {
       title: "Edit Profile",
       icon: "edit",
-      onPress: () =>
-        router.push({
-          pathname: "/Patient/Profile",
-          params: { ...user },
-        }),
+      onPress: () => router.push("/Patient/Profile"),
     },
     {
       title: `Wallet : ${user.wallet}`,
@@ -72,26 +71,13 @@ const profile = () => {
       onPress: handleOpenPress,
     },
   ];
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const storedItem = await AsyncStorage.getItem("userInfo");
-        const jwtToken = JSON.parse(storedItem);
-        const response = await axios.get(`${backendUrl}/patientprofile`, {
-          headers: {
-            Authorization: `Bearer ${jwtToken}`,
-          },
-        });
-        setUser({ ...response.data });
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchData();
-  }, []);
   return (
     <SafeAreaView style={styles.main}>
-      <StatusBar translucent={false} style="auto" />
+      <StatusBar
+        translucent={false}
+        style="dark"
+        backgroundColor={backgroundColor}
+      />
       <ScrollView style={{ flex: 1 }}>
         <View style={styles.topContainer}>
           <View>

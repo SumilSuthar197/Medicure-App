@@ -3,7 +3,6 @@ import { router } from "expo-router";
 import { Image, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StatusBar } from "expo-status-bar";
-import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 
 const HomePage = () => {
@@ -13,7 +12,7 @@ const HomePage = () => {
         await SplashScreen.preventAutoHideAsync();
         const userInfoString = await AsyncStorage.getItem("userInfo");
         const DoctorInfoString = await AsyncStorage.getItem("doctorInfo");
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        await new Promise((resolve) => setTimeout(resolve, 500));
 
         if (userInfoString) {
           router.replace("/Patient/menu");

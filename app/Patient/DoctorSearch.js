@@ -21,7 +21,8 @@ const DoctorSearch = () => {
         let response;
         if (containCategory === "") {
           response = await axios.get(`${backendUrl}/getdoctors`);
-          setDoctorCardData(response.data.doctors.reverse());
+          console.log(response.data);
+          setDoctorCardData(response.data);
         } else {
           response = await axios.get(
             `${backendUrl}/get_doctors/${containCategory}`

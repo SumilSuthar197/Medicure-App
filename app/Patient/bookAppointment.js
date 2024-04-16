@@ -27,40 +27,40 @@ import { backendUrl } from "../../constants/URL";
 import { router, useLocalSearchParams } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { TextInput } from "react-native-gesture-handler";
+import { StatusBar } from "expo-status-bar";
 
 const BookAppointment = () => {
   const [selectedDate, setSelectedDate] = useState("");
   const [markedDates, setMarkedDates] = useState({});
-  const [selectedCountries, setSelectedCountries] = useState([]);
+  const [selectedSymptoms, setSelectedSymptoms] = useState([]);
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
-  const [itemQuestion, setItemQuestion] = useState([]);
+  // const [itemQuestion, setItemQuestion] = useState([]);
   const [responses, setResponses] = useState([]);
   const [clicked, setClicked] = useState(false);
   const item = useLocalSearchParams();
-  useEffect(() => {
-    setItemQuestion(item.question);
-  }, []);
+  let maxDate = new Date();
+  maxDate.setDate(maxDate.getDate() + 45);
   const postingAppointment = async () => {
     try {
       const storedItem = await AsyncStorage.getItem("userInfo");
       const jwtToken = JSON.parse(storedItem);
       const newFormattedTime = startTime + "-" + endTime;
-      await axios.post(
-        `${backendUrl}/ai_schedule`,
-        {
-          date: selectedDate,
-          symptoms: selectedCountries,
-          doctor_email: item.email,
-          time: newFormattedTime,
-          answers: responses,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${jwtToken}`,
-          },
-        }
-      );
+      // await axios.post(
+      //   `${backendUrl}/ai_schedule`,
+      //   {
+      //     date: selectedDate,
+      //     symptoms: selectedSymptoms,
+      //     doctor_email: item.email,
+      //     time: newFormattedTime,
+      //     answers: responses,
+      //   },
+      //   {
+      //     headers: {
+      //       Authorization: `Bearer ${jwtToken}`,
+      //     },
+      //   }
+      // );
       Alert.alert(
         "Appointment Booked Successfully",
         "Your appointment has been booked successfully. You will receive a confirmation email shortly."
@@ -82,7 +82,7 @@ const BookAppointment = () => {
     });
   };
   const handleSelectionChange = (updatedArray) => {
-    setSelectedCountries(updatedArray);
+    setSelectedSymptoms(updatedArray);
   };
 
   return (
@@ -94,20 +94,24 @@ const BookAppointment = () => {
               style={{ borderWidth: 1, borderColor: "#e5e5e5" }}
               markedDates={markedDates}
               onDayPress={handleDayPress}
+              minDate={new Date().toISOString().slice(0, 10)}
+              maxDate={maxDate.toISOString().slice(0, 10)}
             />
           </View>
+          <Text
+            style={[styles.selectedDateText, { marginTop: 10, padding: 0 }]}
+          >
+            {`Appointment Date:  ${selectedDate}`}
+          </Text>
           <View>
-            <Text style={styles.selectedDateText}>
-              Selected Date: {selectedDate}
-            </Text>
             <Text style={styles.selectedDateText}>Select Symptoms:</Text>
             <ScrollView style={styles.selectedSymptoms}>
-              <Text>{selectedCountries.join(", ")}</Text>
+              <Text>{selectedSymptoms.join(", ")}</Text>
             </ScrollView>
             <View style={{ flex: 1 }}>
               <CustomPicker
                 countryList={countries}
-                selectedCountries={selectedCountries}
+                selectedCountries={selectedSymptoms}
                 onSelectionChange={handleSelectionChange}
               />
             </View>
@@ -115,11 +119,15 @@ const BookAppointment = () => {
         </View>
         <View style={styles.questionContainer}>
           {item.question &&
-            item.question.split(",").map((question, index) => (
+            item.question.split("&&&&").map((question, index) => (
               <View key={index} style={{ marginVertical: 5 }}>
-                <Text style={styles.questionText}>{question}</Text>
+                <Text style={styles.questionText}>
+                  {question}
+                  <Text style={{ color: "red" }}>*</Text>
+                </Text>
                 <TextInput
                   style={styles.questionInput}
+                  placeholder="Type your response here"
                   onChangeText={(text) => {
                     const newResponses = [...responses];
                     newResponses[index] = text;
@@ -133,6 +141,7 @@ const BookAppointment = () => {
           <View>
             <Text style={styles.questionText}>
               Your preferred time slot start time
+              <Text style={{ color: "red" }}>*</Text>
             </Text>
             <TextInput
               placeholder="09:30 AM"
@@ -144,6 +153,7 @@ const BookAppointment = () => {
           <View>
             <Text style={styles.questionText}>
               Your preferred time slot end time
+              <Text style={{ color: "red" }}>*</Text>
             </Text>
             <TextInput
               placeholder="09:30 PM"

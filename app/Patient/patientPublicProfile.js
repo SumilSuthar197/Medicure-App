@@ -20,37 +20,23 @@ import {
 } from "../../constants/color";
 import { useSharedValue } from "react-native-reanimated";
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { backendUrl } from "../../constants/URL";
-import axios from "axios";
 import ErrorPage from "../../components/ErrorPage";
 import { StatusBar } from "expo-status-bar";
+import { usePatientProfile } from "../../context/PatientProfileProvider";
 
 const patientPublicProfile = () => {
   const translateX = useSharedValue(0);
+  const { patientProfile } = usePatientProfile();
   const [activeIndex, setActiveIndex] = useState(0);
   const tabs = [
     { title: "Profile", index: 0 },
     { title: "Report", index: 1 },
   ];
   const [user, setUser] = useState({});
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const storedItem = await AsyncStorage.getItem("userInfo");
-        const jwtToken = JSON.parse(storedItem);
-        const response = await axios.get(`${backendUrl}/patientprofile`, {
-          headers: {
-            Authorization: `Bearer ${jwtToken}`,
-          },
-        });
-        setUser({ ...response.data });
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchData();
-  }, []);
+    setUser(patientProfile.patient);
+  }, [patientProfile]);
   const location = {
     latitude: 25.3046288,
     longitude: 89.8544423,
@@ -111,7 +97,7 @@ const patientPublicProfile = () => {
                 <View style={styles.contactRow}>
                   <FontAwesome5
                     name="location-arrow"
-                    size={18}
+                    size={16}
                     color={lightTextColor}
                   />
                   <Text style={[styles.bottomCardText, { marginLeft: 8 }]}>
@@ -150,23 +136,14 @@ const patientPublicProfile = () => {
                 <View key={index} style={styles.reportCard}>
                   <View style={{ gap: 3, justifyContent: "center" }}>
                     <Text style={styles.reportCardTitle}>
-                      Report {index + 1} -{" "}
-                      {new Date(
-                        item.date.split("-").reverse().join("-")
-                      ).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
+                      Report {index + 1} - {item.date}
                     </Text>
                     <Text style={styles.reportCardText}>
-                      Prescribed by Dr. {item.doctor_name}
+                      Provided by {item.name}
                     </Text>
                   </View>
                   <View style={styles.reportCardButton}>
-                    <TouchableOpacity
-                      onPress={() => Linking.openURL(item.prescription_url)}
-                    >
+                    <TouchableOpacity onPress={() => Linking.openURL(item.url)}>
                       <AntDesign name="download" size={24} color="black" />
                     </TouchableOpacity>
                   </View>

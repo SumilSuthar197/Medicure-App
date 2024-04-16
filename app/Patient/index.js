@@ -13,10 +13,12 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { backendUrl } from "../../constants/URL";
 import { StatusBar } from "expo-status-bar";
+import { usePatientProfile } from "../../context/PatientProfileProvider";
 
 const index = () => {
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
+  const { setPatientProfile } = usePatientProfile();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,13 +28,13 @@ const index = () => {
     }
     let { data } = await axios.post(`${backendUrl}/login`, {
       user: "PATIENT",
-      email: email,
+      email: email.toLowerCase(),
       password: password,
     });
     if (data.output === true) {
       AsyncStorage.setItem("userInfo", JSON.stringify(data.token));
       router.replace("/Patient/menu");
-    } else alert(data.output);
+    } else alert(data?.output);
   };
   const ResetPasswordAlert = () => {
     Alert.alert(

@@ -1,16 +1,8 @@
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  Image,
-  FlatList,
-} from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, Image } from "react-native";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "../../../components/HomeComponent/Header";
 import BlueCard from "../../../components/HomeComponent/BlueCard";
-
 import { iconItem, topDoctor } from "../../../constants/data";
 import { router } from "expo-router";
 import {
@@ -19,46 +11,33 @@ import {
   textBlack,
 } from "../../../constants/color";
 import DoctorCard from "../../../components/HomeComponent/DoctorCard";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
-import { backendUrl } from "../../../constants/URL";
 import { StatusBar } from "expo-status-bar";
-// import { StatusBar } from "expo-status-bar";
+import { usePatientProfile } from "../../../context/PatientProfileProvider";
 
 const index = () => {
-  const [getUpcomingData, setUpcomingData] = useState({});
+  const { patientProfile } = usePatientProfile();
+  const [upcomingData, setUpcomingData] = useState([]);
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const storedItem = await AsyncStorage.getItem("userInfo");
-        const jwtToken = JSON.parse(storedItem);
-        const response = await axios.get(`${backendUrl}/get_appt/UPCOMING`, {
-          headers: {
-            Authorization: `Bearer ${jwtToken}`,
-          },
-        });
-        if (response.data.length !== 0) {
-          setUpcomingData({ ...response.data.appointments[0] });
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchData();
-  }, []);
+    if (patientProfile?.upcoming_appointments) {
+      setUpcomingData(patientProfile.upcoming_appointments);
+    }
+  }, [patientProfile]);
+
   return (
     <SafeAreaView
       style={{
-        marginTop:6,
+        paddingTop: 7,
         paddingHorizontal: 20,
         flex: 1,
         backgroundColor: backgroundColor,
       }}
     >
-      <StatusBar style="auto" />
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-      >
+      <StatusBar
+        translucent={false}
+        style="dark"
+        backgroundColor={backgroundColor}
+      />
+      <ScrollView showsVerticalScrollIndicator={false}>
         <Header />
         <View
           style={{
@@ -68,7 +47,7 @@ const index = () => {
           }}
         >
           <Text style={{ color: textBlack, fontSize: 18, fontWeight: "600" }}>
-            Upcomming Appointments
+            Upcoming Appointments
           </Text>
           <TouchableOpacity
             onPress={() => router.push("/Patient/menu/booking")}
@@ -78,13 +57,13 @@ const index = () => {
         </View>
         <BlueCard
           containAppointment={
-            Object.keys(getUpcomingData).length === 0 ? false : true
+            upcomingData && upcomingData.length === 0 ? false : true
           }
-          name={getUpcomingData.doctor_name}
-          imagePath={getUpcomingData.image}
-          type={getUpcomingData.doctor_email}
-          Date={getUpcomingData.date}
-          Time={getUpcomingData.time}
+          name={upcomingData[0]?.doctor_name}
+          imagePath={upcomingData[0]?.image}
+          type={upcomingData[0]?.doctor_email}
+          Date={upcomingData[0]?.date}
+          Time={upcomingData[0]?.slot}
         />
         <View
           style={{

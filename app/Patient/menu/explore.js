@@ -12,7 +12,6 @@ import axios from "axios";
 import { backendUrl } from "../../../constants/URL";
 import {
   borderColor,
-  lightBlueColor,
   lightTextColor,
   textBlack,
   whiteText,
@@ -28,8 +27,6 @@ const MapObject = (data) => {
           pathname: "/Patient/doctorDetails",
           params: {
             email: data.email,
-            rating: 4.7,
-            count: 0,
           },
         });
       }}
@@ -50,13 +47,11 @@ const MapObject = (data) => {
               style={{
                 width: 50,
                 height: 50,
-                objectFit: "fill",
+                objectFit: "cover",
                 borderRadius: 99,
               }}
               source={{
-                uri: data.image
-                  ? data.image
-                  : "https://res.cloudinary.com/deohymauz/image/upload/v1704545467/demoDoctor_hkhmdp.jpg",
+                uri: data.image,
               }}
             />
           </View>
@@ -77,16 +72,16 @@ const MapObject = (data) => {
                 color: lightTextColor,
               }}
             >
-              {data.education.field}
+              {data.field}
             </Text>
           </View>
         </View>
         <View
           style={{
             flexDirection: "row",
-            justifyContent: "space-between",
+            justifyContent: "space-around",
             alignItems: "center",
-            paddingTop: 8,
+            paddingTop: 12,
           }}
         >
           <View style={{ flexDirection: "row" }}>
@@ -97,10 +92,10 @@ const MapObject = (data) => {
                 fontWeight: "500",
               }}
             >
-              4.7 (573 review)
+              {data.rating_score} ({data.rating_count} review)
             </Text>
           </View>
-          <Text style={{ color: lightBlueColor }}>|</Text>
+          <Text style={{ color: lightTextColor }}>|</Text>
           <Text
             style={{
               color: lightTextColor,
@@ -110,7 +105,7 @@ const MapObject = (data) => {
           >
             {data.experience} years experience
           </Text>
-          <Text style={{ color: lightBlueColor }}>|</Text>
+          <Text style={{ color: lightTextColor }}>|</Text>
           <Text
             style={{
               color: lightTextColor,
@@ -118,7 +113,7 @@ const MapObject = (data) => {
               fontWeight: "500",
             }}
           >
-            {data.hospital.location}
+            {data.city}
           </Text>
         </View>
       </View>
@@ -144,7 +139,7 @@ const Explore = () => {
       setLocation(currentLocation);
 
       try {
-        const response = await axios.post(`${backendUrl}/emergency`, {
+        const response = await axios.post(`${backendUrl}/nearbydoc`, {
           latitude: currentLocation.coords.latitude,
           longitude: currentLocation.coords.longitude,
         });
