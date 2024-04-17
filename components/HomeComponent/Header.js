@@ -10,6 +10,7 @@ import { Ionicons } from "@expo/vector-icons";
 import * as Location from "expo-location";
 import { router } from "expo-router";
 import { borderColor, textBlack } from "../../constants/color";
+import axios from "axios";
 
 const Header = () => {
   const [location, setLocation] = useState(null);
@@ -26,19 +27,17 @@ const Header = () => {
 
       try {
         let location = await Location.getCurrentPositionAsync({});
-        setLocation(location);
-        let addressResult = await Location.reverseGeocodeAsync({
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-        });
-        console.log(addressResult);
-        if (addressResult.length > 0) {
+        let response = await axios(
+          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${location.coords.latitude}&lon=${location.coords.longitude}`
+        );
+        if (response && response.data && response.data.address) {
           setAddress({
-            street: addressResult[0].district || "Unknown Street",
-            city: addressResult[0].city || "Unknown City",
+            street: response?.data?.address?.road || "Unknown Street",
+            city: response?.data?.address?.town || "Unknown City",
           });
         }
       } catch (error) {
+        console.log(error);
         setErrorMsg("Error fetching location data");
       }
     })();

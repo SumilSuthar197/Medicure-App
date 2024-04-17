@@ -26,7 +26,9 @@ import {
   textBlack,
 } from "../../../constants/color";
 import { StatusBar } from "expo-status-bar";
+import { useDoctorProfile } from "../../../context/DoctorProfileProvider";
 const DoctorProfile = () => {
+  const { doctorProfile, setDoctorProfile } = useDoctorProfile();
   const snapPoint = useMemo(() => ["22%"], []);
   const bottomSheetRef = useRef(null);
   const handleClosePress = () => bottomSheetRef.current?.close();
@@ -42,7 +44,7 @@ const DoctorProfile = () => {
     []
   );
 
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState(doctorProfile);
   const navItems = [
     {
       title: "Your Profile",
@@ -50,17 +52,12 @@ const DoctorProfile = () => {
       onPress: () =>
         router.push({
           pathname: "/Doctor/showProfile",
-          params: { email: user.email, rating: 4.7, count: 1 },
         }),
     },
     {
       title: "Edit Profile",
       icon: "edit",
-      onPress: () =>
-        router.push({
-          pathname: "/Doctor/EditProfileDoc",
-          params: { user },
-        }),
+      onPress: () => router.push("/Doctor/EditProfileDoc"),
     },
     {
       title: "Emergency",
@@ -81,21 +78,6 @@ const DoctorProfile = () => {
       onPress: handleOpenPress,
     },
   ];
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const storedItem = await AsyncStorage.getItem("doctorEmail");
-        const doctorEmail = JSON.parse(storedItem);
-        const response = await axios.get(
-          `${backendUrl}/get_doctor_email/${doctorEmail}`
-        );
-        setUser(response.data);
-      } catch (error) {
-        console.error("Error fetching data: ", error);
-      }
-    };
-    fetchData();
-  }, []);
 
   return (
     <View style={styles.main}>
@@ -104,9 +86,7 @@ const DoctorProfile = () => {
         <View style={styles.topContainer}>
           <Image
             source={{
-              uri: user.image
-                ? user.image
-                : "https://res.cloudinary.com/deohymauz/image/upload/v1704545467/demoDoctor_hkhmdp.jpg",
+              uri: user.image,
             }}
             style={styles.image}
           />
@@ -175,7 +155,7 @@ const styles = StyleSheet.create({
     borderRadius: 75,
     width: 120,
     height: 120,
-    objectFit: "fill",
+    objectFit: "cover",
   },
   name: {
     fontSize: 18,

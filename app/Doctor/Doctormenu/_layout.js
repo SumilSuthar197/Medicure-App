@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Tabs } from "expo-router";
 import { FontAwesome, AntDesign } from "@expo/vector-icons";
 import {
@@ -6,8 +6,28 @@ import {
   textBlack,
   whiteText,
 } from "../../../constants/color";
+import { useDoctorProfile } from "../../../context/DoctorProfileProvider";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import { backendUrl } from "../../../constants/URL";
 
 const ChildLayout = () => {
+  const { setDoctorProfile } = useDoctorProfile();
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const email = await AsyncStorage.getItem("doctorEmail");
+        const parsedEmail = JSON.parse(email);
+        const response = await axios.get(
+          `${backendUrl}/get_doctor_profile/${parsedEmail}`
+        );
+        setDoctorProfile({ ...response.data });
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchData();
+  }, []);
   return (
     <Tabs>
       <Tabs.Screen

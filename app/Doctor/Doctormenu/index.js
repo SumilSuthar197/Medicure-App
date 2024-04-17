@@ -105,10 +105,10 @@ const Item = (props) => {
   return (
     <Swipeable
       renderLeftActions={(progress, dragX) =>
-        leftSwipe(props.patient.email, progress, dragX)
+        leftSwipe(props.patient_email, progress, dragX)
       }
       renderRightActions={(progress, dragX) =>
-        rightSwipe(props.patient.email, props.appointment_id, progress, dragX)
+        rightSwipe(props.patient_email, props._id, progress, dragX)
       }
     >
       <View style={styles.cardMain}>
@@ -117,17 +117,15 @@ const Item = (props) => {
             <Image
               style={styles.cardImage}
               source={{
-                uri: props.patient.imageUrl
-                  ? props.patient.imageUrl
-                  : "https://res.cloudinary.com/deohymauz/image/upload/v1704551544/depositphotos_79217192-stock-photo-portrait-of-young-woman-at_qf7hht.jpg",
+                uri: props.patient_image,
               }}
             />
             <View style={styles.nameView}>
-              <Text style={styles.name}>{props.patient.name}</Text>
+              <Text style={styles.name}>{props.patient_name}</Text>
             </View>
           </View>
           <View>
-            <Text style={styles.timeText}>{props.time}</Text>
+            <Text style={styles.timeText}>{props.slot}</Text>
           </View>
         </View>
       </View>
@@ -152,7 +150,7 @@ const index = () => {
       const storedItem = await AsyncStorage.getItem("doctorInfo");
       const jwtToken = JSON.parse(storedItem);
       const response = await axios.get(
-        `${backendUrl}/get_appt_doctor/${formattedDate}`,
+        `${backendUrl}/doctorappointments/${formattedDate}`,
         {
           headers: {
             Authorization: `Bearer ${jwtToken}`,
@@ -238,6 +236,17 @@ const index = () => {
             <View style={styles.inBetweenBorder}></View>
           )}
         />
+        {defaultItems.length === 0 && (
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              padding: 20,
+            }}
+          >
+            <Text>No Upcoming Appointments</Text>
+          </View>
+        )}
       </View>
       <BottomSheet
         ref={bottomSheetRef}
@@ -324,7 +333,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     aspectRatio: 1,
-    objectFit: "fill",
+    objectFit: "cover",
     borderRadius: 75,
     backgroundColor: lightBlueColor,
   },

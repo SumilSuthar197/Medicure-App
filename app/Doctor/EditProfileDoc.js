@@ -24,24 +24,12 @@ import {
 } from "../../constants/color";
 import { backendUrl } from "../../constants/URL";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useDoctorProfile } from "../../context/DoctorProfileProvider";
 
 const EditProfileDoc = () => {
   const [image, setImage] = useState(null);
-
+  const { doctorProfile, setDoctorProfile } = useDoctorProfile();
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const storedItem = await AsyncStorage.getItem("doctorEmail");
-        const doctorEmail = JSON.parse(storedItem);
-        const response = await axios.get(
-          `${backendUrl}/get_doctor_email/${doctorEmail}`
-        );
-        setUser(response.data);
-      } catch (error) {
-        console.error("Error fetching data: ", error);
-      }
-    };
-    fetchData();
     (async () => {
       if (Platform.OS !== "web") {
         const { status } =
@@ -94,7 +82,15 @@ const EditProfileDoc = () => {
       );
     }
   };
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState({
+    email: "",
+    bio: "",
+    experience: "",
+    patient_duration: "",
+    image: "",
+    mobile: "",
+    ...doctorProfile,
+  });
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (
@@ -109,12 +105,10 @@ const EditProfileDoc = () => {
     try {
       const storedItem = await AsyncStorage.getItem("doctorInfo");
       const jwtToken = JSON.parse(storedItem);
-      const response = await axios.post(
+      console.log();
+      const response = await axios.put(
         `${backendUrl}/updatedoctor`,
-        {
-          ...user,
-          questions: inputValues,
-        },
+        { ...user, questions, image },
         {
           headers: {
             Authorization: `Bearer ${jwtToken}`,
@@ -122,7 +116,8 @@ const EditProfileDoc = () => {
         }
       );
       if (response.data.msg) {
-        router.replace("/Doctor/Doctormenu");
+        Alert.alert("Profile Updated", "Your profile has been updated");
+        // router.replace("/Doctor/Doctormenu");
       } else {
         alert("Something went wrong");
       }
@@ -130,32 +125,25 @@ const EditProfileDoc = () => {
       console.log(error);
     }
   };
-  const [inputs, setInputs] = useState([""]);
-  const [inputValues, setInputValues] = useState([]);
-  const addInput = () => {
-    setInputs([...inputs, ""]);
+
+  const [questions, setQuestions] = useState(user.questions || [""]);
+  const addQuestion = () => {
+    setQuestions([...questions, ""]);
   };
+
   const handleInputChange = (text, index) => {
-    const newInputs = [...inputs];
-    newInputs[index] = text;
-    setInputs(newInputs);
+    setQuestions((prev) => {
+      const newQuestions = [...prev];
+      newQuestions[index] = text;
+      return newQuestions;
+    });
   };
-  const saveInputs = () => {
-    setInputValues([...inputValues, ...inputs]);
-    setInputs([""]);
-  };
+
   return (
     <ScrollView style={{ backgroundColor: backgroundColor }}>
       <View style={styles.main}>
         <View style={styles.imageContainer}>
-          <Image
-            source={{
-              uri: user.image
-                ? user.image
-                : "https://res.cloudinary.com/deohymauz/image/upload/v1704545467/demoDoctor_hkhmdp.jpg",
-            }}
-            style={styles.image}
-          />
+          <Image source={{ uri: user.image }} style={styles.image} />
           <TouchableOpacity onPress={pickImage} style={styles.pickImage}>
             <AntDesign
               name="edit"
@@ -171,8 +159,8 @@ const EditProfileDoc = () => {
           <Text style={styles.textTitle}>Name</Text>
           <TextInput
             value={user.name}
-            placeholder={user.name}
-            editable={false}
+            placeholder="Enter your name"
+            onChangeText={(text) => setUser({ ...user, name: text })}
             style={styles.textContainer}
           />
         </View>
@@ -187,6 +175,30 @@ const EditProfileDoc = () => {
           />
         </View>
         <View>
+          <Text style={styles.textTitle}>Mobile Number</Text>
+          <TextInput
+            placeholder="Enter your contact number"
+            inputMode="numeric"
+            maxLength={10}
+            value={user.mobile.toString()}
+            style={styles.textContainer}
+            onChangeText={(text) => setUser({ ...user, mobile: text })}
+          />
+        </View>
+        <View>
+          <Text style={styles.textTitle}>Appointment Duration in minutes</Text>
+          <TextInput
+            placeholder="Enter duration of appointment in minutes"
+            inputMode="numeric"
+            maxLength={5}
+            value={user.patient_duration.toString()}
+            style={styles.textContainer}
+            onChangeText={(text) =>
+              setUser({ ...user, patient_duration: text })
+            }
+          />
+        </View>
+        <View>
           <Text style={styles.textTitle}>Bio</Text>
           <TextInput
             value={user.bio}
@@ -195,12 +207,12 @@ const EditProfileDoc = () => {
             onChangeText={(text) => setUser({ ...user, bio: text })}
           />
         </View>
-        {inputs.map((value, index) => (
+        {questions.map((value, index) => (
           <View key={index}>
             <Text style={styles.textTitle}>Question {index + 1}</Text>
             <TextInput
               key={index}
-              value={value.toString()}
+              value={value}
               style={styles.textContainer}
               onChangeText={(text) => handleInputChange(text, index)}
               placeholder={`Enter Question ${index + 1}`}
@@ -209,25 +221,15 @@ const EditProfileDoc = () => {
         ))}
         <View style={styles.buttonRow}>
           <PrimaryButton
-            style={{ width: "47%" }}
             backgroundColor="#000"
-            label="Add Input"
+            label="Add Question"
             color={whiteText}
-            onPress={addInput}
+            onPress={addQuestion}
           />
-          <PrimaryButton
-            style={{ width: "47%" }}
-            backgroundColor="#000"
-            label="Save Input"
-            color={whiteText}
-            onPress={saveInputs}
-          />
-        </View>
-        <View style={{ marginBottom: 20 }}>
           <PrimaryButton
             backgroundColor="#000"
             color="#FFF"
-            label="Create Account"
+            label="Update Profile"
             onPress={handleSubmit}
           />
         </View>
@@ -247,7 +249,7 @@ const styles = StyleSheet.create({
     borderRadius: 75,
     width: 120,
     height: 120,
-    objectFit: "fill",
+    objectFit: "cover",
   },
   pickImage: {
     backgroundColor: "#246BFD",
@@ -286,6 +288,13 @@ const styles = StyleSheet.create({
     width: "100%",
     marginHorizontal: "auto",
   },
-  buttonRow: { display: "flex", flexDirection: "row", gap: 15 },
+  buttonRow: {
+    display: "flex",
+    flexDirection: "row",
+    gap: 15,
+    marginBottom: 24,
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
 });
 export default EditProfileDoc;

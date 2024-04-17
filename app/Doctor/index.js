@@ -41,7 +41,7 @@ const index = () => {
         }
         const { data } = await axios.post(`${backendUrl}/login`, {
           user: "DOCTOR",
-          email: email,
+          email: email.toLowerCase(),
           password: password,
           location: location,
         });

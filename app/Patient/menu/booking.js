@@ -6,6 +6,8 @@ import {
   StyleSheet,
   ScrollView,
   Dimensions,
+  Linking,
+  Alert,
 } from "react-native";
 import {
   backgroundColor,
@@ -25,26 +27,29 @@ const Booking = () => {
   const [cancelData, setCancelData] = useState([]);
   const [completedData, setCompletedData] = useState([]);
   var jwtToken = null;
-  const handleCancel = async ({ time, doctor_email, date }) => {
+  const handleCancel = async (id) => {
     try {
+      const storedItem = await AsyncStorage.getItem("userInfo");
+      jwtToken = JSON.parse(storedItem);
       const response = await axios.post(
-        `${backendUrl}/cancel_appt`,
-        {
-          time: time,
-          doctor_email: doctor_email,
-          date: date,
-        },
+        `${backendUrl}/cancelappointment/${id}`,
+        {},
         {
           headers: {
             Authorization: `Bearer ${jwtToken}`,
           },
         }
       );
-      console.log(response.data.msg);
+      if (response.data.output === true) {
+        Alert.alert(
+          "Appointment Cancelled",
+          "Your appointment has been successfully cancelled. We hope to see you again soon.",
+          [{ text: "OK", onPress: () => handleTabPress(0) }]
+        );
+      }
     } catch (error) {
       console.error(error);
     }
-    handleTabPress(0);
   };
   const handleReschedule = async ({ time, doctor_email, date }) => {
     try {
@@ -75,11 +80,14 @@ const Booking = () => {
       try {
         const storedItem = await AsyncStorage.getItem("userInfo");
         jwtToken = JSON.parse(storedItem);
-        const response = await axios.get(`${backendUrl}/get_appt/UPCOMING`, {
-          headers: {
-            Authorization: `Bearer ${jwtToken}`,
-          },
-        });
+        const response = await axios.get(
+          `${backendUrl}/appointmentslist/UPCOMING`,
+          {
+            headers: {
+              Authorization: `Bearer ${jwtToken}`,
+            },
+          }
+        );
         setUpcomingData(response.data.appointments);
       } catch (error) {
         console.log(error);
@@ -90,7 +98,7 @@ const Booking = () => {
 
   const tabs = [
     { title: "UPCOMING", index: 0 },
-    { title: "CANCEL", index: 1 },
+    { title: "CANCELLED", index: 1 },
     { title: "COMPLETED", index: 2 },
   ];
 
@@ -144,7 +152,7 @@ const Booking = () => {
               button2: " View Prescription",
             }}
             handleButton1={handleCancel}
-            handleButton2={handleReschedule}
+            handleButton2={() => Linking.openURL(item.prescription_id)}
           />
         ));
       default:
@@ -160,7 +168,7 @@ const Booking = () => {
       const jwtToken = JSON.parse(storedItem);
 
       const response = await axios.get(
-        `${backendUrl}/get_appt/${typeOfAppointment}`,
+        `${backendUrl}/appointmentslist/${typeOfAppointment}`,
         {
           headers: {
             Authorization: `Bearer ${jwtToken}`,
@@ -172,7 +180,7 @@ const Booking = () => {
         case "UPCOMING":
           setUpcomingData(response.data.appointments);
           break;
-        case "CANCEL":
+        case "CANCELLED":
           setCancelData(response.data.appointments);
           break;
         case "COMPLETED":

@@ -29,7 +29,7 @@ const DoctorLeave = () => {
           Authorization: `Bearer ${jwtToken}`,
         },
       });
-      if (response.data) {
+      if (response.data.output === true) {
         Alert.alert(
           "Success",
           "Your leave application has been successfully submitted and is awaiting approval."

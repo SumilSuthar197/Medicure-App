@@ -35,13 +35,13 @@ const AppointmentCard = ({ item, handleButton1, handleButton2 }) => {
           </View>
           <View style={styles.iconRow}>
             <AntDesign name="clockcircleo" size={14} color="#777777" />
-            <Text style={styles.lightText}> {item.time}</Text>
+            <Text style={styles.lightText}> {item.slot}</Text>
           </View>
           <View style={styles.iconRow}>
             <FontAwesome
               name="circle"
               size={10}
-              color={item.status !== "CANCEL" ? "green" : "red"}
+              color={item.status !== "cancelled" ? "green" : "red"}
             />
             <Text style={styles.lightText}>
               {item.status.charAt(0).toUpperCase() +
@@ -49,17 +49,11 @@ const AppointmentCard = ({ item, handleButton1, handleButton2 }) => {
             </Text>
           </View>
         </View>
-        {item.status !== "CANCEL" && (
+        {item.status !== "cancelled" && (
           <View style={styles.row2}>
             <TouchableOpacity
               style={[styles.button, { backgroundColor: backgroundColor }]}
-              onPress={() =>
-                handleButton1({
-                  time: item.time,
-                  doctor_email: item.doctor_email,
-                  date: item.date,
-                })
-              }
+              onPress={() => handleButton1(item._id)}
             >
               <Text style={[styles.buttonText, { color: textBlack }]}>
                 {item.button1}
@@ -67,13 +61,7 @@ const AppointmentCard = ({ item, handleButton1, handleButton2 }) => {
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.button, { backgroundColor: blueColor }]}
-              onPress={() =>
-                handleButton2({
-                  time: item.time,
-                  doctor_email: item.doctor_email,
-                  date: item.date,
-                })
-              }
+              onPress={() => handleButton2()}
             >
               <Text style={[styles.buttonText, { color: whiteText }]}>
                 {item.button2}
