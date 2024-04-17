@@ -12,7 +12,7 @@ const HomePage = () => {
         await SplashScreen.preventAutoHideAsync();
         const userInfoString = await AsyncStorage.getItem("userInfo");
         const DoctorInfoString = await AsyncStorage.getItem("doctorInfo");
-        await new Promise((resolve) => setTimeout(resolve, 500));
+        // await new Promise((resolve) => setTimeout(resolve, 500));
 
         if (userInfoString) {
           router.replace("/Patient/menu");
@@ -23,6 +23,7 @@ const HomePage = () => {
         }
         await SplashScreen.hideAsync();
       } catch (error) {
+        await SplashScreen.hideAsync();
         console.error("Error retrieving userInfo:", error);
       }
     };

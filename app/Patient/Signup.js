@@ -11,7 +11,7 @@ import {
   textBlack,
   whiteText,
 } from "../../constants/color";
-import { backendUrl } from "../../constants/URL";
+ 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Signup = () => {
@@ -33,7 +33,7 @@ const Signup = () => {
       Alert.alert("Missing Information", "Please fill all the fields");
       return;
     }
-    let { data } = await axios.post(`${backendUrl}/register`, {
+    let { data } = await axios.post(`https://medicure-sumilsuthar197.koyeb.app/register`, {
       user: "PATIENT",
       ...user,
     });

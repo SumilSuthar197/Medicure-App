@@ -16,7 +16,7 @@ import {
 } from "../../../constants/color";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import { backendUrl } from "../../../constants/URL";
+ 
 import { router } from "expo-router";
 import ErrorPage from "../../../components/ErrorPage";
 import AppointmentCard from "../../../components/AppointmentCard";
@@ -32,7 +32,7 @@ const Booking = () => {
       const storedItem = await AsyncStorage.getItem("userInfo");
       jwtToken = JSON.parse(storedItem);
       const response = await axios.post(
-        `${backendUrl}/cancelappointment/${id}`,
+        `https://medicure-sumilsuthar197.koyeb.app/cancelappointment/${id}`,
         {},
         {
           headers: {
@@ -54,7 +54,7 @@ const Booking = () => {
   const handleReschedule = async ({ time, doctor_email, date }) => {
     try {
       const response = await axios.post(
-        `${backendUrl}/cancel_appt`,
+        `https://medicure-sumilsuthar197.koyeb.app/cancel_appt`,
         {
           time: time,
           doctor_email: doctor_email,
@@ -81,7 +81,7 @@ const Booking = () => {
         const storedItem = await AsyncStorage.getItem("userInfo");
         jwtToken = JSON.parse(storedItem);
         const response = await axios.get(
-          `${backendUrl}/appointmentslist/UPCOMING`,
+          `https://medicure-sumilsuthar197.koyeb.app/appointmentslist/UPCOMING`,
           {
             headers: {
               Authorization: `Bearer ${jwtToken}`,
@@ -168,7 +168,7 @@ const Booking = () => {
       const jwtToken = JSON.parse(storedItem);
 
       const response = await axios.get(
-        `${backendUrl}/appointmentslist/${typeOfAppointment}`,
+        `https://medicure-sumilsuthar197.koyeb.app/appointmentslist/${typeOfAppointment}`,
         {
           headers: {
             Authorization: `Bearer ${jwtToken}`,

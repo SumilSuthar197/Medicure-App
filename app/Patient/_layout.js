@@ -5,7 +5,7 @@ import { PatientProfileProvider } from "../../context/PatientProfileProvider";
 const PatientLayout = () => {
   return (
     <PatientProfileProvider>
-      <Stack>
+      <Stack initialRouteName="index">
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="Signup" options={{ headerShown: false }} />
         <Stack.Screen name="menu" options={{ headerShown: false }} />

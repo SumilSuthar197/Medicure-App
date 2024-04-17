@@ -23,7 +23,7 @@ import {
   whiteText,
 } from "../../constants/color";
 import { Picker } from "@react-native-picker/picker";
-import { backendUrl } from "../../constants/URL";
+ 
 import { usePatientProfile } from "../../context/PatientProfileProvider";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -129,7 +129,7 @@ const Profile = () => {
     try {
       const storedItem = await AsyncStorage.getItem("userInfo");
       const jwtToken = JSON.parse(storedItem);
-      const response = await axios.post(`${backendUrl}/updatepatient`, user, {
+      const response = await axios.post(`https://medicure-sumilsuthar197.koyeb.app/updatepatient`, user, {
         headers: {
           Authorization: `Bearer ${jwtToken}`,
         },

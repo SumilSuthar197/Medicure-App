@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, Alert } from "react-native";
 import React, { useEffect } from "react";
 import { Tabs } from "expo-router";
 import { FontAwesome, Ionicons, Feather } from "@expo/vector-icons";
@@ -6,7 +6,6 @@ import { backgroundColor, textBlack } from "../../../constants/color";
 import { usePatientProfile } from "../../../context/PatientProfileProvider";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import { backendUrl } from "../../../constants/URL";
 
 const ChildLayout = () => {
   const { setPatientProfile } = usePatientProfile();
@@ -16,7 +15,7 @@ const ChildLayout = () => {
         const storedItem = await AsyncStorage.getItem("userInfo");
         const jwtToken = JSON.parse(storedItem);
         const response = await axios.get(
-          `${backendUrl}/get_mobile_dashboard_data`,
+          `https://medicure-sumilsuthar197.koyeb.app/get_mobile_dashboard_data`,
           {
             headers: {
               Authorization: `Bearer ${jwtToken}`,
@@ -26,6 +25,17 @@ const ChildLayout = () => {
         setPatientProfile({ ...response.data });
         console.log(response.data);
       } catch (error) {
+        if (error.response.status === 401) {
+          Alert.alert("Session Expired", "Please login again", [
+            {
+              text: "OK",
+              onPress: () => {
+                AsyncStorage.removeItem("userInfo");
+                router.replace("/onboarding");
+              },
+            },
+          ]);
+        }
         console.log(error);
       }
     };

@@ -11,7 +11,7 @@ import { Picker } from "@react-native-picker/picker";
 import { FontAwesome } from "@expo/vector-icons";
 import PrimaryButton from "../../components/PrimaryButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { backendUrl } from "../../constants/URL";
+ 
 import axios from "axios";
 
 const Emergency = () => {
@@ -23,7 +23,7 @@ const Emergency = () => {
     }
     try {
       const storedItem = await AsyncStorage.getItem("doctorEmail");
-      const response = await axios.post(`${backendUrl}/doctor_emergency`, {
+      const response = await axios.post(`https://medicure-sumilsuthar197.koyeb.app/doctor_emergency`, {
         email: storedItem,
         minutes: parseInt(hours) * 60,
       });

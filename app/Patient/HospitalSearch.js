@@ -24,7 +24,7 @@ import {
   textBlack,
   whiteText,
 } from "../../constants/color";
-import { backendUrl } from "../../constants/URL";
+ 
 import BottomSheet, { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 import PrimaryButton from "../../components/PrimaryButton";
 
@@ -89,7 +89,7 @@ const HospitalSearch = () => {
 
   const handleSubmitSymptoms = async () => {
     try {
-      const response = await axios.post(`${backendUrl}/getspeciality`, {
+      const response = await axios.post(`https://medicure-sumilsuthar197.koyeb.app/getspeciality`, {
         hospital: hospital,
         symptoms: symptoms,
       });
@@ -100,7 +100,7 @@ const HospitalSearch = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        let response = await axios.get(`${backendUrl}/allhospitals`);
+        let response = await axios.get(`https://medicure-sumilsuthar197.koyeb.app/allhospitals`);
         setHospitalCardData(response.data);
         setIsLoading(false);
       } catch (error) {

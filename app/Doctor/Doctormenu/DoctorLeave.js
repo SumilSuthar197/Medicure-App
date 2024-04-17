@@ -1,6 +1,5 @@
 import { View, Text, StyleSheet, Alert } from "react-native";
 import React, { useState } from "react";
-import { backendUrl } from "../../../constants/URL";
 import axios from "axios";
 import PrimaryButton from "../../../components/PrimaryButton";
 import {
@@ -24,11 +23,15 @@ const DoctorLeave = () => {
     try {
       const storedItem = await AsyncStorage.getItem("doctorInfo");
       const jwtToken = JSON.parse(storedItem);
-      const response = await axios.post(`${backendUrl}/applyleave`, user, {
-        headers: {
-          Authorization: `Bearer ${jwtToken}`,
-        },
-      });
+      const response = await axios.post(
+        `https://medicure-sumilsuthar197.koyeb.app/applyleave`,
+        user,
+        {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        }
+      );
       if (response.data.output === true) {
         Alert.alert(
           "Success",

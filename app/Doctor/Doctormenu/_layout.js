@@ -9,7 +9,6 @@ import {
 import { useDoctorProfile } from "../../../context/DoctorProfileProvider";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import { backendUrl } from "../../../constants/URL";
 
 const ChildLayout = () => {
   const { setDoctorProfile } = useDoctorProfile();
@@ -19,10 +18,22 @@ const ChildLayout = () => {
         const email = await AsyncStorage.getItem("doctorEmail");
         const parsedEmail = JSON.parse(email);
         const response = await axios.get(
-          `${backendUrl}/get_doctor_profile/${parsedEmail}`
+          `https://medicure-sumilsuthar197.koyeb.app/get_doctor_profile/${parsedEmail}`
         );
         setDoctorProfile({ ...response.data });
       } catch (error) {
+        if (error.response.status === 401) {
+          Alert.alert("Session Expired", "Please login again", [
+            {
+              text: "OK",
+              onPress: () => {
+                AsyncStorage.removeItem("doctorInfo");
+                AsyncStorage.removeItem("doctorEmail");
+                router.replace("/onboarding");
+              },
+            },
+          ]);
+        }
         console.log(error);
       }
     };

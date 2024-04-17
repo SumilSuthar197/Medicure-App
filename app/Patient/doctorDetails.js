@@ -16,7 +16,7 @@ import {
   whiteText,
 } from "../../constants/color";
 import axios from "axios";
-import { backendUrl } from "../../constants/URL";
+ 
 import { StatusBar } from "expo-status-bar";
 import Profile from "../../components/Doctor/Profile";
 import Contact from "../../components/Doctor/Contact";
@@ -30,7 +30,7 @@ const doctorDetails = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `${backendUrl}/get_doctor_profile/${doctorData.email}`
+          `https://medicure-sumilsuthar197.koyeb.app/get_doctor_profile/${doctorData.email}`
         );
         setDoctorCompleteData(response.data);
         console.log(response.data.questions);

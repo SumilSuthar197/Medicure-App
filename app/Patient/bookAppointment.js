@@ -23,7 +23,7 @@ import {
 } from "../../constants/color";
 import { countries } from "../../constants/symptoms";
 import { CardField, useStripe } from "@stripe/stripe-react-native";
-import { backendUrl } from "../../constants/URL";
+ 
 import { router, useLocalSearchParams } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { TextInput } from "react-native-gesture-handler";
@@ -47,7 +47,7 @@ const BookAppointment = () => {
       const jwtToken = JSON.parse(storedItem);
       const newFormattedTime = startTime + "-" + endTime;
       // await axios.post(
-      //   `${backendUrl}/ai_schedule`,
+      //   `https://medicure-sumilsuthar197.koyeb.app/ai_schedule`,
       //   {
       //     date: selectedDate,
       //     symptoms: selectedSymptoms,

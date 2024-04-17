@@ -32,7 +32,7 @@ import BottomSheetComponent from "../../../components/BottomSheetComponent";
 import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import { backendUrl } from "../../../constants/URL";
+ 
 const screenWidth = Dimensions.get("window").width;
 const Item = (props) => {
   const leftSwipe = (emailPat, progress, dragX) => {
@@ -150,7 +150,7 @@ const index = () => {
       const storedItem = await AsyncStorage.getItem("doctorInfo");
       const jwtToken = JSON.parse(storedItem);
       const response = await axios.get(
-        `${backendUrl}/doctorappointments/${formattedDate}`,
+        `https://medicure-sumilsuthar197.koyeb.app/doctorappointments/${formattedDate}`,
         {
           headers: {
             Authorization: `Bearer ${jwtToken}`,

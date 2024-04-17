@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
-import { backendUrl } from "../../../constants/URL";
+ 
 import {
   blueColor,
   borderColor,
@@ -35,7 +35,7 @@ const Chat = () => {
       { id: Math.random().toString(), message: userMessage, from: "me" },
     ]);
     await axios
-      .post(`${backendUrl}/getchat`, { prompt: userMessage })
+      .post(`https://medicure-sumilsuthar197.koyeb.app/getchat`, { prompt: userMessage })
       .then((res) => {
         if (res.data.doctor === false) {
           const response = {
@@ -127,7 +127,7 @@ const Chat = () => {
                 const storedItem = await AsyncStorage.getItem("userInfo");
                 const jwtToken = JSON.parse(storedItem);
                 await axios.post(
-                  `${backendUrl}/ai_schedule`,
+                  `https://medicure-sumilsuthar197.koyeb.app/ai_schedule`,
                   {
                     doctor_email: item.message[0].email,
                     date: item.message[0].date,

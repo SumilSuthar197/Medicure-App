@@ -11,7 +11,7 @@ import PrimaryButton from "../../components/PrimaryButton";
 import { router } from "expo-router";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { backendUrl } from "../../constants/URL";
+ 
 import { StatusBar } from "expo-status-bar";
 import { usePatientProfile } from "../../context/PatientProfileProvider";
 
@@ -26,7 +26,7 @@ const index = () => {
       Alert.alert("Missing Information", "Please fill all the fields");
       return;
     }
-    let { data } = await axios.post(`${backendUrl}/login`, {
+    let { data } = await axios.post(`https://medicure-sumilsuthar197.koyeb.app/login`, {
       user: "PATIENT",
       email: email.toLowerCase(),
       password: password,

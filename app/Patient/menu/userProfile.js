@@ -21,7 +21,7 @@ import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { backgroundColor, textBlack } from "../../../constants/color";
 import axios from "axios";
-import { backendUrl } from "../../../constants/URL";
+ 
 import { StatusBar } from "expo-status-bar";
 import { usePatientProfile } from "../../../context/PatientProfileProvider";
 const profile = () => {

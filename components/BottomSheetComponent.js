@@ -7,7 +7,6 @@ import {
   textBlack,
   whiteText,
 } from "../constants/color";
-import { backendUrl } from "../constants/URL";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -27,7 +26,7 @@ const BottomSheetComponent = ({
       const storedItem = await AsyncStorage.getItem("doctorInfo");
       const jwtToken = JSON.parse(storedItem);
       const response = await axios.post(
-        `${backendUrl}/submit_review`,
+        `https://medicure-sumilsuthar197.koyeb.app/submit_review`,
         {
           patient_email: emailPat,
           appointment_id: appointId,

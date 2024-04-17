@@ -22,7 +22,6 @@ import {
   textBlack,
   whiteText,
 } from "../../constants/color";
-import { backendUrl } from "../../constants/URL";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDoctorProfile } from "../../context/DoctorProfileProvider";
 
@@ -107,7 +106,7 @@ const EditProfileDoc = () => {
       const jwtToken = JSON.parse(storedItem);
       console.log();
       const response = await axios.put(
-        `${backendUrl}/updatedoctor`,
+        `https://medicure-sumilsuthar197.koyeb.app/updatedoctor`,
         { ...user, questions, image },
         {
           headers: {

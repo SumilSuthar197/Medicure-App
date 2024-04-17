@@ -9,7 +9,7 @@ import {
 import MapView, { Callout, Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import * as Location from "expo-location";
 import axios from "axios";
-import { backendUrl } from "../../../constants/URL";
+ 
 import {
   borderColor,
   lightTextColor,
@@ -139,7 +139,7 @@ const Explore = () => {
       setLocation(currentLocation);
 
       try {
-        const response = await axios.post(`${backendUrl}/nearbydoc`, {
+        const response = await axios.post(`https://medicure-sumilsuthar197.koyeb.app/nearbydoc`, {
           latitude: currentLocation.coords.latitude,
           longitude: currentLocation.coords.longitude,
         });

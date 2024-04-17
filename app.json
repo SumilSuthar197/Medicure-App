@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "medicure-App",
+    "name": "medicure App",
     "slug": "medicure-App",
     "scheme": "your-app-scheme",
     "version": "1.0.0",
@@ -12,7 +12,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#4942E4"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
@@ -61,6 +63,12 @@
       "eas": {
         "projectId": "d3e24cb2-5079-4ab2-8711-009d30139fef"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/d3e24cb2-5079-4ab2-8711-009d30139fef"
     }
   }
 }

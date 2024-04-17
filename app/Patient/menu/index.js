@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "../../../components/HomeComponent/Header";
 import BlueCard from "../../../components/HomeComponent/BlueCard";
-import { iconItem, topDoctor } from "../../../constants/data";
+import { iconItem } from "../../../constants/data";
 import { router } from "expo-router";
 import {
   backgroundColor,
@@ -13,15 +13,30 @@ import {
 import DoctorCard from "../../../components/HomeComponent/DoctorCard";
 import { StatusBar } from "expo-status-bar";
 import { usePatientProfile } from "../../../context/PatientProfileProvider";
+ 
+import axios from "axios";
 
 const index = () => {
   const { patientProfile } = usePatientProfile();
   const [upcomingData, setUpcomingData] = useState([]);
+  const [topDoctor, setTopDoctor] = useState([]);
   useEffect(() => {
     if (patientProfile?.upcoming_appointments) {
       setUpcomingData(patientProfile.upcoming_appointments);
     }
   }, [patientProfile]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`https://medicure-sumilsuthar197.koyeb.app/gettopdoctors`);
+        setTopDoctor(response.data);
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+      }
+    };
+    fetchData();
+  }, []);
 
   return (
     <SafeAreaView
@@ -75,7 +90,14 @@ const index = () => {
           <Text style={{ color: textBlack, fontSize: 18, fontWeight: "600" }}>
             Doctor Speciality
           </Text>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() =>
+              router.push({
+                pathname: "/Patient/DoctorSearch",
+                params: { containCategory: "" },
+              })
+            }
+          >
             <Text style={{ color: blueColor }}>See All</Text>
           </TouchableOpacity>
         </View>

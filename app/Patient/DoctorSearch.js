@@ -1,4 +1,4 @@
-import { View, ScrollView, TextInput, StyleSheet } from "react-native";
+import { View, ScrollView, TextInput, StyleSheet, Text } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
@@ -9,7 +9,7 @@ import {
   lightTextColor,
 } from "../../constants/color";
 import { useLocalSearchParams } from "expo-router";
-import { backendUrl } from "../../constants/URL";
+ 
 import DoctorCard from "../../components/HomeComponent/DoctorCard";
 
 const DoctorSearch = () => {
@@ -20,12 +20,12 @@ const DoctorSearch = () => {
       try {
         let response;
         if (containCategory === "") {
-          response = await axios.get(`${backendUrl}/getdoctors`);
+          response = await axios.get(`https://medicure-sumilsuthar197.koyeb.app/getdoctors`);
           console.log(response.data);
           setDoctorCardData(response.data);
         } else {
           response = await axios.get(
-            `${backendUrl}/get_doctors/${containCategory}`
+            `https://medicure-sumilsuthar197.koyeb.app/get_doctors/${containCategory}`
           );
           setDoctorCardData(response.data.reverse());
         }
@@ -58,17 +58,24 @@ const DoctorSearch = () => {
       <ScrollView>
         <View style={{ paddingHorizontal: 18 }}>
           {isLoading === false ? (
-            doctorCardData
-              .filter((doctor) =>
-                searchTerm
-                  ? doctor.name
+            <>
+              {doctorCardData
+                .filter((doctor) =>
+                  searchTerm
                     ? doctor.name
-                        .toLowerCase()
-                        .includes(searchTerm.toLowerCase())
-                    : false
-                  : true
-              )
-              .map((doctor, index) => <DoctorCard key={index} {...doctor} />)
+                      ? doctor.name
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase())
+                      : false
+                    : true
+                )
+                .map((doctor, index) => (
+                  <DoctorCard key={index} {...doctor} />
+                ))}
+              {doctorCardData.length === 0 && (
+                <Text style={styles.notFound}>No doctors found</Text>
+              )}
+            </>
           ) : (
             <ActivityIndicator size="large" color="#246BFD" />
           )}
@@ -95,5 +102,6 @@ const styles = StyleSheet.create({
     borderRadius: 15,
   },
   inputText: { width: "100%", color: lightTextColor },
+  notFound: { textAlign: "center", color: lightTextColor, marginTop: 12,fontSize: 15},
 });
 export default DoctorSearch;

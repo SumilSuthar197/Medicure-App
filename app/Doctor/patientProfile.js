@@ -24,7 +24,7 @@ import ErrorPage from "../../components/ErrorPage";
 import { StatusBar } from "expo-status-bar";
 import { useLocalSearchParams } from "expo-router";
 import axios from "axios";
-import { backendUrl } from "../../constants/URL";
+ 
 
 const patientPublicProfile = () => {
   const translateX = useSharedValue(0);
@@ -39,7 +39,7 @@ const patientPublicProfile = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `${backendUrl}/patientprofiledoctor/${item.email}`
+          `https://medicure-sumilsuthar197.koyeb.app/patientprofiledoctor/${item.email}`
         );
         setUser({ ...response.data });
       } catch (error) {

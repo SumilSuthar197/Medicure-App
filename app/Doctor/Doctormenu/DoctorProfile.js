@@ -6,20 +6,12 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import { FontAwesome } from "@expo/vector-icons";
 import BottomSheet, { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 import PrimaryButton from "../../../components/PrimaryButton";
 import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { backendUrl } from "../../../constants/URL";
-import axios from "axios";
 import {
   backgroundColor,
   lightTextColor,
@@ -28,7 +20,7 @@ import {
 import { StatusBar } from "expo-status-bar";
 import { useDoctorProfile } from "../../../context/DoctorProfileProvider";
 const DoctorProfile = () => {
-  const { doctorProfile, setDoctorProfile } = useDoctorProfile();
+  const { doctorProfile } = useDoctorProfile();
   const snapPoint = useMemo(() => ["22%"], []);
   const bottomSheetRef = useRef(null);
   const handleClosePress = () => bottomSheetRef.current?.close();
