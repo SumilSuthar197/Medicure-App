@@ -2,6 +2,7 @@
 
 Medicure is an innovative healthcare application designed to streamline the process of booking appointments for patients and managing schedules for doctors. With its user-friendly interface and leveraging AI technology, Medicure aims to optimize the appointment booking process, reducing wait times and enhancing the overall efficiency of healthcare services.
 
+#### [Demo Video](https://www.youtube.com/watch?v=pG5zfU76t3w)
 
 ## Installation
 
