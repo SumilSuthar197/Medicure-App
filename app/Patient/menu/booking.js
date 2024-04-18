@@ -127,7 +127,7 @@ const Booking = () => {
             <ErrorPage
               height={Dimensions.get("window").height}
               width={Dimensions.get("window").width}
-              textContent="You don't have an appointment yet"
+              textContent="No cancelled appointments found"
             />
           );
 

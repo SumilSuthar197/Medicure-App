@@ -11,8 +11,9 @@ import {
   textBlack,
   whiteText,
 } from "../../constants/color";
- 
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { StatusBar } from "expo-status-bar";
 
 const Signup = () => {
   const [user, setUser] = useState({
@@ -33,10 +34,13 @@ const Signup = () => {
       Alert.alert("Missing Information", "Please fill all the fields");
       return;
     }
-    let { data } = await axios.post(`https://medicure-sumilsuthar197.koyeb.app/register`, {
-      user: "PATIENT",
-      ...user,
-    });
+    let { data } = await axios.post(
+      `https://medicure-sumilsuthar197.koyeb.app/register`,
+      {
+        user: "PATIENT",
+        ...user,
+      }
+    );
 
     if (data.output === true) {
       AsyncStorage.setItem("userInfo", JSON.stringify(data.token));
@@ -54,6 +58,7 @@ const Signup = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar style="auto" />
       <View style={styles.itemView}>
         <Text style={styles.itemTitle}>Create Account</Text>
         <Text style={styles.itemText}>Hi! Fill your information below</Text>
@@ -126,18 +131,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#FFF",
   },
-  form: {
-    flex: 2,
-    paddingHorizontal: 15,
-    backgroundColor: backgroundColor,
-    rowGap: 20,
-  },
+  form: { flex: 2, paddingHorizontal: 15, rowGap: 20 },
   textTitle: {
     fontSize: 14,
     fontWeight: "600",
     marginBottom: 3,
     marginLeft: 3,
-    color: textBlack,
   },
   textContainer: {
     fontSize: 14,
@@ -146,20 +145,11 @@ const styles = StyleSheet.create({
     paddingRight: 12,
     height: 48,
     borderRadius: 12,
-    backgroundColor: whiteText,
-    borderColor: borderColor,
-    borderWidth: 1,
-    color: lightTextColor,
-    textDecorationLine: "none",
+    backgroundColor: "#F5F7F8",
     width: "100%",
     marginHorizontal: "auto",
   },
-  itemView: {
-    flex: 0.7,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: backgroundColor,
-  },
+  itemView: { flex: 0.7, justifyContent: "center", alignItems: "center" },
   itemTitle: {
     textAlign: "center",
     fontSize: 28,

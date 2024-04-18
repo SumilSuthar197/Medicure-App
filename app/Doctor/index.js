@@ -5,7 +5,7 @@ import PrimaryButton from "../../components/PrimaryButton";
 import { router } from "expo-router";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
- 
+
 import * as Location from "expo-location";
 
 const index = () => {
@@ -39,15 +39,21 @@ const index = () => {
           Alert.alert("Missing Information", "Please fill all the fields");
           return;
         }
-        const { data } = await axios.post(`https://medicure-sumilsuthar197.koyeb.app/login`, {
-          user: "DOCTOR",
-          email: email.toLowerCase(),
-          password: password,
-          location: location,
-        });
+        const { data } = await axios.post(
+          `https://medicure-sumilsuthar197.koyeb.app/login`,
+          {
+            user: "DOCTOR",
+            email: email.toLowerCase(),
+            password: password,
+            location: location,
+          }
+        );
         if (data.output === true) {
           AsyncStorage.setItem("doctorInfo", JSON.stringify(data.token));
-          AsyncStorage.setItem("doctorEmail", JSON.stringify(email));
+          AsyncStorage.setItem(
+            "doctorEmail",
+            JSON.stringify(email.toLowerCase())
+          );
           router.replace("/Doctor/Doctormenu");
         } else {
           Alert.alert(

@@ -12,7 +12,6 @@ const HomePage = () => {
         await SplashScreen.preventAutoHideAsync();
         const userInfoString = await AsyncStorage.getItem("userInfo");
         const DoctorInfoString = await AsyncStorage.getItem("doctorInfo");
-        // await new Promise((resolve) => setTimeout(resolve, 500));
 
         if (userInfoString) {
           router.replace("/Patient/menu");

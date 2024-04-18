@@ -27,7 +27,6 @@ import { CardField, useStripe } from "@stripe/stripe-react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { TextInput } from "react-native-gesture-handler";
-import { StatusBar } from "expo-status-bar";
 
 const BookAppointment = () => {
   const [selectedDate, setSelectedDate] = useState("");
@@ -46,21 +45,21 @@ const BookAppointment = () => {
       const storedItem = await AsyncStorage.getItem("userInfo");
       const jwtToken = JSON.parse(storedItem);
       const newFormattedTime = startTime + "-" + endTime;
-      // await axios.post(
-      //   `https://medicure-sumilsuthar197.koyeb.app/ai_schedule`,
-      //   {
-      //     date: selectedDate,
-      //     symptoms: selectedSymptoms,
-      //     doctor_email: item.email,
-      //     time: newFormattedTime,
-      //     answers: responses,
-      //   },
-      //   {
-      //     headers: {
-      //       Authorization: `Bearer ${jwtToken}`,
-      //     },
-      //   }
-      // );
+      await axios.post(
+        `https://medicure-sumilsuthar197.koyeb.app/ai_schedule`,
+        {
+          date: selectedDate,
+          symptoms: selectedSymptoms,
+          doctor_email: item.email,
+          time: newFormattedTime,
+          answers: responses,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        }
+      );
       Alert.alert(
         "Appointment Booked Successfully",
         "Your appointment has been booked successfully. You will receive a confirmation email shortly."
