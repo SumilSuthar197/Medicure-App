@@ -74,8 +74,9 @@ const ChildLayout = () => {
           name: "chats",
           tabBarIcon: ({ color }) => {
             return (
+            
               <Ionicons
-                name="ios-chatbubble-ellipses-outline"
+                name="chatbubble-ellipses-outline"
                 size={24}
                 color={color}
               />

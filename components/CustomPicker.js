@@ -1,7 +1,13 @@
 import React, { useRef, useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, TextInput } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  TextInput,
+  ScrollView,
+} from "react-native";
 import { AntDesign } from "@expo/vector-icons";
-import { ScrollView } from "react-native-gesture-handler";
+// import { ScrollView } from "react-native-gesture-handler";
 const CustomPicker = ({
   countryList,
   selectedCountries,

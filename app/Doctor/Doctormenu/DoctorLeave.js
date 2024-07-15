@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Alert } from "react-native";
+import { View, Text, StyleSheet, Alert, TextInput } from "react-native";
 import React, { useState } from "react";
 import axios from "axios";
 import PrimaryButton from "../../../components/PrimaryButton";
@@ -9,7 +9,7 @@ import {
   textBlack,
   backgroundColor,
 } from "../../../constants/color";
-import { TextInput } from "react-native-gesture-handler";
+// import { TextInput } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const DoctorLeave = () => {

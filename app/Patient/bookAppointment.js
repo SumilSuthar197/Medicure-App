@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Alert,
   StyleSheet,
+  TextInput,
 } from "react-native";
 import { Calendar } from "react-native-calendars";
 import axios from "axios";
@@ -26,7 +27,7 @@ import { CardField, useStripe } from "@stripe/stripe-react-native";
  
 import { router, useLocalSearchParams } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { TextInput } from "react-native-gesture-handler";
+// import { TextInput } from "react-native-gesture-handler";
 
 const BookAppointment = () => {
   const [selectedDate, setSelectedDate] = useState("");

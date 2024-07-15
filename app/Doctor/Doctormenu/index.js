@@ -18,7 +18,7 @@ import React, {
 } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import BottomSheet, { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
-import { Swipeable } from "react-native-gesture-handler";
+// import { Swipeable } from "react-native-gesture-handler";
 import {
   backgroundColor,
   blueColor,
@@ -32,6 +32,7 @@ import BottomSheetComponent from "../../../components/BottomSheetComponent";
 import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import { Swipeable } from "react-native-gesture-handler";
  
 const screenWidth = Dimensions.get("window").width;
 const Item = (props) => {

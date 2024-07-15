@@ -21,9 +21,10 @@ import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { backgroundColor, textBlack } from "../../../constants/color";
 import axios from "axios";
- 
+
 import { StatusBar } from "expo-status-bar";
 import { usePatientProfile } from "../../../context/PatientProfileProvider";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 const profile = () => {
   const { patientProfile } = usePatientProfile();
   const snapPoint = useMemo(() => ["22%"], []);
@@ -54,7 +55,7 @@ const profile = () => {
       onPress: () => router.push("/Patient/Profile"),
     },
     {
-      title: `Wallet : ${user.wallet}`,
+      title: `Wallet : ${user?.wallet}`,
       icon: "credit-card",
     },
     {
@@ -72,76 +73,81 @@ const profile = () => {
     },
   ];
   return (
-    <SafeAreaView style={styles.main}>
-      <StatusBar
-        translucent={false}
-        style="dark"
-        backgroundColor={backgroundColor}
-      />
-      <ScrollView style={{ flex: 1 }}>
-        <View style={styles.topContainer}>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaView style={styles.main}>
+        <StatusBar
+          translucent={false}
+          style="dark"
+          backgroundColor={backgroundColor}
+        />
+        <ScrollView style={{ flex: 1 }}>
+          <View style={styles.topContainer}>
+            <View>
+              <Image
+                source={{
+                  uri:
+                    user && user.imageUrl
+                      ? user.imageUrl
+                      : "https://res.cloudinary.com/deohymauz/image/upload/v1704461039/user1_leoif6.png",
+                }}
+                style={styles.image}
+              />
+            </View>
+            <View>
+              <Text style={styles.userName}>{user.name}</Text>
+              <Text style={styles.userEmail}>{user.email}</Text>
+            </View>
+          </View>
+          <View style={{ marginTop: 20 }}>
+            {navItems.map((item, index) => (
+              <TouchableOpacity key={index} onPress={item.onPress}>
+                <View style={styles.navContainer}>
+                  <View style={styles.nav1}>
+                    <FontAwesome name={item.icon} size={22} color="#777777" />
+                    <Text style={styles.navText}>{item.title}</Text>
+                  </View>
+                  <FontAwesome name="angle-right" size={24} color="#777777" />
+                </View>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </ScrollView>
+        <BottomSheet
+          ref={bottomSheetRef}
+          backdropComponent={renderBackdrop}
+          style={styles.bottomSheet}
+          index={-1}
+          snapPoints={snapPoint}
+        >
           <View>
-            <Image
-              source={{
-                uri: user.imageUrl
-                  ? user.imageUrl
-                  : "https://res.cloudinary.com/deohymauz/image/upload/v1704461039/user1_leoif6.png",
+            <Text style={[styles.navText, styles.bottomSheetText]}>
+              Are you sure you want to logout?
+            </Text>
+          </View>
+          <View
+            style={{ flexDirection: "row", paddingHorizontal: 20, gap: 15 }}
+          >
+            <PrimaryButton
+              backgroundColor="#000"
+              label="Cancel"
+              style={{ width: "47%" }}
+              onPress={handleClosePress}
+              color="#FFF"
+            />
+            <PrimaryButton
+              backgroundColor="#000"
+              label="Yes, Logout"
+              style={{ width: "47%" }}
+              onPress={async () => {
+                await AsyncStorage.removeItem("userInfo");
+                router.replace("/getStarted");
               }}
-              style={styles.image}
+              color="#FFF"
             />
           </View>
-          <View>
-            <Text style={styles.userName}>{user.name}</Text>
-            <Text style={styles.userEmail}>{user.email}</Text>
-          </View>
-        </View>
-        <View style={{ marginTop: 20 }}>
-          {navItems.map((item, index) => (
-            <TouchableOpacity key={index} onPress={item.onPress}>
-              <View style={styles.navContainer}>
-                <View style={styles.nav1}>
-                  <FontAwesome name={item.icon} size={22} color="#777777" />
-                  <Text style={styles.navText}>{item.title}</Text>
-                </View>
-                <FontAwesome name="angle-right" size={24} color="#777777" />
-              </View>
-            </TouchableOpacity>
-          ))}
-        </View>
-      </ScrollView>
-      <BottomSheet
-        ref={bottomSheetRef}
-        backdropComponent={renderBackdrop}
-        style={styles.bottomSheet}
-        index={-1}
-        snapPoints={snapPoint}
-      >
-        <View>
-          <Text style={[styles.navText, styles.bottomSheetText]}>
-            Are you sure you want to logout?
-          </Text>
-        </View>
-        <View style={{ flexDirection: "row", paddingHorizontal: 20, gap: 15 }}>
-          <PrimaryButton
-            backgroundColor="#000"
-            label="Cancel"
-            style={{ width: "47%" }}
-            onPress={handleClosePress}
-            color="#FFF"
-          />
-          <PrimaryButton
-            backgroundColor="#000"
-            label="Yes, Logout"
-            style={{ width: "47%" }}
-            onPress={async () => {
-              await AsyncStorage.removeItem("userInfo");
-              router.replace("/getStarted");
-            }}
-            color="#FFF"
-          />
-        </View>
-      </BottomSheet>
-    </SafeAreaView>
+        </BottomSheet>
+      </SafeAreaView>
+    </GestureHandlerRootView>
   );
 };
 
