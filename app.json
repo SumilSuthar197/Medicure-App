@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "medicure App",
+    "name": "Medicure",
     "slug": "medicure-App",
     "scheme": "your-app-scheme",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.jpeg",
+    "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "https://res.cloudinary.com/deohymauz/image/upload/v1704457322/100_Light_settings_invited_friends_2_n4lgbj.png",
@@ -32,7 +32,6 @@
       ],
       "package": "com.sumilsuthar197.medicureAppDemo"
     },
-    "androidStatusBarColor": "#4942E4",
     "androidStatusBar": {
       "barStyle": "light-content",
       "backgroundColor": "#4942E4",
