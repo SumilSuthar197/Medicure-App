@@ -4,7 +4,6 @@ import {
   TextInput,
   StyleSheet,
   Alert,
-  SafeAreaView,
 } from "react-native";
 import React, { useState } from "react";
 import PrimaryButton from "../../components/PrimaryButton";
@@ -14,6 +13,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
  
 import { StatusBar } from "expo-status-bar";
 import { usePatientProfile } from "../../context/PatientProfileProvider";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const index = () => {
   const [email, setEmail] = useState(null);

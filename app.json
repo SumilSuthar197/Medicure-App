@@ -12,9 +12,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#4942E4"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },
@@ -30,7 +28,12 @@
         "android.permission.FOREGROUND_SERVICE",
         "Permissions.LOCATION"
       ],
-      "package": "com.sumilsuthar197.medicureAppDemo"
+      "package": "com.sumilsuthar197.medicureAppDemo",
+      "config": {
+        "googleMaps": {
+          "apiKey": "your_google_maps_api_key"
+        }
+      }
     },
     "androidStatusBar": {
       "barStyle": "light-content",
@@ -60,14 +63,11 @@
         "origin": false
       },
       "eas": {
-        "projectId": "d3e24cb2-5079-4ab2-8711-009d30139fef"
+        "projectId": "c3c84d73-eabe-415c-af3b-4cbb3374cbb3"
       }
     },
     "runtimeVersion": {
       "policy": "appVersion"
-    },
-    "updates": {
-      "url": "https://u.expo.dev/d3e24cb2-5079-4ab2-8711-009d30139fef"
     }
   }
 }

@@ -29,7 +29,7 @@ const HomePage = () => {
       }
     };
 
-    // checkUserInfo();
+    checkUserInfo();
   }, []);
 
   return (
@@ -40,13 +40,13 @@ const HomePage = () => {
           translucent={false}
           style="light"
         />
-        {/* <Image
+        <Image
           source={{
             uri: "https://res.cloudinary.com/deohymauz/image/upload/v1704457322/100_Light_settings_invited_friends_2_n4lgbj.png",
           }}
           resizeMode="contain"
           style={{ flex: 1, width: "100%", height: "100%" }}
-        /> */}
+        />
       </View>
     </View>
   );

@@ -5,7 +5,6 @@ import {
   ScrollView,
   TouchableOpacity,
   StyleSheet,
-  SafeAreaView,
 } from "react-native";
 import React, {
   useCallback,
@@ -25,6 +24,7 @@ import axios from "axios";
 import { StatusBar } from "expo-status-bar";
 import { usePatientProfile } from "../../../context/PatientProfileProvider";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { SafeAreaView } from "react-native-safe-area-context";
 const profile = () => {
   const { patientProfile } = usePatientProfile();
   const snapPoint = useMemo(() => ["22%"], []);

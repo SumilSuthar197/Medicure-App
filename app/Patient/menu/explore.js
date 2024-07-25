@@ -4,7 +4,6 @@ import {
   Text,
   TouchableOpacity,
   Image,
-  SafeAreaView,
 } from "react-native";
 import MapView, { Callout, Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import * as Location from "expo-location";
@@ -18,6 +17,7 @@ import {
 } from "../../../constants/color";
 import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const MapObject = (data) => {
   return (

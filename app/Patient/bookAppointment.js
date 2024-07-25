@@ -3,7 +3,6 @@ import {
   View,
   Text,
   ScrollView,
-  SafeAreaView,
   TouchableOpacity,
   Alert,
   StyleSheet,
@@ -27,6 +26,7 @@ import { CardField, useStripe } from "@stripe/stripe-react-native";
  
 import { router, useLocalSearchParams } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { SafeAreaView } from "react-native-safe-area-context";
 // import { TextInput } from "react-native-gesture-handler";
 
 const BookAppointment = () => {
