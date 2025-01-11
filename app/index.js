@@ -1,31 +1,30 @@
 import React, { useEffect } from "react";
-import { router } from "expo-router";
 import { Image, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import * as SplashScreen from "expo-splash-screen";
+import { medicureSplashScreenImage } from "../constants/data";
 
 const HomePage = () => {
   useEffect(() => {
     const checkUserInfo = async () => {
       try {
-        await SplashScreen.preventAutoHideAsync(); // Prevent the splash screen from auto-hiding
+        await SplashScreen.preventAutoHideAsync();
+        const userToken = await AsyncStorage.getItem("userToken");
+        const userType = await AsyncStorage.getItem("userType");
 
-        const userInfoString = await AsyncStorage.getItem("userInfo");
-        const doctorInfoString = await AsyncStorage.getItem("doctorInfo");
-
-        if (userInfoString) {
-          router.replace("/Patient/menu");
-        } else if (doctorInfoString) {
-          router.replace("/Doctor/Doctormenu");
-        } else {
+        if (!userToken || !userType) {
           router.replace("/onboarding");
+        } else if (userType === "DOCTOR") {
+          router.replace("/Doctor/Home");
+        } else {
+          router.replace("/Patient/Home");
         }
-
-        await SplashScreen.hideAsync(); // Hide the splash screen after navigation
       } catch (error) {
-        await SplashScreen.hideAsync(); // Ensure the splash screen is hidden in case of an error
         console.error("Error retrieving userInfo:", error);
+      } finally {
+        await SplashScreen.hideAsync();
       }
     };
 
@@ -41,9 +40,7 @@ const HomePage = () => {
           style="light"
         />
         <Image
-          source={{
-            uri: "https://res.cloudinary.com/deohymauz/image/upload/v1704457322/100_Light_settings_invited_friends_2_n4lgbj.png",
-          }}
+          source={{ uri: medicureSplashScreenImage }}
           resizeMode="contain"
           style={{ flex: 1, width: "100%", height: "100%" }}
         />

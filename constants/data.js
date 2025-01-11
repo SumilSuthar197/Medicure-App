@@ -1,28 +1,27 @@
-const data = [
+export const data = [
   {
     id: 1,
     image:
       "https://res.cloudinary.com/deohymauz/image/upload/v1704449207/onboard21_lrapgg.png",
     title: "Discover Experienced Doctors",
-    text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sed.",
+    text: "Find trusted and highly skilled doctors to provide the care you need.",
   },
   {
     id: 2,
     image:
       "https://res.cloudinary.com/deohymauz/image/upload/v1704449331/onboard2_z3knzt.png",
     title: "Effortless Appointment Booking",
-    text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sed.",
+    text: "Schedule appointments with ease, saving you time and hassle.",
   },
   {
     id: 3,
     image:
       "https://res.cloudinary.com/deohymauz/image/upload/v1704449206/onboard3_h0fc9w.png",
     title: "Learn About Your Doctors",
-    text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sed.",
-  },
+    text: "Access detailed profiles to make informed decisions about your healthcare.",
+  }
 ];
 
-export default data;
 export const iconItem = [
   {
     icon: "https://res.cloudinary.com/deohymauz/image/upload/v1713338025/image_processing20210620-14319-1jci1qf_jwzmz2.png",
@@ -45,3 +44,9 @@ export const iconItem = [
     name: "Orthopedic",
   },
 ];
+
+export const medicureSplashScreenImage =
+  "https://res.cloudinary.com/deohymauz/image/upload/v1704457322/100_Light_settings_invited_friends_2_n4lgbj.png";
+
+export const medicureGetStartedImage =
+  "https://res.cloudinary.com/deohymauz/image/upload/v1704449205/onboard4_mkfq3d.png";

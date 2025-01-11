@@ -1,21 +1,14 @@
 import { View, Text, TextInput, StyleSheet, Alert } from "react-native";
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import PrimaryButton from "../../components/PrimaryButton";
-import { router } from "expo-router";
-import axios from "axios";
-import {
-  backgroundColor,
-  borderColor,
-  lightTextColor,
-  textBlack,
-  whiteText,
-} from "../../constants/color";
-
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { router, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import PrimaryButton from "../components/PrimaryButton";
+import { userRegister } from "../api/common";
 
 const Signup = () => {
+  const { userType } = useLocalSearchParams();
   const [user, setUser] = useState({
     name: "",
     email: "",
@@ -23,37 +16,44 @@ const Signup = () => {
     password: "",
   });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (
-      user.name === "" ||
-      user.email === "" ||
-      user.mobile === "" ||
-      user.password === ""
-    ) {
+  const handleSubmit = async () => {
+    const { name, email, mobile, password } = user;
+    if (!name || !email || !mobile || !password) {
       Alert.alert("Missing Information", "Please fill all the fields");
       return;
     }
-    let { data } = await axios.post(
-      `https://medicure-sumilsuthar197.koyeb.app/register`,
-      {
-        user: "PATIENT",
-        ...user,
-      }
-    );
-
-    if (data.output === true) {
-      AsyncStorage.setItem("userInfo", JSON.stringify(data.token));
-      router.push({
-        pathname: "/Patient/Profile",
-        params: {
-          email: user.email,
-          name: user.name,
-          mobile: user.mobile,
-          type: "Create Account",
-        },
-      });
-    } else alert(data.output);
+    try {
+      const { data } = await userRegister(
+        userType,
+        name,
+        email,
+        mobile,
+        password
+      );
+      if (data.output === true && userType === "PATIENT") {
+        await AsyncStorage.setItem("userToken", JSON.stringify(data.token));
+        await AsyncStorage.setItem("userType", JSON.stringify(userType));
+        router.push({
+          pathname: "/Patient/Profile",
+          params: {
+            email,
+            name,
+            mobile,
+            edit: true,
+          },
+        });
+      } else
+        Alert.alert(
+          "Registration Failed",
+          data?.output ||
+            "An error occurred during registration. Please try again."
+        );
+    } catch (error) {
+      Alert.alert(
+        "Registration Failed",
+        "An error occurred during registration. Please try again."
+      );
+    }
   };
 
   return (
@@ -107,15 +107,11 @@ const Signup = () => {
             label="Sign Up"
             onPress={handleSubmit}
           />
-          <Text style={{ textAlign: "center", paddingVertical: 15 }}>
+          <Text style={styles.textCenter}>
             Already have an account?{" "}
             <Text
-              style={{
-                textDecorationLine: "underline",
-                color: "blue",
-                fontWeight: "bold",
-              }}
-              onPress={() => router.push("/Patient")}
+              style={styles.highlightedText}
+              onPress={() => router.push(`/login?userType=${userType}`)}
             >
               Sign Up
             </Text>
@@ -131,7 +127,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#FFF",
   },
-  form: { flex: 2, paddingHorizontal: 15, rowGap: 20 },
+  form: {
+    flex: 2,
+    paddingHorizontal: 15,
+    rowGap: 20,
+  },
   textTitle: {
     fontSize: 14,
     fontWeight: "600",
@@ -149,8 +149,17 @@ const styles = StyleSheet.create({
     width: "100%",
     marginHorizontal: "auto",
   },
-  itemView: { flex: 0.7, justifyContent: "center", alignItems: "center" },
+  textCenter: {
+    textAlign: "center",
+    paddingVertical: 15,
+  },
+  itemView: {
+    flex: 0.7,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   itemTitle: {
+    fontWeight: "500",
     textAlign: "center",
     fontSize: 28,
     fontWeight: "800",
@@ -159,12 +168,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
   },
   itemText: {
+    fontSize: 14,
+    fontWeight: "500",
     textAlign: "center",
     marginHorizontal: 35,
     color: "black",
     lineHeight: 22,
-    fontSize: 14,
     paddingHorizontal: 15,
+  },
+  highlightedText: {
+    textDecorationLine: "underline",
+    color: "blue",
+    fontWeight: "bold",
   },
 });
 

@@ -1,72 +1,38 @@
-import { Image, Text, View, useWindowDimensions } from "react-native";
+import {
+  Image,
+  Text,
+  View,
+  StyleSheet,
+  useWindowDimensions,
+} from "react-native";
 import React, { useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import PrimaryButton from "../components/PrimaryButton";
 import { StatusBar } from "expo-status-bar";
+import { medicureGetStartedImage } from "../constants/data";
 
 const getStarted = () => {
-  const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = useWindowDimensions();
-  useEffect(() => {
-    Image.prefetch(
-      "https://res.cloudinary.com/deohymauz/image/upload/v1704449205/onboard4_mkfq3d.png"
-    );
-  }, []);
   return (
-    <SafeAreaView
-      style={{
-        width: SCREEN_WIDTH,
-        minHeight: SCREEN_HEIGHT,
-        flex: 2,
-        backgroundColor: "#FFF",
-      }}
-    >
+    <SafeAreaView style={styles.container}>
       <StatusBar style="auto" />
-      <View
-        style={{
-          alignItems: "center",
-          flex: 1,
-          justifyContent: "center",
-          width: SCREEN_WIDTH * 0.9,
-          marginLeft: 5,
-        }}
-      >
+      <View style={styles.imageContainer}>
         <Image
-          source={{
-            uri: "https://res.cloudinary.com/deohymauz/image/upload/v1704449205/onboard4_mkfq3d.png",
-          }}
-          style={{ width: "100%", height: "100%", objectFit: "contain" }}
+          source={{ uri: medicureGetStartedImage }}
+          style={styles.getStartedImage}
         />
       </View>
-      <View
-        style={{ paddingHorizontal: 25, paddingBottom: 35, paddingTop: 20 }}
-      >
-        <Text
-          style={{
-            fontSize: 40,
-            fontWeight: "800",
-            color: "black",
-          }}
-        >
-          Let's Started
-        </Text>
-        <Text
-          style={{
-            opacity: 0.5,
-            marginTop: 16,
-            fontSize: 16,
-            color: "black",
-          }}
-        >
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sed.
+      <View style={styles.textContainer}>
+        <Text style={styles.textTitle}>Let's Started</Text>
+        <Text style={styles.textDescription}>
+          Begin your journey with Medicure. Your health, our priority.{" "}
         </Text>
       </View>
-
-      <View style={{ flex: 0.5, paddingHorizontal: 20, gap: 25 }}>
+      <View style={styles.buttonContainer}>
         <View>
           <PrimaryButton
             label="Log In As Doctor"
-            onPress={() => router.push("./Doctor")}
+            onPress={() => router.push("/login?userType=DOCTOR")}
             color="#FFF"
             backgroundColor="#000"
           />
@@ -74,7 +40,7 @@ const getStarted = () => {
         <View>
           <PrimaryButton
             label="Log In As Patient"
-            onPress={() => router.push("./Patient")}
+            onPress={() => router.push("/login?userType=PATIENT")}
             color="#FFF"
             backgroundColor="#000"
           />
@@ -83,5 +49,31 @@ const getStarted = () => {
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    width: "100%",
+    Height: "100%",
+    flex: 2,
+    backgroundColor: "#FFF",
+  },
+  imageContainer: {
+    alignItems: "center",
+    flex: 1,
+    justifyContent: "center",
+    width: "90%",
+    marginLeft: 5,
+  },
+  getStartedImage: { width: "100%", height: "100%", objectFit: "contain" },
+  textContainer: { paddingHorizontal: 25, paddingBottom: 35, paddingTop: 20 },
+  textTitle: { fontSize: 40, fontWeight: "800", color: "black" },
+  textDescription: {
+    opacity: 0.5,
+    marginTop: 4,
+    fontSize: 16,
+    color: "black",
+  },
+  buttonContainer: { flex: 0.5, paddingHorizontal: 20, gap: 25 },
+});
 
 export default getStarted;

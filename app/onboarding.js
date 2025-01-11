@@ -7,7 +7,7 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import data from "../constants/data";
+import { data } from "../constants/data";
 import Animated, {
   useSharedValue,
   useAnimatedScrollHandler,
@@ -109,7 +109,6 @@ function Onboarding1() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* <StatusBar style="auto" /> */}
       <Animated.FlatList
         ref={flatListRef}
         onScroll={onScroll}

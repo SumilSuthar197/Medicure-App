@@ -9,11 +9,11 @@ const Contact = ({ mobile, email, location, coordinate }) => {
     <View>
       <Text style={styles.bottomCardTitle}>Contact Info</Text>
       <View style={styles.contactRow}>
-        <Ionicons name="md-call" size={18} color={lightTextColor} />
+        <Ionicons name="call" size={18} color={lightTextColor} />
         <Text style={styles.bottomCardText}>{mobile}</Text>
       </View>
       <View style={styles.contactRow}>
-        <Ionicons name="md-mail" size={18} color={lightTextColor} />
+        <Ionicons name="mail" size={18} color={lightTextColor} />
         <Text style={styles.bottomCardText}>{email}</Text>
       </View>
       <View style={styles.contactRow}>
