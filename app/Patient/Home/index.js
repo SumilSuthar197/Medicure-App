@@ -86,7 +86,7 @@ const index = () => {
           <TouchableOpacity
             onPress={() =>
               router.push({
-                pathname: "/Patient/DoctorSearch",
+                pathname: "/Patient/doctorSearch",
                 params: { containCategory: "" },
               })
             }
@@ -102,7 +102,7 @@ const index = () => {
               style={styles.iconItem}
               onPress={() =>
                 router.push({
-                  pathname: "/Patient/DoctorSearch",
+                  pathname: "/Patient/doctorSearch",
                   params: { containCategory: item.name },
                 })
               }
@@ -119,7 +119,7 @@ const index = () => {
           <TouchableOpacity
             style={styles.hospitalSearchButton}
             onPress={() => {
-              router.push("/Patient/HospitalSearch");
+              router.push("/Patient/hospitalSearch");
             }}
           >
             <Text style={styles.hospitalSearchButtonText}>
@@ -133,7 +133,7 @@ const index = () => {
           <TouchableOpacity
             onPress={() =>
               router.push({
-                pathname: "/Patient/DoctorSearch",
+                pathname: "/Patient/doctorSearch",
                 params: { containCategory: "" },
               })
             }

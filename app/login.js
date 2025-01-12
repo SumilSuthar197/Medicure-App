@@ -4,6 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import * as Location from "expo-location";
 import PrimaryButton from "../components/PrimaryButton";
 import { userForgetPassword, userLogin } from "../api/common";
 
@@ -11,6 +12,28 @@ const Login = () => {
   const { userType } = useLocalSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const fetchLocation = async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      Alert.alert(
+        "Permission was denied",
+        "Please allow location access to use this feature"
+      );
+      return null;
+    }
+    try {
+      const userLocation = await Location.getCurrentPositionAsync({});
+      return {
+        latitude: userLocation.coords.latitude,
+        longitude: userLocation.coords.longitude,
+      };
+    } catch (error) {
+      Alert.alert("Error", "An error occurred while fetching location.");
+      return null;
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,7 +42,12 @@ const Login = () => {
       return;
     }
     try {
-      let { data } = await userLogin(userType, email, password);
+      setLoading(true);
+      let location = null;
+      if (userType === "DOCTOR") {
+        location = await fetchLocation();
+      }
+      let { data } = await userLogin(userType, email, password, location);
       if (data.output === true) {
         await AsyncStorage.setItem("userToken", JSON.stringify(data.token));
         await AsyncStorage.setItem("userType", JSON.stringify(userType));
@@ -29,10 +57,14 @@ const Login = () => {
         Alert.alert("Login Failed", data?.output);
       }
     } catch (error) {
+      console.log("login Error", error);
+
       Alert.alert(
         "Login Failed",
         "An error occurred during login. Please try again."
       );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -94,6 +126,7 @@ const Login = () => {
             color="#FFF"
             label="Sign In"
             onPress={handleSubmit}
+            loading={loading}
           />
           {userType === "PATIENT" && (
             <Text style={{ textAlign: "center", paddingVertical: 15 }}>

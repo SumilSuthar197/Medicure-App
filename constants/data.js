@@ -19,7 +19,7 @@ export const data = [
       "https://res.cloudinary.com/deohymauz/image/upload/v1704449206/onboard3_h0fc9w.png",
     title: "Learn About Your Doctors",
     text: "Access detailed profiles to make informed decisions about your healthcare.",
-  }
+  },
 ];
 
 export const iconItem = [
@@ -50,3 +50,15 @@ export const medicureSplashScreenImage =
 
 export const medicureGetStartedImage =
   "https://res.cloudinary.com/deohymauz/image/upload/v1704449205/onboard4_mkfq3d.png";
+
+export const bloodGroups = [
+  { label: "Select Blood Group", value: "" },
+  { label: "A+", value: "A+" },
+  { label: "A-", value: "A-" },
+  { label: "B+", value: "B+" },
+  { label: "B-", value: "B-" },
+  { label: "AB+", value: "AB+" },
+  { label: "AB-", value: "AB-" },
+  { label: "O+", value: "O+" },
+  { label: "O-", value: "O-" },
+];

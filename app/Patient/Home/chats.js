@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -6,22 +6,16 @@ import {
   FlatList,
   TextInput,
   TouchableOpacity,
-  Image,
 } from "react-native";
 import { bookAppointment, sendUserQuery } from "../../../api/patient";
-import {
-  blueColor,
-  borderColor,
-  lightTextColor,
-  textBlack,
-  whiteText,
-} from "../../../constants/color";
+import { blueColor } from "../../../constants/color";
 import { useRouter } from "expo-router";
 import DoctorCardComponent from "../../../components/ChatComponent/DoctorCardComponent";
 import TextMessageComponent from "../../../components/ChatComponent/TextMessageComponent";
 
 const Chat = () => {
   const router = useRouter();
+  const flatListRef = useRef(null);
   const [messageData, setMessageData] = useState([
     {
       from: "backend",
@@ -71,7 +65,7 @@ const Chat = () => {
       const formatDate = new Date(doctor.date).toDateString();
       const formatResponse = {
         id: Math.random().toString(),
-        message: `Your appointment with Dr. ${doctor.name} has been successfully booked for ${formatDate}. \n\nSpecialization: ${doctor.education.field} \nSymptoms: ${doctor.symptoms} \nLocation: ${doctor.location} \n\nFor any inquiries, please contact: ${doctor.contact}`,
+        message: `Your appointment with ${doctor.name} has been successfully booked for ${formatDate}. \n\nSpecialization: ${doctor.education.field} \nSymptoms: ${doctor.symptoms} \nLocation: ${doctor.location} \n\nFor any inquiries, please contact: ${doctor.contact}`,
         from: "backend",
       };
       setMessageData((prevMessages) => [...prevMessages, formatResponse]);
@@ -119,9 +113,16 @@ const Chat = () => {
     );
   };
 
+  useEffect(() => {
+    if (flatListRef.current) {
+      flatListRef.current.scrollToEnd({ animated: true });
+    }
+  }, [messageData]);
+
   return (
     <View style={styles.container}>
       <FlatList
+        ref={flatListRef}
         style={styles.messagesList}
         data={messageData}
         renderItem={renderMessage}

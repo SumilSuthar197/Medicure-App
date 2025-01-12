@@ -40,7 +40,7 @@ const profile = () => {
     {
       title: "Your Profile",
       icon: "user-o",
-      onPress: () => router.push("/Patient/patientPublicProfile"),
+      onPress: () => router.push("/Patient?email=" + user.email),
     },
     {
       title: "Edit Profile",

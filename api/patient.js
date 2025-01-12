@@ -1,8 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { axiosInstance } from ".";
+import { axiosInstance } from "./index";
 
 export const getPatientDashboardData = async () => {
-  const url = "/patient/dashboard";
+  const url = "/get_mobile_dashboard_data";
   const jwtToken = await AsyncStorage.getItem("userToken");
 
   return Promise.resolve({
@@ -561,4 +561,305 @@ export const cancelAppointment = async (id) => {
       },
     }
   );
+};
+
+export const editProfile = async (data) => {
+  const url = "/updatepatient";
+  const jwtToken = await AsyncStorage.getItem("userToken");
+
+  return Promise.resolve({
+    data: {
+      output: true,
+    },
+  });
+
+  return axiosInstance.post(url, data, {
+    headers: {
+      Authorization: `Bearer ${JSON.parse(jwtToken)}`,
+    },
+  });
+};
+
+export const getDoctorsList = async (category = "") => {
+  const url = category === "" ? "/getdoctors" : `/get_doctors/${category}`;
+
+  return Promise.resolve({
+    data: [
+      {
+        email: "aarav.sharma@gmail.com",
+        experience: 12,
+        field: "Cardiology",
+        image:
+          "https://res.cloudinary.com/deohymauz/image/upload/v1702990518/download_1_c8z7gh.jpg",
+        location: "Dadar",
+        name: "Dr. Aarav Sharma",
+        rating_count: 2,
+        rating_score: 4.5,
+      },
+      {
+        email: "aditya.patel@gmail.com",
+        experience: 12,
+        field: "Pediatrics",
+        image:
+          "https://res.cloudinary.com/deohymauz/image/upload/v1702990518/download_1_c8z7gh.jpg",
+        location: "Borivali",
+        name: "Dr. Aditya Patel",
+        rating_count: 2,
+        rating_score: 4.5,
+      },
+      {
+        email: "vikram.singh@gmail.com",
+        experience: 11,
+        field: "Orthopedic Surgery",
+        image:
+          "https://res.cloudinary.com/deohymauz/image/upload/v1702990518/download_1_c8z7gh.jpg",
+        location: "Andheri",
+        name: "Dr. Vikram Singh",
+        rating_count: 0,
+        rating_score: 0,
+      },
+      {
+        email: "arjun.mehta@gmail.com",
+        experience: 11,
+        field: "Otorhinolaryngology",
+        image:
+          "https://res.cloudinary.com/deohymauz/image/upload/v1702990518/download_1_c8z7gh.jpg",
+        location: "Dadar",
+        name: "Dr. Arjun Mehta",
+        rating_count: 2,
+        rating_score: 2.2,
+      },
+      {
+        email: "divya.sharma@gmail.com",
+        experience: 11,
+        field: "Dermatology",
+        image:
+          "https://res.cloudinary.com/deohymauz/image/upload/v1713279901/doctor3female_iwqbit.jpg",
+        location: "Andheri",
+        name: "Dr. Divya Sharma",
+        rating_count: 2,
+        rating_score: 4.5,
+      },
+      {
+        email: "sunil@gmail.com",
+        experience: 10,
+        field: "General Physician",
+        image:
+          "https://res.cloudinary.com/deohymauz/image/upload/v1702990518/download_1_c8z7gh.jpg",
+        location: "Dadar",
+        name: "Dr. Sunil Yadav",
+        rating_count: 1,
+        rating_score: 4.0,
+      },
+      {
+        email: "priya.desai@gmail.com",
+        experience: 9,
+        field: "Cardiology",
+        image:
+          "https://res.cloudinary.com/deohymauz/image/upload/v1713279901/doctor3female_iwqbit.jpg",
+        location: "Dadar",
+        name: "Dr. Priya Desai",
+        rating_count: 5,
+        rating_score: 4.2,
+      },
+      {
+        email: "sneha.gupta@gmail.com",
+        experience: 9,
+        field: "Dermatology",
+        image:
+          "https://res.cloudinary.com/deohymauz/image/upload/v1713279901/doctor3female_iwqbit.jpg",
+        location: "Andheri",
+        name: "Dr. Sneha Gupta",
+        rating_count: 0,
+        rating_score: 0,
+      },
+      {
+        email: "ananya.reddy@gmail.com",
+        experience: 9,
+        field: "Ophthalmology",
+        image:
+          "https://res.cloudinary.com/deohymauz/image/upload/v1713279901/doctor3female_iwqbit.jpg",
+        location: "Powai",
+        name: "Dr. Ananya Reddy",
+        rating_count: 2,
+        rating_score: 4.5,
+      },
+      {
+        email: "rohan.kapoor@gmail.com",
+        experience: 9,
+        field: "Neurology",
+        image:
+          "https://res.cloudinary.com/deohymauz/image/upload/v1702990518/download_1_c8z7gh.jpg",
+        location: "Andheri",
+        name: "Dr. Rohan Kapoor",
+        rating_count: 2,
+        rating_score: 4.5,
+      },
+      {
+        email: "maya.deshmukh@gmail.com",
+        experience: 9,
+        field: "Dentistry",
+        image:
+          "https://res.cloudinary.com/deohymauz/image/upload/v1713279901/doctor3female_iwqbit.jpg",
+        location: "Bandra",
+        name: "Dr. Maya Deshmukh",
+        rating_count: 2,
+        rating_score: 4.5,
+      },
+      {
+        email: "neha.patel@gmail.com",
+        experience: 8,
+        field: "Gynecology",
+        image:
+          "https://res.cloudinary.com/deohymauz/image/upload/v1713279901/doctor3female_iwqbit.jpg",
+        location: "Andheri",
+        name: "Dr. Neha Patel",
+        rating_count: 0,
+        rating_score: 0,
+      },
+      {
+        email: "nisha.sharma@gmail.com",
+        experience: 8,
+        field: "Psychiatry",
+        image:
+          "https://res.cloudinary.com/deohymauz/image/upload/v1713279901/doctor3female_iwqbit.jpg",
+        location: "Worli",
+        name: "Dr. Nisha Sharma",
+        rating_count: 0,
+        rating_score: 0,
+      },
+      {
+        email: "kavita.singhania@gmail.com",
+        experience: 8,
+        field: "Oncology",
+        image:
+          "https://res.cloudinary.com/deohymauz/image/upload/v1713279901/doctor3female_iwqbit.jpg",
+        location: "Worli",
+        name: "Dr. Kavita Singhania",
+        rating_count: 2,
+        rating_score: 4.5,
+      },
+      {
+        email: "rajesh.kumar@gmail.com",
+        experience: 7,
+        field: "Pediatrics",
+        image:
+          "https://res.cloudinary.com/deohymauz/image/upload/v1702990518/download_1_c8z7gh.jpg",
+        location: "Powai",
+        name: "Dr. Rajesh Kumar",
+        rating_count: 0,
+        rating_score: 0,
+      },
+    ],
+  });
+
+  return axiosInstance.get(url);
+};
+
+export const getHospitalList = async () => {
+  const url = "/allhospitals";
+
+  return Promise.resolve({
+    data: [
+      {
+        id: 1,
+        name: "City Care Hospital",
+        image: null,
+        city: "Bangalore",
+        mobile: "1234567890",
+        email: "hello@citycare.com",
+      },
+      {
+        id: 2,
+        name: "Wellness Center",
+        image: null,
+        city: "Mysore",
+        mobile: "9876543210",
+        email: "hello@wellnesscenter.in",
+      },
+      {
+        id: 3,
+        name: "LifeLine Hospital",
+        image: null,
+        city: "Hubli",
+        mobile: "1122334455",
+        email: "lifeline@hospital.com",
+      },
+    ],
+  });
+
+  return axiosInstance.get(url);
+};
+
+export const submitSymptoms = async (hospital, symptoms) => {
+  const url = "/getspeciality";
+  const jwtToken = await AsyncStorage.getItem("userToken");
+  return Promise.resolve({});
+  return axiosInstance.post(
+    url,
+    {
+      hospital,
+      symptoms,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${JSON.parse(jwtToken)}`,
+      },
+    }
+  );
+};
+
+export const fetchPatientProfile = async (email) => {
+  const url = `/patientprofiledoctor/${email}`;
+
+  return Promise.resolve({
+    data: {
+      address: "Cabin Cross Road",
+      allowed_doctors: ["doctor_1", "doctor_2"],
+      bloodGroup: "B+",
+      city: "Mumbai",
+      dob: "2003-07-18",
+      ehr: [
+        {
+          date: "2023-12-20",
+          name: "Dr. Sunil Yadev",
+          url: "https://res.cloudinary.com/dp9kpxfpa/image/upload/v1703047890/tcdo82ua3vm5owjg6csc.png",
+        },
+        {
+          date: "2023-12-11",
+          name: "ABC Labs",
+          url: "https://res.cloudinary.com/dp9kpxfpa/image/upload/v1703047890/tcdo82ua3vm5owjg6csc.png",
+        },
+      ],
+      email: "sumil@gmail.com",
+      emergencyContact: "9838905327",
+      gender: "male",
+      height: 172.0,
+      imageUrl:
+        "https://res.cloudinary.com/deohymauz/image/upload/v1721970714/tlxne5wfk75t0qpmnqlp.jpg",
+      mobile: "1234567890",
+      name: "Sumil Suthar",
+      notifications: [
+        {
+          date: "17-12-2023 16:54",
+          message: "You have an appointment scheduled for tomorrow at 10 AM.",
+          title: "Appointment Reminder",
+        },
+        {
+          date: "17-12-2023 16:54",
+          message: "You have an appointment scheduled for tomorrow at 10 AM.",
+          title: "Appointment Reminder",
+        },
+        {
+          date: "18-12-2023 17:39",
+          message: "You have an appointment scheduled for tomorrow at 10 AM.",
+          title: "Appointment Reminder",
+        },
+      ],
+      wallet: 100,
+      weight: 72.0,
+    },
+  });
+
+  return axiosInstance.get(url);
 };

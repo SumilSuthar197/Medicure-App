@@ -14,14 +14,13 @@ import {
   blueColor,
   whiteText,
 } from "../../../constants/color";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 
 import { router } from "expo-router";
 import ErrorPage from "../../../components/ErrorPage";
-import AppointmentCard from "../../../components/AppointmentCard";
 import { cancelAppointment, getAppointmentList } from "../../../api/patient";
 import LoadingScreen from "../../../components/LoadingScreen";
+import AppointmentCard from "../../../components/Patient/AppointmentCard";
 
 const Booking = () => {
   const [activeIndex, setActiveIndex] = useState(0);

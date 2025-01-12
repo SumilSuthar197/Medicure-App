@@ -16,7 +16,7 @@ const HomePage = () => {
 
         if (!userToken || !userType) {
           router.replace("/onboarding");
-        } else if (userType === "DOCTOR") {
+        } else if (JSON.parse(userType) === "DOCTOR") {
           router.replace("/Doctor/Home");
         } else {
           router.replace("/Patient/Home");

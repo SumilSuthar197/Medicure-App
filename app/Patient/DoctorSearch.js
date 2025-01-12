@@ -1,44 +1,38 @@
-import { View, ScrollView, TextInput, StyleSheet, Text } from "react-native";
 import React, { useEffect, useState } from "react";
-import { Ionicons } from "@expo/vector-icons";
-import axios from "axios";
+import { View, ScrollView, TextInput, StyleSheet, Text } from "react-native";
 import { ActivityIndicator } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useLocalSearchParams } from "expo-router";
 import {
   backgroundColor,
   borderColor,
   lightTextColor,
 } from "../../constants/color";
-import { useLocalSearchParams } from "expo-router";
- 
 import DoctorCard from "../../components/HomeComponent/DoctorCard";
+import { getDoctorsList } from "../../api/patient";
 
 const DoctorSearch = () => {
   const [doctorCardData, setDoctorCardData] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
   const { containCategory } = useLocalSearchParams();
+
+  const fetchData = async () => {
+    try {
+      setIsLoading(true);
+      const response = await getDoctorsList(containCategory);
+      setDoctorCardData(response.data);
+    } catch (error) {
+      console.error("Error fetching data: ", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        let response;
-        if (containCategory === "") {
-          response = await axios.get(`https://medicure-sumilsuthar197.koyeb.app/getdoctors`);
-          console.log(response.data);
-          setDoctorCardData(response.data);
-        } else {
-          response = await axios.get(
-            `https://medicure-sumilsuthar197.koyeb.app/get_doctors/${containCategory}`
-          );
-          setDoctorCardData(response.data.reverse());
-        }
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error fetching data: ", error);
-      }
-    };
     fetchData();
   }, []);
 
-  const [searchTerm, setSearchTerm] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
   return (
     <View style={styles.main}>
       <View style={styles.iconContainer}>
@@ -102,6 +96,11 @@ const styles = StyleSheet.create({
     borderRadius: 15,
   },
   inputText: { width: "100%", color: lightTextColor },
-  notFound: { textAlign: "center", color: lightTextColor, marginTop: 12,fontSize: 15},
+  notFound: {
+    textAlign: "center",
+    color: lightTextColor,
+    marginTop: 12,
+    fontSize: 15,
+  },
 });
 export default DoctorSearch;

@@ -6,7 +6,23 @@ const PatientLayout = () => {
   return (
     <PatientProfileProvider>
       <Stack initialRouteName="index">
-        <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="index"
+          options={{
+            headerTitle: "Patient's Profile",
+            headerStyle: {
+              backgroundColor: blueColor,
+            },
+            headerShadowVisible: false,
+            headerTitleStyle: {
+              color: whiteText,
+              fontWeight: "600",
+              fontSize: 18,
+            },
+            headerTintColor: whiteText,
+            headerTitleAlign: "center",
+          }}
+        />
         <Stack.Screen name="Home" options={{ headerShown: false }} />
         <Stack.Screen name="Profile" />
         <Stack.Screen
@@ -27,24 +43,7 @@ const PatientLayout = () => {
           }}
         />
         <Stack.Screen
-          name="patientPublicProfile"
-          options={{
-            headerTitle: "Patient's Profile",
-            headerStyle: {
-              backgroundColor: blueColor,
-            },
-            headerShadowVisible: false,
-            headerTitleStyle: {
-              color: whiteText,
-              fontWeight: "600",
-              fontSize: 18,
-            },
-            headerTintColor: whiteText,
-            headerTitleAlign: "center",
-          }}
-        />
-        <Stack.Screen
-          name="DoctorSearch"
+          name="doctorSearch"
           options={{
             headerStyle: {
               backgroundColor: backgroundColor,
@@ -54,7 +53,7 @@ const PatientLayout = () => {
           }}
         />
         <Stack.Screen
-          name="HospitalSearch"
+          name="hospitalSearch"
           options={{
             headerStyle: {
               backgroundColor: backgroundColor,

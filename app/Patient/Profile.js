@@ -23,25 +23,14 @@ import {
   whiteText,
 } from "../../constants/color";
 import { Picker } from "@react-native-picker/picker";
- 
+
 import { usePatientProfile } from "../../context/PatientProfileProvider";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
-const bloodGroups = [
-  { label: "Select Blood Group", value: "" },
-  { label: "A+", value: "A+" },
-  { label: "A-", value: "A-" },
-  { label: "B+", value: "B+" },
-  { label: "B-", value: "B-" },
-  { label: "AB+", value: "AB+" },
-  { label: "AB-", value: "AB-" },
-  { label: "O+", value: "O+" },
-  { label: "O-", value: "O-" },
-];
+import { editProfile } from "../../api/patient";
+import { bloodGroups } from "../../constants/data";
+import { uploadImageToCloudinary } from "../../api/common";
 
 const Profile = () => {
-  const [image, setImage] = useState(null);
-
   useEffect(() => {
     (async () => {
       if (Platform.OS !== "web") {
@@ -66,34 +55,17 @@ const Profile = () => {
     }
   };
   const uploadImage = async (uri) => {
-    const formData = new FormData();
-    let uriParts = uri.split(".");
-    let fileType = uriParts[uriParts.length - 1];
-
-    formData.append("file", {
-      uri,
-      name: `photo.${fileType}`,
-      type: `image/${fileType}`,
-    });
-    formData.append("upload_preset", "medicure");
     try {
-      const response = await axios.post(
-        "https://api.cloudinary.com/v1_1/deohymauz/image/upload",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      setImage(response.data.secure_url);
-      setUser({ ...user, imageUrl: response.data.secure_url });
+      const { imageUrl } = await uploadImageToCloudinary(uri);
+      setUser({ ...user, imageUrl });
     } catch (e) {
       console.log(e);
+      Alert.alert("Image Upload Failed", "Please try again later.");
     }
   };
+
   const item = useLocalSearchParams();
-  const { patientProfile, setPatientProfile } = usePatientProfile();
+  const { patientProfile } = usePatientProfile();
   const [user, setUser] = useState({
     mobile: "",
     gender: "",
@@ -108,6 +80,7 @@ const Profile = () => {
     ...patientProfile.patient,
     ...item,
   });
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (
@@ -127,22 +100,23 @@ const Profile = () => {
       return;
     }
     try {
-      const storedItem = await AsyncStorage.getItem("userInfo");
-      const jwtToken = JSON.parse(storedItem);
-      const response = await axios.post(`https://medicure-sumilsuthar197.koyeb.app/updatepatient`, user, {
-        headers: {
-          Authorization: `Bearer ${jwtToken}`,
-        },
-      });
+      const response = await editProfile(user);
       if (response.data.output === true) {
         router.replace("/Patient/menu");
       } else {
-        alert("Something went wrong");
+        Alert.alert(
+          "Update Failed",
+          "An error occurred during updating. Please try again."
+        );
       }
-    } catch (error) {
-      console.log(error);
+    } catch {
+      Alert.alert(
+        "Update Failed",
+        "An error occurred during updating. Please try again."
+      );
     }
   };
+
   return (
     <ScrollView style={{ backgroundColor: backgroundColor }}>
       <View style={styles.container}>

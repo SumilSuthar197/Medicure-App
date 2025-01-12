@@ -13,7 +13,6 @@ import { borderColor, textBlack } from "../../constants/color";
 import axios from "axios";
 
 const Header = () => {
-  const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const [address, setAddress] = useState(null);
 
@@ -31,10 +30,7 @@ const Header = () => {
           `https://nominatim.openstreetmap.org/reverse?format=json&lat=${location.coords.latitude}&lon=${location.coords.longitude}`
         );
         if (response && response.data && response.data.address) {
-          setAddress({
-            street: response?.data?.address?.road || "Unknown Street",
-            city: response?.data?.address?.town || "Unknown City",
-          });
+          setAddress(response?.data?.address);
         }
       } catch (error) {
         console.log(error);
@@ -46,7 +42,14 @@ const Header = () => {
   if (errorMsg) {
     text = errorMsg;
   } else if (address) {
-    text = `${address.street}, ${address.city}`;
+    text = [
+      address?.neighbourhood,
+      address?.suburb,
+      address?.state_district,
+      address?.state,
+    ]
+      .filter((item) => item)
+      .join(", ");
   }
 
   return (
@@ -74,7 +77,7 @@ const Header = () => {
       <TouchableOpacity
         onPress={() =>
           router.push({
-            pathname: "/Patient/DoctorSearch",
+            pathname: "/Patient/doctorSearch",
             params: { containCategory: "" },
           })
         }

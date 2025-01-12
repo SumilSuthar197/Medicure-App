@@ -1,6 +1,5 @@
 import { View, Text, StyleSheet, Alert, TextInput } from "react-native";
 import React, { useState } from "react";
-import axios from "axios";
 import PrimaryButton from "../../../components/PrimaryButton";
 import {
   borderColor,
@@ -9,11 +8,19 @@ import {
   textBlack,
   backgroundColor,
 } from "../../../constants/color";
-// import { TextInput } from "react-native-gesture-handler";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { submitLeaveRequest } from "../../../api/doctor";
 
+const isValidDate = (date) => {
+  const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+  if (!datePattern.test(date)) return false;
+  const [year, month, day] = date.split("-").map(Number);
+  if (month < 1 || month > 12) return false;
+  const daysInMonth = new Date(year, month, 0).getDate();
+  if (day < 1 || day > daysInMonth) return false;
+  return true;
+};
 const DoctorLeave = () => {
-  const [user, setUser] = useState({
+  const [leaveDetails, setLeaveDetails] = useState({
     start_date: "",
     end_date: "",
     reason: "",
@@ -21,25 +28,37 @@ const DoctorLeave = () => {
   });
   const handleSubmit = async () => {
     try {
-      const storedItem = await AsyncStorage.getItem("doctorInfo");
-      const jwtToken = JSON.parse(storedItem);
-      const response = await axios.post(
-        `https://medicure-sumilsuthar197.koyeb.app/applyleave`,
-        user,
-        {
-          headers: {
-            Authorization: `Bearer ${jwtToken}`,
-          },
-        }
-      );
+      const { start_date, end_date, hospital_name, reason } = leaveDetails;
+      if (!start_date || !end_date || !hospital_name || !reason) {
+        Alert.alert("Missing Fields", "Please fill all the fields to proceed.");
+        return;
+      }
+      if (!isValidDate(start_date) || !isValidDate(end_date)) {
+        Alert.alert(
+          "Invalid Date",
+          "Please enter a valid date in YYYY-MM-DD format."
+        );
+        return;
+      }
+
+      const response = await submitLeaveRequest(leaveDetails);
       if (response.data.output === true) {
         Alert.alert(
           "Success",
           "Your leave application has been successfully submitted and is awaiting approval."
         );
+        setLeaveDetails({
+          start_date: "",
+          end_date: "",
+          reason: "",
+          hospital_name: "",
+        });
       }
     } catch (error) {
-      console.error(error);
+      Alert.alert(
+        "Leave Application Failed",
+        "Something went wrong. Please try again later."
+      );
     }
   };
   return (
@@ -48,27 +67,33 @@ const DoctorLeave = () => {
         <Text style={styles.textTitle}>Your leaves start from?</Text>
         <TextInput
           placeholder="YYYY-MM-DD"
-          value={user.start_date}
+          value={leaveDetails.start_date}
           style={styles.textContainer}
-          onChangeText={(text) => setUser({ ...user, start_date: text })}
+          onChangeText={(text) =>
+            setLeaveDetails((prev) => ({ ...prev, start_date: text }))
+          }
         />
       </View>
       <View>
         <Text style={styles.textTitle}>Your leaves end when?</Text>
         <TextInput
           placeholder="YYYY-MM-DD"
-          value={user.end_date}
+          value={leaveDetails.end_date}
           style={styles.textContainer}
-          onChangeText={(text) => setUser({ ...user, end_date: text })}
+          onChangeText={(text) =>
+            setLeaveDetails((prev) => ({ ...prev, end_date: text }))
+          }
         />
       </View>
       <View>
         <Text style={styles.textTitle}>Hospital Name</Text>
         <TextInput
           placeholder="Enter your hospital name"
-          value={user.hospital_name}
+          value={leaveDetails.hospital_name}
           style={styles.textContainer}
-          onChangeText={(text) => setUser({ ...user, hospital_name: text })}
+          onChangeText={(text) =>
+            setLeaveDetails((prev) => ({ ...prev, hospital_name: text }))
+          }
         />
       </View>
       <View>
@@ -76,12 +101,14 @@ const DoctorLeave = () => {
         <TextInput
           placeholder="Write your reason for leave"
           numberOfLines={8}
-          value={user.reason}
+          value={leaveDetails.reason}
           style={[
             styles.textContainer,
             { textAlignVertical: "top", padding: 15 },
           ]}
-          onChangeText={(text) => setUser({ ...user, reason: text })}
+          onChangeText={(text) =>
+            setLeaveDetails((prev) => ({ ...prev, reason: text }))
+          }
         />
       </View>
       <PrimaryButton

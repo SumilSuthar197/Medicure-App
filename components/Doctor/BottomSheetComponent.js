@@ -1,47 +1,50 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TextInput, ScrollView } from "react-native";
-import PrimaryButton from "./PrimaryButton";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  ScrollView,
+  Alert,
+} from "react-native";
+import PrimaryButton from "../PrimaryButton";
 import {
   blueColor,
   lightTextColor,
   textBlack,
   whiteText,
-} from "../constants/color";
-import axios from "axios";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+} from "../../constants/color";
+import { submitAppointmentReview } from "../../api/doctor";
 
 const BottomSheetComponent = ({
-  appointId,
-  emailPat,
+  appointmentId,
+  patientEmail,
   onClosePress,
-  onLogoutPress,
 }) => {
   const [data, setData] = useState({
     paragraph: "",
     advisory: "",
   });
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
     try {
-      const storedItem = await AsyncStorage.getItem("doctorInfo");
-      const jwtToken = JSON.parse(storedItem);
-      const response = await axios.post(
-        `https://medicure-sumilsuthar197.koyeb.app/submit_review`,
-        {
-          patient_email: emailPat,
-          appointment_id: appointId,
-          advisory_text: data.advisory,
-          prescription_text: data.paragraph,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${jwtToken}`,
-          },
-        }
+      setLoading(true);
+      if (!data.paragraph || !data.advisory) {
+        Alert.alert("Missing Information", "Please fill all the fields");
+        return;
+      }
+      await submitAppointmentReview(
+        patientEmail,
+        appointmentId,
+        data?.advisory,
+        data?.paragraph
       );
       onClosePress();
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -87,6 +90,7 @@ const BottomSheetComponent = ({
           style={styles.button}
           onPress={handleSubmit}
           color="#FFF"
+          loading={loading}
         />
       </View>
     </View>
@@ -106,11 +110,10 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginVertical: 10,
-    gap: 15,
+    marginBottom: 20,
   },
   button: {
-    width: "47%",
+    width: "49%",
   },
   textTitle: {
     fontSize: 16,

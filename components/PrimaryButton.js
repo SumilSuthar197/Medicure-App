@@ -1,4 +1,4 @@
-import { Text, TouchableOpacity } from "react-native";
+import { ActivityIndicator, Text, TouchableOpacity } from "react-native";
 import React from "react";
 const PrimaryButton = ({
   onPress,
@@ -7,6 +7,7 @@ const PrimaryButton = ({
   backgroundColor,
   style,
   labelStyle,
+  loading,
 }) => {
   return (
     <TouchableOpacity
@@ -22,12 +23,20 @@ const PrimaryButton = ({
         style,
       ]}
       onPress={onPress}
+      disabled={loading}
     >
-      <Text
-        style={[{ fontSize: 16, fontWeight: "600", color: color }, labelStyle]}
-      >
-        {label}
-      </Text>
+      {loading ? (
+        <ActivityIndicator color={color} size={28} />
+      ) : (
+        <Text
+          style={[
+            { fontSize: 16, fontWeight: "600", color: color },
+            labelStyle,
+          ]}
+        >
+          {label}
+        </Text>
+      )}
     </TouchableOpacity>
   );
 };

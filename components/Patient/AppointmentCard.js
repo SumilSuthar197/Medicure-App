@@ -8,7 +8,7 @@ import {
   lightTextColor,
   textBlack,
   whiteText,
-} from "../constants/color";
+} from "../../constants/color";
 
 const AppointmentCard = ({ item, handleButton1, handleButton2 }) => {
   return (

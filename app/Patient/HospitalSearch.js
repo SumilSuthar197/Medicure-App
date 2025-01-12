@@ -1,12 +1,3 @@
-import {
-  View,
-  Text,
-  ScrollView,
-  TextInput,
-  TouchableOpacity,
-  Image,
-  StyleSheet,
-} from "react-native";
 import React, {
   useCallback,
   useEffect,
@@ -14,9 +5,18 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
-import axios from "axios";
-import { ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  TextInput,
+  StyleSheet,
+  ActivityIndicator,
+  Alert,
+} from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import BottomSheet, { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
+import { Ionicons } from "@expo/vector-icons";
 import {
   backgroundColor,
   borderColor,
@@ -24,11 +24,18 @@ import {
   textBlack,
   whiteText,
 } from "../../constants/color";
- 
-import BottomSheet, { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 import PrimaryButton from "../../components/PrimaryButton";
+import HospitalCard from "../../components/Hospital/HospitalCard";
+import { getHospitalList, submitSymptoms } from "../../api/patient";
 
 const HospitalSearch = () => {
+  const [hospitalCardData, setHospitalCardData] = useState([]);
+  const [symptoms, setSymptoms] = useState("");
+  const [hospital, setHospital] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const snapPoint = useMemo(() => ["25%"], []);
+  const bottomSheetRef = useRef(null);
   const handleOpenPress = () => bottomSheetRef.current?.expand();
   const renderBackdrop = useCallback(
     (props) => (
@@ -40,141 +47,108 @@ const HospitalSearch = () => {
     ),
     []
   );
-  const HospitalCard = (data) => {
-    return (
-      <TouchableOpacity
-        onPress={() => {
-          handleOpenPress();
-          setHospital(data.name);
-        }}
-      >
-        <View style={styles.hospitalCard}>
-          <View style={{ flexDirection: "row", gap: 20 }}>
-            <View>
-              <Image
-                style={styles.hospitalImage}
-                source={{
-                  uri: data.image
-                    ? data.image
-                    : "https://res.cloudinary.com/dp9kpxfpa/image/upload/v1702994737/g2eobivztu6qbjlvxhbp.jpg",
-                }}
-              />
-            </View>
-            <View style={{ gap: 3, justifyContent: "center" }}>
-              <Text style={styles.hospitalName}>{data.name}</Text>
-              <Text style={styles.hospitalCity}>{data.city}</Text>
-            </View>
-          </View>
-          <View style={styles.row2}>
-            <View style={styles.subTitleView}>
-              <Ionicons name="ios-call" size={14} color={lightTextColor} />
-              <Text style={styles.subTitleText}>{data.mobile}</Text>
-            </View>
-            <Text style={styles.subTitleText}>|</Text>
-            <View style={styles.subTitleView}>
-              <MaterialIcons name="email" size={14} color={lightTextColor} />
-              <Text style={styles.subTitleText}>{data.email}</Text>
-            </View>
-            <Text style={styles.subTitleText}>|</Text>
-            <Text style={styles.subTitleText}>Karnataka</Text>
-          </View>
-        </View>
-      </TouchableOpacity>
-    );
-  };
-
-  const [hospitalCardData, setHospitalCardData] = useState([]);
-  const [symptoms, setSymptoms] = useState("");
-  const [hospital, setHospital] = useState("");
 
   const handleSubmitSymptoms = async () => {
     try {
-      const response = await axios.post(`https://medicure-sumilsuthar197.koyeb.app/getspeciality`, {
-        hospital: hospital,
-        symptoms: symptoms,
-      });
+      if (!symptoms) {
+        Alert.alert("Missing Information", "Please enter your symptoms");
+        return;
+      }
+      await submitSymptoms(symptoms, hospital);
+      setSymptoms("");
     } catch (error) {
       console.log(error);
+    } finally {
+      bottomSheetRef.current?.close();
+      Alert.alert(
+        "No Doctors Available",
+        "There are no doctors available for the specified symptoms at the moment. Please try again later."
+      );
     }
   };
+
+  const fetchData = async () => {
+    try {
+      const { data } = await getHospitalList();
+      setHospitalCardData(data);
+    } catch (error) {
+      console.error("Error fetching data: ", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        let response = await axios.get(`https://medicure-sumilsuthar197.koyeb.app/allhospitals`);
-        setHospitalCardData(response.data);
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error fetching data: ", error);
-      }
-    };
     fetchData();
   }, []);
-  const snapPoint = useMemo(() => ["25%"], []);
-  const bottomSheetRef = useRef(null);
 
-  const [searchTerm, setSearchTerm] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
   return (
-    <View style={styles.main}>
-      <View style={styles.iconContainer}>
-        <Ionicons name="search-outline" size={24} color={borderColor} />
-        <TextInput
-          placeholder="Search a Hospital"
-          placeholderTextColor="#cccdce"
-          style={styles.inputText}
-          onChangeText={(value) => {
-            setSearchTerm(value);
-          }}
-          onSubmitEditing={(value) => {
-            setSearchTerm(value);
-          }}
-        />
-      </View>
-      <ScrollView style={{ flex: 1 }}>
-        <View style={styles.scrollView}>
-          {isLoading === false ? (
-            hospitalCardData
-              .filter((hospital) =>
-                searchTerm
-                  ? hospital.name
-                    ? hospital.name
-                        .toLowerCase()
-                        .includes(searchTerm.toLowerCase())
-                    : false
-                  : true
-              )
-              .map((hospital, index) => (
-                <HospitalCard key={index} {...hospital} />
-              ))
-          ) : (
-            <ActivityIndicator size="large" color="#246BFD" />
-          )}
-        </View>
-      </ScrollView>
-      <BottomSheet
-        ref={bottomSheetRef}
-        backdropComponent={renderBackdrop}
-        style={styles.bottomSheet}
-        index={-1}
-        snapPoints={snapPoint}
-      >
-        <View style={{ paddingHorizontal: 15, paddingVertical: 5 }}>
-          <Text style={styles.bottomSheetText}>Enter your Symptoms</Text>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <View style={styles.main}>
+        <View style={styles.iconContainer}>
+          <Ionicons name="search-outline" size={24} color={borderColor} />
           <TextInput
-            placeholder="Symptoms"
-            style={styles.bottomSheetInput}
-            value={symptoms}
-            onChangeText={(text) => setSymptoms(text)}
-          />
-          <PrimaryButton
-            backgroundColor="#000"
-            color={whiteText}
-            onPress={handleSubmitSymptoms}
-            label="search a Doctor"
+            placeholder="Search a Hospital"
+            placeholderTextColor="#cccdce"
+            style={styles.inputText}
+            onChangeText={(value) => {
+              setSearchTerm(value);
+            }}
           />
         </View>
-      </BottomSheet>
-    </View>
+        <ScrollView style={{ flex: 1 }}>
+          <View style={styles.scrollView}>
+            {isLoading === false ? (
+              hospitalCardData
+                .filter((hospital) =>
+                  searchTerm
+                    ? hospital.name
+                      ? hospital.name
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase())
+                      : false
+                    : true
+                )
+                .map((hospital, index) => (
+                  <HospitalCard
+                    key={index}
+                    data={hospital}
+                    onPress={() => {
+                      handleOpenPress();
+                      setHospital(hospital?.name);
+                    }}
+                  />
+                ))
+            ) : (
+              <ActivityIndicator size="large" color="#246BFD" />
+            )}
+          </View>
+        </ScrollView>
+        <BottomSheet
+          ref={bottomSheetRef}
+          backdropComponent={renderBackdrop}
+          style={styles.bottomSheet}
+          index={-1}
+          snapPoints={snapPoint}
+        >
+          <View style={{ paddingHorizontal: 15, paddingVertical: 5 }}>
+            <Text style={styles.bottomSheetText}>Enter your Symptoms</Text>
+            <TextInput
+              placeholder="Symptoms"
+              style={styles.bottomSheetInput}
+              value={symptoms}
+              onChangeText={(text) => setSymptoms(text)}
+            />
+            <PrimaryButton
+              backgroundColor="#000"
+              color={whiteText}
+              onPress={handleSubmitSymptoms}
+              label="search a Doctor"
+            />
+          </View>
+        </BottomSheet>
+      </View>
+    </GestureHandlerRootView>
   );
 };
 
@@ -226,45 +200,6 @@ const styles = StyleSheet.create({
     width: "100%",
     marginHorizontal: "auto",
     marginBottom: 20,
-  },
-  hospitalCard: {
-    marginVertical: 10,
-    padding: 12,
-    borderRadius: 15,
-    backgroundColor: whiteText,
-    borderWidth: 1,
-    borderColor: borderColor,
-  },
-  hospitalImage: {
-    width: 50,
-    height: 50,
-    objectFit: "fill",
-    borderRadius: 99,
-  },
-  hospitalName: { fontSize: 16, fontWeight: "600", color: textBlack },
-  hospitalCity: {
-    fontSize: 14,
-    fontWeight: "500",
-    color: lightTextColor,
-  },
-  row2: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingTop: 10,
-    paddingHorizontal: 5,
-  },
-  subTitleView: {
-    justifyContent: "center",
-    alignItems: "center",
-    flexDirection: "row",
-    gap: 4,
-  },
-  subTitleText: {
-    color: lightTextColor,
-    fontSize: 12,
-    fontWeight: "500",
-    textAlign: "center",
   },
 });
 export default HospitalSearch;
