@@ -1,8 +1,20 @@
-import { View, Text, ScrollView, TouchableOpacity, Image } from "react-native";
 import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { StatusBar } from "expo-status-bar";
+import { usePatientProfile } from "../../../context/PatientProfileProvider";
 import Header from "../../../components/HomeComponent/Header";
 import BlueCard from "../../../components/HomeComponent/BlueCard";
+import DoctorCard from "../../../components/HomeComponent/DoctorCard";
+import LoadingScreen from "../../../components/LoadingScreen";
+import { getTopDoctors } from "../../../api/patient";
 import { iconItem } from "../../../constants/data";
 import { router } from "expo-router";
 import {
@@ -10,16 +22,13 @@ import {
   blueColor,
   textBlack,
 } from "../../../constants/color";
-import DoctorCard from "../../../components/HomeComponent/DoctorCard";
-import { StatusBar } from "expo-status-bar";
-import { usePatientProfile } from "../../../context/PatientProfileProvider";
- 
-import axios from "axios";
 
 const index = () => {
   const { patientProfile } = usePatientProfile();
   const [upcomingData, setUpcomingData] = useState([]);
   const [topDoctor, setTopDoctor] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     if (patientProfile?.upcoming_appointments) {
       setUpcomingData(patientProfile.upcoming_appointments);
@@ -27,26 +36,25 @@ const index = () => {
   }, [patientProfile]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(`https://medicure-sumilsuthar197.koyeb.app/gettopdoctors`);
-        setTopDoctor(response.data);
-      } catch (error) {
-        console.error("Error fetching data: ", error);
-      }
-    };
     fetchData();
   }, []);
 
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const { data } = await getTopDoctors();
+      setTopDoctor(data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) return <LoadingScreen text="Fetching patient details..." />;
+
   return (
-    <SafeAreaView
-      style={{
-        paddingTop: 7,
-        paddingHorizontal: 20,
-        flex: 1,
-        backgroundColor: backgroundColor,
-      }}
-    >
+    <SafeAreaView style={styles.container}>
       <StatusBar
         translucent={false}
         style="dark"
@@ -54,42 +62,27 @@ const index = () => {
       />
       <ScrollView showsVerticalScrollIndicator={false}>
         <Header />
-        <View
-          style={{
-            justifyContent: "space-between",
-            flexDirection: "row",
-            marginVertical: 15,
-          }}
-        >
-          <Text style={{ color: textBlack, fontSize: 18, fontWeight: "600" }}>
-            Upcoming Appointments
-          </Text>
+
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionHeaderText}>Upcoming Appointments</Text>
           <TouchableOpacity
-            onPress={() => router.push("/Patient/menu/booking")}
+            onPress={() => router.push("/Patient/Home/booking")}
           >
-            <Text style={{ color: blueColor }}>See All</Text>
+            <Text style={styles.seeAllText}>See All</Text>
           </TouchableOpacity>
         </View>
+
         <BlueCard
-          containAppointment={
-            upcomingData && upcomingData.length === 0 ? false : true
-          }
+          containAppointment={upcomingData && upcomingData.length > 0}
           name={upcomingData[0]?.doctor_name}
           imagePath={upcomingData[0]?.image}
           type={upcomingData[0]?.doctor_email}
           Date={upcomingData[0]?.date}
           Time={upcomingData[0]?.slot}
         />
-        <View
-          style={{
-            justifyContent: "space-between",
-            flexDirection: "row",
-            marginVertical: 15,
-          }}
-        >
-          <Text style={{ color: textBlack, fontSize: 18, fontWeight: "600" }}>
-            Doctor Speciality
-          </Text>
+
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionHeaderText}>Doctor Speciality</Text>
           <TouchableOpacity
             onPress={() =>
               router.push({
@@ -98,14 +91,15 @@ const index = () => {
               })
             }
           >
-            <Text style={{ color: blueColor }}>See All</Text>
+            <Text style={styles.seeAllText}>See All</Text>
           </TouchableOpacity>
         </View>
-        <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+
+        <View style={styles.iconContainer}>
           {iconItem.map((item, index) => (
             <TouchableOpacity
               key={index}
-              style={{ width: "25%", alignItems: "center", marginBottom: 10 }}
+              style={styles.iconItem}
               onPress={() =>
                 router.push({
                   pathname: "/Patient/DoctorSearch",
@@ -113,57 +107,29 @@ const index = () => {
                 })
               }
             >
-              <View
-                style={{
-                  backgroundColor: blueColor,
-                  padding: 15,
-                  borderRadius: 15,
-                }}
-              >
-                <Image
-                  source={{ uri: item.icon }}
-                  style={{
-                    width: 30,
-                    height: 30,
-                    overlayColor: "#dbeafe",
-                    tintColor: "#dbeafe",
-                  }}
-                />
+              <View style={styles.iconWrapper}>
+                <Image source={{ uri: item.icon }} style={styles.iconImage} />
               </View>
-              <Text style={{ fontSize: 12, fontWeight: "500", marginTop: 4 }}>
-                {item.name}
-              </Text>
+              <Text style={styles.iconText}>{item.name}</Text>
             </TouchableOpacity>
           ))}
         </View>
+
         <View style={{ justifyContent: "center", alignItems: "center" }}>
           <TouchableOpacity
-            style={{
-              backgroundColor: blueColor,
-              width: "50%",
-              paddingHorizontal: 0,
-              borderRadius: 10,
-              paddingVertical: 5,
-            }}
+            style={styles.hospitalSearchButton}
             onPress={() => {
               router.push("/Patient/HospitalSearch");
             }}
           >
-            <Text style={{ color: "#FFF", textAlign: "center" }}>
+            <Text style={styles.hospitalSearchButtonText}>
               + Search By Hospital
             </Text>
           </TouchableOpacity>
         </View>
-        <View
-          style={{
-            justifyContent: "space-between",
-            flexDirection: "row",
-            marginVertical: 15,
-          }}
-        >
-          <Text style={{ fontSize: 18, fontWeight: "600", color: textBlack }}>
-            Top Specialist
-          </Text>
+
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionHeaderText}>Top Specialist</Text>
           <TouchableOpacity
             onPress={() =>
               router.push({
@@ -172,10 +138,11 @@ const index = () => {
               })
             }
           >
-            <Text style={{ color: blueColor }}>See All</Text>
+            <Text style={styles.seeAllText}>See All</Text>
           </TouchableOpacity>
         </View>
-        <View style={{ marginBottom: 10 }}>
+
+        <View style={styles.topSpecialistContainer}>
           {topDoctor.map((doctor, index) => (
             <DoctorCard key={index} {...doctor} />
           ))}
@@ -184,5 +151,66 @@ const index = () => {
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    paddingTop: 7,
+    paddingHorizontal: 20,
+    flex: 1,
+    backgroundColor: backgroundColor,
+  },
+  sectionHeader: {
+    justifyContent: "space-between",
+    flexDirection: "row",
+    marginVertical: 15,
+  },
+  sectionHeaderText: {
+    color: textBlack,
+    fontSize: 18,
+    fontWeight: "600",
+  },
+  seeAllText: {
+    color: blueColor,
+  },
+  iconContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+  },
+  iconItem: {
+    width: "25%",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  iconWrapper: {
+    backgroundColor: blueColor,
+    padding: 15,
+    borderRadius: 15,
+  },
+  iconImage: {
+    width: 30,
+    height: 30,
+    overlayColor: "#dbeafe",
+    tintColor: "#dbeafe",
+  },
+  iconText: {
+    fontSize: 12,
+    fontWeight: "500",
+    marginTop: 4,
+  },
+  hospitalSearchButton: {
+    backgroundColor: blueColor,
+    width: "50%",
+    paddingHorizontal: 0,
+    borderRadius: 10,
+    paddingVertical: 5,
+  },
+  hospitalSearchButtonText: {
+    color: "#FFF",
+    textAlign: "center",
+  },
+  topSpecialistContainer: {
+    marginBottom: 10,
+  },
+});
 
 export default index;

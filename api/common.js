@@ -1,4 +1,4 @@
-import axiosInstance from "./index";
+import { axiosInstance } from "./index";
 
 export const userLogin = (userType, email, password) => {
   const url = "/login";

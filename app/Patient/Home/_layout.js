@@ -1,47 +1,37 @@
-import { View, Text, Alert } from "react-native";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Tabs } from "expo-router";
 import { FontAwesome, Ionicons, Feather } from "@expo/vector-icons";
 import { backgroundColor, textBlack } from "../../../constants/color";
 import { usePatientProfile } from "../../../context/PatientProfileProvider";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
+import { getPatientDashboardData } from "../../../api/patient";
+import LoadingScreen from "../../../components/LoadingScreen";
+import ErrorPage from "../../../components/ErrorPage";
 
 const ChildLayout = () => {
   const { setPatientProfile } = usePatientProfile();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      setError(false);
+      const response = await getPatientDashboardData();
+      setPatientProfile({ ...response.data });
+      console.log(response.data);
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const storedItem = await AsyncStorage.getItem("userInfo");
-        const jwtToken = JSON.parse(storedItem);
-        const response = await axios.get(
-          `https://medicure-sumilsuthar197.koyeb.app/get_mobile_dashboard_data`,
-          {
-            headers: {
-              Authorization: `Bearer ${jwtToken}`,
-            },
-          }
-        );
-        setPatientProfile({ ...response.data });
-        console.log(response.data);
-      } catch (error) {
-        if (error.response.status === 401) {
-          Alert.alert("Session Expired", "Please login again", [
-            {
-              text: "OK",
-              onPress: () => {
-                AsyncStorage.removeItem("userInfo");
-                router.replace("/onboarding");
-              },
-            },
-          ]);
-        }
-        console.log(error);
-      }
-    };
     fetchData();
   }, []);
 
+  if (loading) return <LoadingScreen text="Fetching patient details..." />;
+  if (error) return <ErrorPage errorStatus={500} />;
   return (
     <Tabs>
       <Tabs.Screen
@@ -74,7 +64,6 @@ const ChildLayout = () => {
           name: "chats",
           tabBarIcon: ({ color }) => {
             return (
-            
               <Ionicons
                 name="chatbubble-ellipses-outline"
                 size={24}

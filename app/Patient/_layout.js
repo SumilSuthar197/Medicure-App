@@ -7,8 +7,7 @@ const PatientLayout = () => {
     <PatientProfileProvider>
       <Stack initialRouteName="index">
         <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="Signup" options={{ headerShown: false }} />
-        <Stack.Screen name="menu" options={{ headerShown: false }} />
+        <Stack.Screen name="Home" options={{ headerShown: false }} />
         <Stack.Screen name="Profile" />
         <Stack.Screen
           name="doctorDetails"

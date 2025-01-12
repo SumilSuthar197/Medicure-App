@@ -4,20 +4,15 @@ import {
   Text,
   TouchableOpacity,
   Image,
+  StyleSheet,
+  Alert,
 } from "react-native";
 import MapView, { Callout, Marker, PROVIDER_GOOGLE } from "react-native-maps";
+import { SafeAreaView } from "react-native-safe-area-context";
 import * as Location from "expo-location";
-import axios from "axios";
- 
-import {
-  borderColor,
-  lightTextColor,
-  textBlack,
-  whiteText,
-} from "../../../constants/color";
 import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { getNearByDoctors } from "../../../api/patient";
 
 const MapObject = (data) => {
   return (
@@ -31,90 +26,29 @@ const MapObject = (data) => {
         });
       }}
     >
-      <View
-        style={{
-          marginTop: 20,
-          padding: 12,
-          borderRadius: 15,
-          backgroundColor: whiteText,
-          borderWidth: 1,
-          borderColor: borderColor,
-        }}
-      >
-        <View style={{ flexDirection: "row", gap: 20 }}>
-          <View>
-            <Image
-              style={{
-                width: 50,
-                height: 50,
-                objectFit: "cover",
-                borderRadius: 99,
-              }}
-              source={{
-                uri: data.image,
-              }}
-            />
-          </View>
-          <View style={{ gap: 3, justifyContent: "center" }}>
-            <Text
-              style={{
-                fontSize: 16,
-                fontWeight: "600",
-                color: textBlack,
-              }}
-            >
-              {data.name}
-            </Text>
-            <Text
-              style={{
-                fontSize: 14,
-                fontWeight: "500",
-                color: lightTextColor,
-              }}
-            >
-              {data.field}
-            </Text>
+      <View style={styles.mapObjectContainer}>
+        <View style={styles.mapObjectHeader}>
+          <Image
+            style={styles.doctorImage}
+            source={{
+              uri: data.image,
+            }}
+          />
+          <View style={styles.doctorInfoContainer}>
+            <Text style={styles.doctorName}>{data.name}</Text>
+            <Text style={styles.doctorField}>{data.field}</Text>
           </View>
         </View>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-around",
-            alignItems: "center",
-            paddingTop: 12,
-          }}
-        >
-          <View style={{ flexDirection: "row" }}>
-            <Text
-              style={{
-                color: lightTextColor,
-                fontSize: 12,
-                fontWeight: "500",
-              }}
-            >
-              {data.rating_score} ({data.rating_count} review)
-            </Text>
-          </View>
-          <Text style={{ color: lightTextColor }}>|</Text>
-          <Text
-            style={{
-              color: lightTextColor,
-              fontSize: 12,
-              fontWeight: "500",
-            }}
-          >
+        <View style={styles.mapObjectDetails}>
+          <Text style={styles.detailText}>
+            {data.rating_score} ({data.rating_count} review)
+          </Text>
+          <Text style={styles.separator}>|</Text>
+          <Text style={styles.detailText}>
             {data.experience} years experience
           </Text>
-          <Text style={{ color: lightTextColor }}>|</Text>
-          <Text
-            style={{
-              color: lightTextColor,
-              fontSize: 12,
-              fontWeight: "500",
-            }}
-          >
-            {data.city}
-          </Text>
+          <Text style={styles.separator}>|</Text>
+          <Text style={styles.detailText}>{data.city}</Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -123,7 +57,6 @@ const MapObject = (data) => {
 
 const Explore = () => {
   const [location, setLocation] = useState(null);
-  const [errorMsg, setErrorMsg] = useState(null);
   const [doctors, setDoctors] = useState([]);
   const [selectedCoordinate, setSelectedCoordinate] = useState(null);
 
@@ -131,7 +64,10 @@ const Explore = () => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
-        setErrorMsg("Permission to access location was denied");
+        Alert.alert(
+          "Permission Required",
+          "Location permission is required to view nearby doctors"
+        );
         return;
       }
 
@@ -139,10 +75,10 @@ const Explore = () => {
       setLocation(currentLocation);
 
       try {
-        const response = await axios.post(`https://medicure-sumilsuthar197.koyeb.app/nearbydoc`, {
-          latitude: currentLocation.coords.latitude,
-          longitude: currentLocation.coords.longitude,
-        });
+        const response = await getNearByDoctors(
+          currentLocation?.coords?.latitude,
+          currentLocation?.coords?.longitude
+        );
 
         setDoctors(response.data);
       } catch (error) {
@@ -156,11 +92,11 @@ const Explore = () => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={styles.container}>
       <StatusBar style="auto" />
       {location && (
         <MapView
-          style={{ flex: 1 }}
+          style={styles.map}
           provider={PROVIDER_GOOGLE}
           showsUserLocation
           showsMyLocationButton
@@ -178,11 +114,9 @@ const Explore = () => {
               onPress={() => handleMarkerPress(doctor.location)}
             >
               <Callout>
-                {
-                  <View>
-                    <Text>{doctor.name}</Text>
-                  </View>
-                }
+                <View>
+                  <Text>{doctor.name}</Text>
+                </View>
               </Callout>
             </Marker>
           ))}
@@ -196,17 +130,7 @@ const Explore = () => {
         </MapView>
       )}
       {selectedCoordinate && (
-        <View
-          style={{
-            backgroundColor: "transparent",
-            padding: 20,
-            position: "absolute",
-            bottom: 0,
-            width: "100%",
-            borderTopLeftRadius: 10,
-            borderTopRightRadius: 10,
-          }}
-        >
+        <View style={styles.bottomPanel}>
           {doctors
             .filter((doctor) => {
               const { latitude, longitude } = selectedCoordinate;
@@ -223,4 +147,69 @@ const Explore = () => {
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  map: {
+    flex: 1,
+  },
+  bottomPanel: {
+    backgroundColor: "transparent",
+    padding: 20,
+    position: "absolute",
+    bottom: 0,
+    width: "100%",
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+  },
+  mapObjectContainer: {
+    marginTop: 20,
+    padding: 12,
+    borderRadius: 15,
+    backgroundColor: "#fff",
+    borderWidth: 1,
+    borderColor: "#ccc",
+  },
+  mapObjectHeader: {
+    flexDirection: "row",
+    gap: 20,
+  },
+  doctorImage: {
+    width: 50,
+    height: 50,
+    resizeMode: "cover",
+    borderRadius: 99,
+  },
+  doctorInfoContainer: {
+    gap: 3,
+    justifyContent: "center",
+  },
+  doctorName: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#000",
+  },
+  doctorField: {
+    fontSize: 14,
+    fontWeight: "500",
+    color: "#888",
+  },
+  mapObjectDetails: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    paddingTop: 12,
+  },
+  detailText: {
+    color: "#888",
+    fontSize: 12,
+    fontWeight: "500",
+  },
+  separator: {
+    color: "#888",
+  },
+});
+
 export default Explore;

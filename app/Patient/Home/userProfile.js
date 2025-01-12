@@ -1,3 +1,4 @@
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -6,27 +7,20 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { FontAwesome } from "@expo/vector-icons";
-import BottomSheet, { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
-import PrimaryButton from "../../../components/PrimaryButton";
-import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { backgroundColor, textBlack } from "../../../constants/color";
-import axios from "axios";
-
-import { StatusBar } from "expo-status-bar";
-import { usePatientProfile } from "../../../context/PatientProfileProvider";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
+import BottomSheet, { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
+import { router } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import { FontAwesome } from "@expo/vector-icons";
+import PrimaryButton from "../../../components/PrimaryButton";
+import { backgroundColor, textBlack } from "../../../constants/color";
+import { usePatientProfile } from "../../../context/PatientProfileProvider";
+
 const profile = () => {
   const { patientProfile } = usePatientProfile();
+  const user = patientProfile.patient;
   const snapPoint = useMemo(() => ["22%"], []);
   const bottomSheetRef = useRef(null);
   const handleClosePress = () => bottomSheetRef.current?.close();
@@ -42,7 +36,6 @@ const profile = () => {
     []
   );
 
-  const [user, setUser] = useState(patientProfile.patient);
   const navItems = [
     {
       title: "Your Profile",
@@ -139,7 +132,8 @@ const profile = () => {
               label="Yes, Logout"
               style={{ width: "47%" }}
               onPress={async () => {
-                await AsyncStorage.removeItem("userInfo");
+                await AsyncStorage.removeItem("userToken");
+                await AsyncStorage.removeItem("userType");
                 router.replace("/getStarted");
               }}
               color="#FFF"

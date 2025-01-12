@@ -1,4 +1,3 @@
-import axios from "axios";
 import React, { useState } from "react";
 import {
   View,
@@ -9,7 +8,7 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
- 
+import { bookAppointment, sendUserQuery } from "../../../api/patient";
 import {
   blueColor,
   borderColor,
@@ -17,14 +16,17 @@ import {
   textBlack,
   whiteText,
 } from "../../../constants/color";
-import PrimaryButton from "../../../components/PrimaryButton";
+import { useRouter } from "expo-router";
+import DoctorCardComponent from "../../../components/ChatComponent/DoctorCardComponent";
+import TextMessageComponent from "../../../components/ChatComponent/TextMessageComponent";
 
 const Chat = () => {
+  const router = useRouter();
   const [messageData, setMessageData] = useState([
     {
       from: "backend",
       id: "0.6609624369455623",
-      message: "Hi, how can i help you?",
+      message: "Hi, how can I help you?",
     },
   ]);
   const [message, setMessage] = useState("");
@@ -34,26 +36,22 @@ const Chat = () => {
       ...prevMessages,
       { id: Math.random().toString(), message: userMessage, from: "me" },
     ]);
-    await axios
-      .post(`https://medicure-sumilsuthar197.koyeb.app/getchat`, { prompt: userMessage })
-      .then((res) => {
-        if (res.data.doctor === false) {
-          const response = {
-            id: Math.random().toString(),
-            message: res.data.output,
-            from: "backend",
-          };
-          setMessageData((prevMessages) => [...prevMessages, response]);
-        } else {
-          const response = {
-            id: Math.random().toString(),
-            message: res.data.output,
-            from: "doctor",
-          };
-          setMessageData((prevMessages) => [...prevMessages, response]);
-        }
-      })
-      .catch((err) => console.error(err));
+    try {
+      const response = await sendUserQuery(userMessage);
+      const formatResponse = {
+        id: Math.random().toString(),
+        message: response.data.output,
+        from: response.data.doctor ? "doctor" : "backend",
+      };
+      setMessageData((prevMessages) => [...prevMessages, formatResponse]);
+    } catch (error) {
+      const formatResponse = {
+        id: Math.random().toString(),
+        message: "Unable to process your request at the moment",
+        from: "backend",
+      };
+      setMessageData((prevMessages) => [...prevMessages, formatResponse]);
+    }
   };
 
   const handleSendMessage = () => {
@@ -61,122 +59,70 @@ const Chat = () => {
     setMessage("");
   };
 
+  const handleBookAppointment = async (doctor) => {
+    try {
+      await bookAppointment({
+        doctor_email: doctor.email,
+        date: doctor.date,
+        symptoms: doctor.symptoms,
+        answers: [],
+        time: "10:00 AM - 10:00 PM",
+      });
+      const formatDate = new Date(doctor.date).toDateString();
+      const formatResponse = {
+        id: Math.random().toString(),
+        message: `Your appointment with Dr. ${doctor.name} has been successfully booked for ${formatDate}. \n\nSpecialization: ${doctor.education.field} \nSymptoms: ${doctor.symptoms} \nLocation: ${doctor.location} \n\nFor any inquiries, please contact: ${doctor.contact}`,
+        from: "backend",
+      };
+      setMessageData((prevMessages) => [...prevMessages, formatResponse]);
+    } catch (error) {
+      console.log(error);
+      const formatResponse = {
+        id: Math.random().toString(),
+        message: "Unable to book appointment at the moment",
+        from: "backend",
+      };
+      setMessageData((prevMessages) => [...prevMessages, formatResponse]);
+    }
+  };
+
+  const onViewProfile = (doctor) => {
+    router.push({
+      pathname: "/Patient/doctorDetails",
+      params: {
+        email: doctor?.email,
+      },
+    });
+  };
+
   const renderMessage = ({ item }) => {
     if (item.from === "doctor") {
       return (
-        <View
-          style={{
-            marginVertical: 10,
-            marginHorizontal: 10,
-            width: "70%",
-            padding: 12,
-            borderRadius: 15,
-            backgroundColor: whiteText,
-            borderWidth: 1,
-            borderColor: borderColor,
-          }}
-        >
-          <View style={{ flexDirection: "row", gap: 20 }}>
-            <View>
-              <Image
-                style={{
-                  width: 50,
-                  height: 50,
-                  objectFit: "fill",
-                  borderRadius: 99,
-                }}
-                source={{
-                  uri: item.message[0].image
-                    ? item.message[0].image
-                    : "https://res.cloudinary.com/deohymauz/image/upload/v1704545467/demoDoctor_hkhmdp.jpg",
-                }}
-              />
-            </View>
-            <View style={{ gap: 3, justifyContent: "center" }}>
-              <Text
-                style={{ fontSize: 16, fontWeight: "600", color: textBlack }}
-              >
-                {item.message[0].name}
-              </Text>
-              <Text
-                style={{
-                  fontSize: 14,
-                  fontWeight: "500",
-                  color: lightTextColor,
-                }}
-              >
-                {item.message[0].education.field}
-              </Text>
-            </View>
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              paddingTop: 10,
-              paddingHorizontal: 5,
-              marginTop: 5,
-            }}
-          >
-            <PrimaryButton
-              backgroundColor={blueColor}
-              color={whiteText}
-              label="Book Appointment"
-              onPress={async () => {
-                const storedItem = await AsyncStorage.getItem("userInfo");
-                const jwtToken = JSON.parse(storedItem);
-                await axios.post(
-                  `https://medicure-sumilsuthar197.koyeb.app/ai_schedule`,
-                  {
-                    doctor_email: item.message[0].email,
-                    date: item.message[0].date,
-                    symptoms: item.message[0].symptoms,
-                    answers: ["yes", "no", "yes"],
-                  },
-                  {
-                    headers: {
-                      Authorization: `Bearer ${jwtToken}`,
-                    },
-                  }
-                );
-              }}
+        <View>
+          {item?.message?.map((doctor, index) => (
+            <DoctorCardComponent
+              key={index}
+              doctor={doctor}
+              onBookAppointment={handleBookAppointment}
+              onViewProfile={onViewProfile}
             />
-          </View>
+          ))}
         </View>
       );
     }
 
     return (
-      <View
-        style={{
-          backgroundColor: item.from === "me" ? "#246BFD" : "#FFF",
-          alignSelf: item.from === "me" ? "flex-end" : "flex-start",
-          margin: 5,
-          padding: 10,
-          borderRadius: 10,
-          maxWidth: "80%",
-          shadowColor: "#000",
-          shadowOffset: {
-            width: 0,
-            height: 1,
-          },
-          shadowOpacity: 0.18,
-          shadowRadius: 1.0,
-          elevation: 1,
-        }}
-      >
-        <Text style={{ color: item.from === "me" ? "#FFF" : "#246BFD" }}>
-          {item.message}
-        </Text>
-      </View>
+      <TextMessageComponent
+        message={item?.message}
+        isUser={item.from === "me"}
+      />
     );
   };
 
   return (
     <View style={styles.container}>
       <FlatList
-        style={{ marginVertical: 5 }}
+        style={styles.messagesList}
         data={messageData}
         renderItem={renderMessage}
         keyExtractor={(item) => item.id}
@@ -189,7 +135,7 @@ const Chat = () => {
           value={message}
         />
         <TouchableOpacity style={styles.sendButton} onPress={handleSendMessage}>
-          <Text style={{ color: "white" }}>Send</Text>
+          <Text style={styles.sendButtonText}>Send</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -201,6 +147,9 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 5,
     justifyContent: "flex-end",
+  },
+  messagesList: {
+    marginVertical: 5,
   },
   inputContainer: {
     flexDirection: "row",
@@ -223,10 +172,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   sendButton: {
-    backgroundColor: "#246BFD",
+    backgroundColor: blueColor,
     padding: 7,
     borderRadius: 10,
     overflow: "hidden",
+  },
+  sendButtonText: {
+    color: "white",
   },
 });
 
