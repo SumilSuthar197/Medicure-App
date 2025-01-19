@@ -1,5 +1,7 @@
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import React, { useState } from "react";
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
+import { Picker } from "@react-native-picker/picker";
+import { FontAwesome } from "@expo/vector-icons";
 import {
   backgroundColor,
   borderColor,
@@ -7,31 +9,36 @@ import {
   textBlack,
   whiteText,
 } from "../../constants/color";
-import { Picker } from "@react-native-picker/picker";
-import { FontAwesome } from "@expo/vector-icons";
 import PrimaryButton from "../../components/PrimaryButton";
-import AsyncStorage from "@react-native-async-storage/async-storage";
- 
-import axios from "axios";
+import { submitEmergencyRequest } from "../../api/doctor";
 
 const Emergency = () => {
   const [hours, setHours] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const handleSubmit = async () => {
     if (hours === "") {
       Alert.alert("Missing Fields", "Please select the hours.");
       return;
     }
     try {
-      const storedItem = await AsyncStorage.getItem("doctorEmail");
-      const response = await axios.post(`https://medicure-sumilsuthar197.koyeb.app/doctor_emergency`, {
-        email: storedItem,
-        minutes: parseInt(hours) * 60,
-      });
-      Alert.alert(response.data.message);
+      setLoading(true);
+      const minutes = parseInt(hours) * 60;
+      await submitEmergencyRequest(minutes);
+      Alert.alert(
+        "Emergency Request Submitted",
+        "Your emergency request has been successfully submitted."
+      );
     } catch (error) {
-      console.error(error);
+      Alert.alert(
+        "Emergency Request Failed",
+        "Something went wrong. Please try again later."
+      );
+    } finally {
+      setLoading(false);
     }
   };
+
   return (
     <View style={styles.main}>
       <View style={{ marginBottom: 15 }}>
@@ -47,12 +54,9 @@ const Emergency = () => {
             onValueChange={(itemValue) => setHours(itemValue)}
           >
             <Picker.Item label="Select Hours" value="" />
-            <Picker.Item label="2 hrs" value="2" />
-            <Picker.Item label="4 hrs" value="4" />
-            <Picker.Item label="6 hrs" value="6" />
-            <Picker.Item label="8 hrs" value="8" />
-            <Picker.Item label="10 hrs" value="10" />
-            <Picker.Item label="full day" value="24" />
+            {[2, 4, 6, 8, 10, 24].map((item) => (
+              <Picker.Item key={item} label={`${item} hrs`} value={item} />
+            ))}
           </Picker>
         </TouchableOpacity>
       </View>
@@ -80,6 +84,7 @@ const Emergency = () => {
           color="#FFF"
           label="Submit"
           onPress={handleSubmit}
+          loading={loading}
         />
       </View>
     </View>
@@ -122,7 +127,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignContent: "center",
   },
-  icon: { alignContent: "center", marginTop: 6, marginRight: 3 },
+  icon: { alignContent: "center", marginTop: 7, marginRight: 3 },
 });
 
 export default Emergency;

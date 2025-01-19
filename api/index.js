@@ -11,18 +11,4 @@ const axiosInstance = axios.create({
   },
 });
 
-// const axiosInstanceWithToken = async () => {
-//   const storedItem = await AsyncStorage.getItem("userInfo");
-//   const jwtToken = JSON.parse(storedItem);
-
-//   return axios.create({
-//     baseURL: "https://localhost:5000/",
-//     headers: {
-//       "Content-Type": "application/json",
-//       "X-Platform": "app",
-//       Authorization: `Bearer ${jwtToken}`,
-//     },
-//   });
-// };
-
 export { axiosInstance };

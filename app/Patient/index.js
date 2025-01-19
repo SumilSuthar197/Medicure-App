@@ -26,6 +26,10 @@ import { usePatientProfile } from "../../context/PatientProfileProvider";
 import { fetchPatientProfile } from "../../api/patient";
 import { useLocalSearchParams } from "expo-router";
 
+const isEmptyObject = (obj) => {
+  return obj && Object.keys(obj).length === 0 && obj.constructor === Object;
+};
+
 const index = () => {
   const { email } = useLocalSearchParams();
   const { patientProfile } = usePatientProfile();
@@ -51,8 +55,8 @@ const index = () => {
     }
   };
   useEffect(() => {
-    if (patientProfile?.patient) {
-      setUser(patientProfile.patient);
+    if (patientProfile && !isEmptyObject(patientProfile)) {
+      setUser(patientProfile?.patient);
     } else {
       fetchPatientData();
     }

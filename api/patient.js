@@ -863,3 +863,27 @@ export const fetchPatientProfile = async (email) => {
 
   return axiosInstance.get(url);
 };
+
+export const getAppointmentReschedule = async (time, doctor_email, date) => {
+  const url = `/cancel_appt`;
+  const jwtToken = await AsyncStorage.getItem("userToken");
+  return Promise.resolve({
+    data: {
+      output: true,
+    },
+  });
+
+  return axiosInstance.post(
+    url,
+    {
+      time,
+      doctor_email,
+      date,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+    }
+  );
+};

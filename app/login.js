@@ -51,6 +51,7 @@ const Login = () => {
       if (data.output === true) {
         await AsyncStorage.setItem("userToken", JSON.stringify(data.token));
         await AsyncStorage.setItem("userType", JSON.stringify(userType));
+        await AsyncStorage.setItem("userEmail", JSON.stringify(email));
         if (userType === "DOCTOR") router.replace("./Doctor/Home");
         else router.replace("/Patient/Home");
       } else {

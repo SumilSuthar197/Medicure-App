@@ -14,7 +14,6 @@ import { router } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
 import { AntDesign } from "@expo/vector-icons";
 import PrimaryButton from "../../components/PrimaryButton";
-import axios from "axios";
 import {
   backgroundColor,
   borderColor,
@@ -22,12 +21,23 @@ import {
   textBlack,
   whiteText,
 } from "../../constants/color";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDoctorProfile } from "../../context/DoctorProfileProvider";
+import { updateDoctorProfile } from "../../api/doctor";
+import { uploadImageToCloudinary } from "../../api/common";
 
 const EditProfileDoc = () => {
-  const [image, setImage] = useState(null);
   const { doctorProfile, setDoctorProfile } = useDoctorProfile();
+  const [user, setUser] = useState({
+    email: "",
+    bio: "",
+    experience: "",
+    patient_duration: "",
+    image: "",
+    mobile: "",
+    ...doctorProfile,
+  });
+  const [questions, setQuestions] = useState(user?.questions || [""]);
+
   useEffect(() => {
     (async () => {
       if (Platform.OS !== "web") {
@@ -51,47 +61,18 @@ const EditProfileDoc = () => {
       uploadImage(result.assets[0].uri);
     }
   };
-  const uploadImage = async (uri) => {
-    const formData = new FormData();
-    let uriParts = uri.split(".");
-    let fileType = uriParts[uriParts.length - 1];
 
-    formData.append("file", {
-      uri,
-      name: `photo.${fileType}`,
-      type: `image/${fileType}`,
-    });
-    formData.append("upload_preset", "medicure");
+  const uploadImage = async (uri) => {
     try {
-      const response = await axios.post(
-        "https://api.cloudinary.com/v1_1/deohymauz/image/upload",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      setImage(response.data.secure_url);
-      setUser({ ...user, image: response.data.secure_url });
+      const { imageUrl } = await uploadImageToCloudinary(uri);
+      setUser({ ...user, image: imageUrl });
     } catch (e) {
-      Alert.alert(
-        "Upload Failed",
-        "An error occurred while uploading the image. Please try again."
-      );
+      console.log(e);
+      Alert.alert("Image Upload Failed", "Please try again later.");
     }
   };
-  const [user, setUser] = useState({
-    email: "",
-    bio: "",
-    experience: "",
-    patient_duration: "",
-    image: "",
-    mobile: "",
-    ...doctorProfile,
-  });
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+
+  const handleSubmit = async () => {
     if (
       user.email === "" ||
       user.bio === "" ||
@@ -102,30 +83,19 @@ const EditProfileDoc = () => {
       return;
     }
     try {
-      const storedItem = await AsyncStorage.getItem("doctorInfo");
-      const jwtToken = JSON.parse(storedItem);
-      console.log();
-      const response = await axios.put(
-        `https://medicure-sumilsuthar197.koyeb.app/updatedoctor`,
-        { ...user, questions, image },
-        {
-          headers: {
-            Authorization: `Bearer ${jwtToken}`,
-          },
-        }
-      );
-      if (response.data.msg) {
+      const { data } = await updateDoctorProfile({ ...user, questions });
+      if (data.msg) {
         Alert.alert("Profile Updated", "Your profile has been updated");
-        // router.replace("/Doctor/Doctormenu");
+        setDoctorProfile((prev) => ({ ...prev, ...user, questions }));
+        router.replace("/Doctor/Home");
       } else {
-        alert("Something went wrong");
+        Alert.alert("Profile Update Failed", "Please try again later");
       }
     } catch (error) {
       console.log(error);
     }
   };
 
-  const [questions, setQuestions] = useState(user.questions || [""]);
   const addQuestion = () => {
     setQuestions([...questions, ""]);
   };
@@ -142,7 +112,14 @@ const EditProfileDoc = () => {
     <ScrollView style={{ backgroundColor: backgroundColor }}>
       <View style={styles.main}>
         <View style={styles.imageContainer}>
-          <Image source={{ uri: user.image }} style={styles.image} />
+          <Image
+            source={{
+              uri: user.image
+                ? user.image
+                : "https://res.cloudinary.com/deohymauz/image/upload/v1704461039/user1_leoif6.png",
+            }}
+            style={styles.image}
+          />
           <TouchableOpacity onPress={pickImage} style={styles.pickImage}>
             <AntDesign
               name="edit"

@@ -10,7 +10,7 @@ import { Ionicons } from "@expo/vector-icons";
 import * as Location from "expo-location";
 import { router } from "expo-router";
 import { borderColor, textBlack } from "../../constants/color";
-import axios from "axios";
+import { getAddress } from "../../api/common";
 
 const Header = () => {
   const [errorMsg, setErrorMsg] = useState(null);
@@ -26,8 +26,9 @@ const Header = () => {
 
       try {
         let location = await Location.getCurrentPositionAsync({});
-        let response = await axios(
-          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${location.coords.latitude}&lon=${location.coords.longitude}`
+        let response = getAddress(
+          location.coords.latitude,
+          location.coords.longitude
         );
         if (response && response.data && response.data.address) {
           setAddress(response?.data?.address);

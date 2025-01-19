@@ -19,7 +19,7 @@ const MapObject = (data) => {
     <TouchableOpacity
       onPress={() => {
         router.push({
-          pathname: "/Patient/doctorDetails",
+          pathname: "/Doctor",
           params: {
             email: data.email,
           },

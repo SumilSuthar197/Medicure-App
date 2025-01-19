@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -9,12 +10,11 @@ import {
   TextInput,
   Alert,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import { Picker } from "@react-native-picker/picker";
 import { router, useLocalSearchParams } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
 import { AntDesign } from "@expo/vector-icons";
 import PrimaryButton from "../../components/PrimaryButton";
-import axios from "axios";
 import {
   backgroundColor,
   borderColor,
@@ -22,12 +22,9 @@ import {
   textBlack,
   whiteText,
 } from "../../constants/color";
-import { Picker } from "@react-native-picker/picker";
-
-import { usePatientProfile } from "../../context/PatientProfileProvider";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { editProfile } from "../../api/patient";
 import { bloodGroups } from "../../constants/data";
+import { usePatientProfile } from "../../context/PatientProfileProvider";
+import { editProfile } from "../../api/patient";
 import { uploadImageToCloudinary } from "../../api/common";
 
 const Profile = () => {

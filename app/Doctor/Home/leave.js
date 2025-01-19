@@ -19,7 +19,8 @@ const isValidDate = (date) => {
   if (day < 1 || day > daysInMonth) return false;
   return true;
 };
-const DoctorLeave = () => {
+
+const leave = () => {
   const [leaveDetails, setLeaveDetails] = useState({
     start_date: "",
     end_date: "",
@@ -152,4 +153,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DoctorLeave;
+export default leave;

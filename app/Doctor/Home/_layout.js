@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Tabs } from "expo-router";
 import { FontAwesome, AntDesign } from "@expo/vector-icons";
 import {
@@ -7,38 +8,35 @@ import {
   whiteText,
 } from "../../../constants/color";
 import { useDoctorProfile } from "../../../context/DoctorProfileProvider";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
+import { getDoctorProfile } from "../../../api/doctor";
+import LoadingScreen from "../../../components/LoadingScreen";
+import ErrorPage from "../../../components/ErrorPage";
 
 const ChildLayout = () => {
   const { setDoctorProfile } = useDoctorProfile();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const fetchDoctorData = async () => {
+    try {
+      setLoading(true);
+      setError(false);
+      const email = await AsyncStorage.getItem("userEmail");
+      const parsedEmail = JSON.parse(email);
+      const { data } = await getDoctorProfile(parsedEmail);
+      setDoctorProfile({ ...data });
+    }  catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const email = await AsyncStorage.getItem("doctorEmail");
-        const parsedEmail = JSON.parse(email);
-        const response = await axios.get(
-          `https://medicure-sumilsuthar197.koyeb.app/get_doctor_profile/${parsedEmail}`
-        );
-        setDoctorProfile({ ...response.data });
-      } catch (error) {
-        if (error.response.status === 401) {
-          Alert.alert("Session Expired", "Please login again", [
-            {
-              text: "OK",
-              onPress: () => {
-                AsyncStorage.removeItem("doctorInfo");
-                AsyncStorage.removeItem("doctorEmail");
-                router.replace("/onboarding");
-              },
-            },
-          ]);
-        }
-        console.log(error);
-      }
-    };
-    fetchData();
+    fetchDoctorData();
   }, []);
+
+  if (loading) return <LoadingScreen text="Fetching doctor details..." />;
+  if (error) return <ErrorPage errorStatus={500} />;
   return (
     <Tabs>
       <Tabs.Screen
@@ -47,7 +45,6 @@ const ChildLayout = () => {
           headerTitle: "Schedule",
           title: "Appointment",
           name: "Appointments",
-          //headerTitleAlign:"center",
           headerStyle: {
             backgroundColor: backgroundColor,
           },
@@ -65,11 +62,11 @@ const ChildLayout = () => {
         }}
       />
       <Tabs.Screen
-        name="DoctorLeave"
+        name="leave"
         options={{
           headerTitle: "Apply for Leave",
           title: "Apply Leave",
-          name: "DoctorLeave",
+          name: "Apply Leave",
           headerStyle: {
             backgroundColor: backgroundColor,
           },
@@ -86,7 +83,7 @@ const ChildLayout = () => {
         }}
       />
       <Tabs.Screen
-        name="DoctorProfile"
+        name="userProfile"
         options={{
           title: "Profile",
           name: "profile",

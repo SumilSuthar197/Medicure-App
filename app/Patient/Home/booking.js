@@ -14,11 +14,14 @@ import {
   blueColor,
   whiteText,
 } from "../../../constants/color";
-import axios from "axios";
 
 import { router } from "expo-router";
 import ErrorPage from "../../../components/ErrorPage";
-import { cancelAppointment, getAppointmentList } from "../../../api/patient";
+import {
+  cancelAppointment,
+  getAppointmentList,
+  getAppointmentReschedule,
+} from "../../../api/patient";
 import LoadingScreen from "../../../components/LoadingScreen";
 import AppointmentCard from "../../../components/Patient/AppointmentCard";
 
@@ -56,26 +59,16 @@ const Booking = () => {
 
   const handleReschedule = async ({ time, doctor_email, date }) => {
     try {
-      const response = await axios.post(
-        `https://medicure-sumilsuthar197.koyeb.app/cancel_appt`,
-        {
-          time: time,
-          doctor_email: doctor_email,
-          date: date,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${jwtToken}`,
-          },
-        }
-      );
-      console.log(response.data.msg);
+      await getAppointmentReschedule(time, doctor_email, date);
       router.push({
-        pathname: "/Patient/doctorDetails",
-        params: { email: item.doctor_email },
+        pathname: "/Doctor",
+        params: { email: item?.doctor_email },
       });
     } catch (error) {
-      console.error("Error sending location to backend:", error);
+      Alert.alert(
+        "Reschedule Failed",
+        "Something went wrong while rescheduling your appointment. Please try again later."
+      );
     }
   };
 

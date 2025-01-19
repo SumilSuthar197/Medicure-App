@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -8,9 +8,10 @@ import {
   StyleSheet,
   TextInput,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Calendar } from "react-native-calendars";
-import axios from "axios";
 import { Feather } from "@expo/vector-icons";
+import { router, useLocalSearchParams } from "expo-router";
 import PrimaryButton from "../../components/PrimaryButton";
 import CustomPicker from "../../components/CustomPicker";
 import {
@@ -22,12 +23,7 @@ import {
   whiteText,
 } from "../../constants/color";
 import { countries } from "../../constants/symptoms";
-import { CardField, useStripe } from "@stripe/stripe-react-native";
- 
-import { router, useLocalSearchParams } from "expo-router";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { SafeAreaView } from "react-native-safe-area-context";
-// import { TextInput } from "react-native-gesture-handler";
+import { bookAppointment } from "../../api/patient";
 
 const BookAppointment = () => {
   const [selectedDate, setSelectedDate] = useState("");
@@ -35,38 +31,28 @@ const BookAppointment = () => {
   const [selectedSymptoms, setSelectedSymptoms] = useState([]);
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
-  // const [itemQuestion, setItemQuestion] = useState([]);
   const [responses, setResponses] = useState([]);
   const [clicked, setClicked] = useState(false);
   const item = useLocalSearchParams();
-  let maxDate = new Date();
+  const maxDate = new Date();
   maxDate.setDate(maxDate.getDate() + 45);
+
   const postingAppointment = async () => {
     try {
-      const storedItem = await AsyncStorage.getItem("userInfo");
-      const jwtToken = JSON.parse(storedItem);
       const newFormattedTime = startTime + "-" + endTime;
-      await axios.post(
-        `https://medicure-sumilsuthar197.koyeb.app/ai_schedule`,
-        {
-          date: selectedDate,
-          symptoms: selectedSymptoms,
-          doctor_email: item.email,
-          time: newFormattedTime,
-          answers: responses,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${jwtToken}`,
-          },
-        }
-      );
+      await bookAppointment({
+        doctor_email: item.email,
+        date: selectedDate,
+        symptoms: selectedSymptoms,
+        time: newFormattedTime,
+        answers: responses,
+      });
       Alert.alert(
         "Appointment Booked Successfully",
         "Your appointment has been booked successfully. You will receive a confirmation email shortly."
       );
       setResponses([]);
-      router.replace("/Patient/menu");
+      router.replace("/Patient/Home");
     } catch (e) {
       console.log(e);
     }
@@ -180,28 +166,6 @@ const BookAppointment = () => {
               Pay using your wallet
             </Text>
           </TouchableOpacity>
-          <Text
-            style={[
-              styles.questionText,
-              { textAlign: "center", paddingVertical: 8 },
-            ]}
-          >
-            OR
-          </Text>
-          <CardField
-            postalCodeEnabled={false}
-            placeholder={{
-              number: "4242 4242 4242 4242",
-            }}
-            cardStyle={{
-              backgroundColor: "#FFFFFF",
-              textColor: "#000000",
-            }}
-            style={{
-              width: "100%",
-              height: 50,
-            }}
-          />
         </View>
         <View style={styles.questionContainer}>
           <PrimaryButton

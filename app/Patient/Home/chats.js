@@ -82,7 +82,7 @@ const Chat = () => {
 
   const onViewProfile = (doctor) => {
     router.push({
-      pathname: "/Patient/doctorDetails",
+      pathname: "/Doctor",
       params: {
         email: doctor?.email,
       },

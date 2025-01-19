@@ -24,24 +24,7 @@ const PatientLayout = () => {
           }}
         />
         <Stack.Screen name="Home" options={{ headerShown: false }} />
-        <Stack.Screen name="Profile" />
-        <Stack.Screen
-          name="doctorDetails"
-          options={{
-            headerTitle: "Doctor's Profile",
-            headerStyle: {
-              backgroundColor: blueColor,
-            },
-            headerShadowVisible: false,
-            headerTitleStyle: {
-              color: whiteText,
-              fontWeight: "600",
-              fontSize: 18,
-            },
-            headerTintColor: whiteText,
-            headerTitleAlign: "center",
-          }}
-        />
+        <Stack.Screen name="profile"  />
         <Stack.Screen
           name="doctorSearch"
           options={{

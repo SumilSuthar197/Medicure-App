@@ -87,3 +87,9 @@ export const uploadImageToCloudinary = async (uri) => {
     console.log(e);
   }
 };
+
+export const getAddress = async (latitude, longitude) => {
+  const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`;
+
+  return axios.get(url);
+};

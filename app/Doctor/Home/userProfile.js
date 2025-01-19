@@ -1,3 +1,4 @@
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -6,20 +7,21 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { StatusBar } from "expo-status-bar";
+import { router } from "expo-router";
 import { FontAwesome } from "@expo/vector-icons";
 import BottomSheet, { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 import PrimaryButton from "../../../components/PrimaryButton";
-import { router } from "expo-router";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   backgroundColor,
   lightTextColor,
   textBlack,
 } from "../../../constants/color";
-import { StatusBar } from "expo-status-bar";
 import { useDoctorProfile } from "../../../context/DoctorProfileProvider";
-const DoctorProfile = () => {
+
+const userProfile = () => {
   const { doctorProfile } = useDoctorProfile();
   const snapPoint = useMemo(() => ["22%"], []);
   const bottomSheetRef = useRef(null);
@@ -43,18 +45,18 @@ const DoctorProfile = () => {
       icon: "user-o",
       onPress: () =>
         router.push({
-          pathname: "/Doctor/showProfile",
+          pathname: "/Doctor",
         }),
     },
     {
       title: "Edit Profile",
       icon: "edit",
-      onPress: () => router.push("/Doctor/EditProfileDoc"),
+      onPress: () => router.push("/Doctor/profile"),
     },
     {
       title: "Emergency",
       icon: "h-square",
-      onPress: () => router.push("/Doctor/Emergency"),
+      onPress: () => router.push("/Doctor/emergency"),
     },
     {
       title: "Help Center",
@@ -72,67 +74,69 @@ const DoctorProfile = () => {
   ];
 
   return (
-    <View style={styles.main}>
-      <StatusBar style="auto" />
-      <ScrollView style={styles.main}>
-        <View style={styles.topContainer}>
-          <Image
-            source={{
-              uri: user.image,
-            }}
-            style={styles.image}
-          />
-          <View>
-            <Text style={styles.name}>{user.name}</Text>
-            <Text style={styles.email}>{user.email}</Text>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <View style={styles.main}>
+        <StatusBar style="auto" />
+        <ScrollView style={styles.main}>
+          <View style={styles.topContainer}>
+            <Image
+              source={{
+                uri: user.image,
+              }}
+              style={styles.image}
+            />
+            <View>
+              <Text style={styles.name}>{user.name}</Text>
+              <Text style={styles.email}>{user.email}</Text>
+            </View>
           </View>
-        </View>
-        <View style={{ marginTop: 20 }}>
-          {navItems.map((item, index) => (
-            <TouchableOpacity key={index} onPress={item.onPress}>
-              <View style={styles.navContainer}>
-                <View style={styles.nav1}>
-                  <FontAwesome name={item.icon} size={22} color="#777777" />
-                  <Text style={styles.navText}>{item.title}</Text>
+          <View style={{ marginTop: 20 }}>
+            {navItems.map((item, index) => (
+              <TouchableOpacity key={index} onPress={item.onPress}>
+                <View style={styles.navContainer}>
+                  <View style={styles.nav1}>
+                    <FontAwesome name={item.icon} size={22} color="#777777" />
+                    <Text style={styles.navText}>{item.title}</Text>
+                  </View>
+                  <FontAwesome name="angle-right" size={24} color="#777777" />
                 </View>
-                <FontAwesome name="angle-right" size={24} color="#777777" />
-              </View>
-            </TouchableOpacity>
-          ))}
-        </View>
-      </ScrollView>
-      <BottomSheet
-        ref={bottomSheetRef}
-        backdropComponent={renderBackdrop}
-        style={styles.bottomSheet}
-        index={-1}
-        snapPoints={snapPoint}
-      >
-        <Text style={[styles.navText, styles.bottomSheetText]}>
-          Are you sure you want to logout?
-        </Text>
-        <View style={styles.buttonRow}>
-          <PrimaryButton
-            backgroundColor="#000"
-            label="Cancel"
-            style={{ width: "47%" }}
-            onPress={handleClosePress}
-            color="#FFF"
-          />
-          <PrimaryButton
-            backgroundColor="#000"
-            label="Yes, Logout"
-            style={{ width: "47%" }}
-            onPress={async () => {
-              await AsyncStorage.removeItem("doctorInfo");
-              await AsyncStorage.removeItem("doctorEmail");
-              router.replace("/getStarted");
-            }}
-            color="#FFF"
-          />
-        </View>
-      </BottomSheet>
-    </View>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </ScrollView>
+        <BottomSheet
+          ref={bottomSheetRef}
+          backdropComponent={renderBackdrop}
+          style={styles.bottomSheet}
+          index={-1}
+          snapPoints={snapPoint}
+        >
+          <Text style={[styles.navText, styles.bottomSheetText]}>
+            Are you sure you want to logout?
+          </Text>
+          <View style={styles.buttonRow}>
+            <PrimaryButton
+              backgroundColor="#000"
+              label="Cancel"
+              style={{ width: "47%" }}
+              onPress={handleClosePress}
+              color="#FFF"
+            />
+            <PrimaryButton
+              backgroundColor="#000"
+              label="Yes, Logout"
+              style={{ width: "47%" }}
+              onPress={async () => {
+                await AsyncStorage.removeItem("userToken");
+                await AsyncStorage.removeItem("userType");
+                router.replace("/getStarted");
+              }}
+              color="#FFF"
+            />
+          </View>
+        </BottomSheet>
+      </View>
+    </GestureHandlerRootView>
   );
 };
 
@@ -200,4 +204,4 @@ const styles = StyleSheet.create({
   buttonRow: { flexDirection: "row", paddingHorizontal: 20, gap: 15 },
 });
 
-export default DoctorProfile;
+export default userProfile;
